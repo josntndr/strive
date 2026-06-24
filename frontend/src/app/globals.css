@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+:root {
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-light: #f8fafc;
+  --background-light: #fbf5f0;
+  --background-card: #ffffff;
+  --border-color: #cbd5e1;
+  --primary-blue: #ed4f28;
+  --primary-green: #16a34a;
+  --danger-red: #dc2626;
+  --background: var(--background-light);
+  --foreground: var(--text-primary);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Segoe UI", Arial, Helvetica, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+/*
+  Helxis-inspired theme. The app uses Tailwind's `blue` scale as its single
+  accent throughout, so we remap `blue` to a warm coral and lightly warm the
+  lightest neutrals to cream. This re-skins every page at once. New brand
+  tokens (cream / peach / ink / brand-purple) are added for bespoke sections.
+*/
+@theme {
+  /* Coral accent (replaces blue) */
+  --color-blue-50: #fff3ee;
+  --color-blue-100: #ffe2d6;
+  --color-blue-200: #ffc8b4;
+  --color-blue-300: #ffa888;
+  --color-blue-400: #fa835c;
+  --color-blue-500: #f3653c;
+  --color-blue-600: #ed4f28;
+  --color-blue-700: #cc3f1d;
+  --color-blue-800: #a5341b;
+  --color-blue-900: #832e1b;
+
+  /* Warm the lightest neutrals so page backgrounds read as cream */
+  --color-slate-50: #fbf5f0;
+  --color-slate-100: #f3ebe4;
+
+  /* Bespoke brand tokens */
+  --color-cream: #fdeee7;
+  --color-peach: #f9d9b6;
+  --color-ink: #1c1b1a;
+  --color-brand-purple: #7c3aed;
+  --color-brand-amber: #f6a623;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  a {
+    color: var(--primary-blue);
+    font-weight: 500;
+  }
+
+  a:hover {
+    color: #cc3f1d;
+  }
+
+  label {
+    color: var(--text-primary);
+  }
+
+  input,
+  select,
+  textarea {
+    background-color: #ffffff;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(237, 79, 40, 0.15);
+    outline: none;
+  }
+
+  button:disabled {
+    background-color: #cbd5e1;
+    color: #475569;
+    cursor: not-allowed;
+  }
+}
+
+.helper-text {
+  color: var(--text-secondary);
+}
+
+.error-message {
+  color: var(--danger-red);
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.success-message {
+  color: #15803d;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+/* Hide browser-native password reveal and clear buttons */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+/* Scroll-reveal: elements fade and rise into view (toggled by <Reveal>) */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Gentle floating motion for accent elements (e.g. hero badges) */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-floaty {
+  animation: floaty 4.5s ease-in-out infinite;
+}
+.animate-floaty-slow {
+  animation: floaty 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-floaty,
+  .animate-floaty-slow {
+    animation: none;
+  }
+}
+
