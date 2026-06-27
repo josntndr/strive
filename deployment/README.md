@@ -1,24 +1,54 @@
 # Strive Deployment Guide
 
-## Recommended Stack
-- **Frontend/Backend**: Vercel (Next.js native)
-- **Database**: Supabase or Vercel Postgres
-- **Auth**: NextAuth.js (requires `NEXTAUTH_SECRET` and `NEXTAUTH_URL`)
+Strive is two apps + a database:
 
-## Environment Variables
-The following variables are required for a successful deployment:
+- **Frontend** — Next.js (`frontend/`) → Vercel
+- **Backend** — Express API (`backend/`) → Vercel serverless (`backend/api/index.js` + `backend/vercel.json`)
+- **Database** — MongoDB Atlas (Vercel's filesystem is read-only, so the JSON fallback can't persist there)
+
+## Live deployment
+
+- Frontend: https://frontend-chi-taupe-87.vercel.app
+- Backend: https://backend-one-sigma-19.vercel.app
+
+## Backend environment variables (Vercel → backend project → Settings → Environment Variables)
 
 ```env
-DATABASE_URL="postgresql://..."
-NEXTAUTH_SECRET="your-secret-key"
-NEXTAUTH_URL="https://your-domain.com"
+DB_MODE=mongo
+MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/strive?retryWrites=true&w=majority
+JWT_SECRET=<a long random secret>
+CLIENT_URL=https://<your-frontend-domain>.vercel.app   # comma-separated list allowed
+NODE_ENV=production
+# Optional AI chat:
+# AI_PROVIDER=openai
+# OPENAI_API_KEY=sk-...
+# AI_MODEL=gpt-4o-mini
 ```
 
-## Build Process
-1. Navigate to the `frontend` directory.
-2. Run `npm install`.
-3. Run `npx prisma generate`.
-4. Run `npm run build`.
+## Frontend environment variables (Vercel → frontend project)
 
-## Production Database
-Ensure you run `npx prisma db push` or `npx prisma migrate deploy` against your production database before the first deployment.
+```env
+NEXT_PUBLIC_API_URL=https://<your-backend-domain>.vercel.app
+```
+
+> `NEXT_PUBLIC_*` is inlined at build time — after changing it you must redeploy the frontend.
+
+## MongoDB Atlas setup (free M0)
+
+1. Create an account at https://www.mongodb.com/atlas and a free **M0** cluster.
+2. **Database Access** → add a database user (username + password).
+3. **Network Access** → add IP `0.0.0.0/0` (Vercel serverless uses dynamic IPs).
+4. **Connect → Drivers** → copy the `mongodb+srv://...` connection string, put your password in it, and append a database name (e.g. `/strive`).
+5. Set it as `MONGO_URI` in the backend Vercel project, then redeploy the backend.
+
+## Deploy commands (Vercel CLI)
+
+```bash
+# Backend
+cd backend && vercel deploy --prod
+
+# Frontend
+cd frontend && vercel deploy --prod
+```
+
+Secrets live only in the host's environment variables — never commit real keys. `backend/.env` is gitignored.

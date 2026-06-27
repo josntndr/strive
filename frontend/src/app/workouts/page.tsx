@@ -9,8 +9,8 @@ import type { LucideIcon } from "lucide-react";
 import { Dumbbell, ChevronRight, Info, Clock, Target, CheckCircle2, Loader2, Home, Building2, ShieldAlert, TriangleAlert, Repeat2, PlayCircle } from "lucide-react";
 import { api, getToken } from "@/lib/api";
 import { toast } from "react-hot-toast";
-import { getYouTubeEmbedUrl } from "@/lib/youtube";
-import { getWorkoutDemo } from "@/lib/workoutDemoMap";
+import { resolveWorkoutVideo } from "@/lib/workoutDemoMap";
+import { normalizeExerciseName } from "@/lib/normalizeExerciseName";
 import { WorkoutDemo } from "@/components/workouts/WorkoutDemo";
 import { AIChat } from "@/components/ai/AIChat";
 import { getAlternatives, EQUIPMENT_OPTIONS, type EquipmentKey, type WorkoutAlternative } from "@/lib/alternativeWorkoutMap";
@@ -33,8 +33,6 @@ type Exercise = {
   completed?: boolean;
   notes?: string;
   visualDemo?: string;
-  animationUrl?: string;
-  animationKey?: string;
   youtubeEmbedUrl?: string;
   alternativeExercise?: {
     name?: string;
@@ -62,23 +60,21 @@ type WorkoutPlan = {
 };
 
 function enhanceExercise(exercise: Exercise): Exercise {
-  // Prefer demo data the exercise already carries, otherwise resolve it from
-  // the exercise name (exact match -> alias -> keyword rule -> generic).
-  const demo = getWorkoutDemo(exercise.name);
-  const youtubeEmbedUrl = getYouTubeEmbedUrl(exercise.youtubeEmbedUrl) || demo.youtubeEmbedUrl;
-  const animationKey = exercise.animationKey || demo.animationKey;
+  // Standardize the name and resolve a real YouTube tutorial video for it.
+  const name = normalizeExerciseName(exercise.name);
+  const youtubeEmbedUrl = resolveWorkoutVideo(name, exercise.youtubeEmbedUrl);
 
   const alternative = exercise.alternativeExercise;
   const alternativeUrl = alternative
-    ? getYouTubeEmbedUrl(alternative.youtubeEmbedUrl) || getWorkoutDemo(alternative.name).youtubeEmbedUrl
+    ? resolveWorkoutVideo(normalizeExerciseName(alternative.name || ""), alternative.youtubeEmbedUrl)
     : "";
 
   return {
     ...exercise,
+    name,
     youtubeEmbedUrl,
-    animationKey,
     alternativeExercise: alternative
-      ? { ...alternative, youtubeEmbedUrl: alternativeUrl }
+      ? { ...alternative, name: alternative.name ? normalizeExerciseName(alternative.name) : alternative.name, youtubeEmbedUrl: alternativeUrl }
       : alternative,
   };
 }
@@ -145,7 +141,6 @@ export default function WorkoutsPage() {
       instructions: alt.instruction || current.instructions,
       steps: alt.instruction ? [alt.instruction] : current.steps,
       youtubeEmbedUrl: alt.youtubeEmbedUrl,
-      animationKey: alt.animationKey,
       alternativeExercise: {
         name: current.name,
         equipment: current.equipment,
@@ -407,8 +402,6 @@ export default function WorkoutsPage() {
               <WorkoutDemo
                 exerciseName={selectedExercise.exercise.name}
                 youtubeEmbedUrl={selectedExercise.exercise.youtubeEmbedUrl}
-                animationKey={selectedExercise.exercise.animationKey}
-                locationType={selectedExercise.exercise.locationType}
               />
             </Section>
 
@@ -464,8 +457,6 @@ export default function WorkoutsPage() {
                           <WorkoutDemo
                             exerciseName={alt.name}
                             youtubeEmbedUrl={alt.youtubeEmbedUrl}
-                            animationKey={alt.animationKey}
-                            locationType={alt.locationType}
                           />
                         </div>
                       )}

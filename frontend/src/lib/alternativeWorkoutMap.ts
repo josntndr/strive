@@ -1,4 +1,5 @@
-import { getWorkoutDemo } from "@/lib/workoutDemoMap";
+import { resolveWorkoutVideo } from "@/lib/workoutDemoMap";
+import { normalizeExerciseName } from "@/lib/normalizeExerciseName";
 
 export type EquipmentKey = "none" | "dumbbells" | "bands";
 
@@ -9,7 +10,6 @@ export type WorkoutAlternative = {
   reason: string;
   instruction: string;
   youtubeEmbedUrl: string;
-  animationKey: string;
 };
 
 export const EQUIPMENT_OPTIONS: { key: EquipmentKey; label: string }[] = [
@@ -28,18 +28,17 @@ type RawAlt = {
   animationKey?: string;
 };
 
-// Fill any missing demo fields from the shared demo resolver so "View demo"
-// always has a video (or a sensible animation fallback).
+// Standardize the name and resolve a real YouTube tutorial video so "View demo"
+// always shows the correct video (or a clean unavailable message).
 const normalize = (alt: RawAlt): WorkoutAlternative => {
-  const demo = getWorkoutDemo(alt.name);
+  const name = normalizeExerciseName(alt.name);
   return {
-    name: alt.name,
+    name,
     locationType: alt.locationType || "Home",
     equipment: alt.equipment,
     reason: alt.reason,
     instruction: alt.instruction,
-    youtubeEmbedUrl: alt.youtubeEmbedUrl || demo.youtubeEmbedUrl || "",
-    animationKey: alt.animationKey || demo.animationKey || "generic",
+    youtubeEmbedUrl: resolveWorkoutVideo(name, alt.youtubeEmbedUrl),
   };
 };
 
@@ -79,7 +78,7 @@ export const alternativeWorkoutMap: Record<string, RawAlt[]> = {
     { name: "Glute Bridges", locationType: "Home", equipment: "Bodyweight or mat", reason: "Simple glute-focused movement for home workouts.", instruction: "Lift your hips and squeeze your glutes at the top.", youtubeEmbedUrl: "https://www.youtube.com/embed/OUgsJ8-Vi0E", animationKey: "glute-bridges" },
   ],
   "Lat Pulldown Machine": [
-    { name: "Resistance Band Rows", locationType: "Home", equipment: "Resistance band", reason: "Good back exercise alternative for home workouts.", instruction: "Pull the band toward your body and squeeze your back.", youtubeEmbedUrl: "https://www.youtube.com/embed/xQNrFHEMhI4", animationKey: "resistance-band-rows" },
+    { name: "Resistance Band Rows", locationType: "Home", equipment: "Resistance band", reason: "Good back exercise alternative for home workouts.", instruction: "Pull the band toward your body and squeeze your back.", youtubeEmbedUrl: "https://www.youtube.com/embed/Y3H17rshgZE", animationKey: "resistance-band-rows" },
     { name: "Dumbbell Rows", locationType: "Home", equipment: "Dumbbells", reason: "Good alternative for strengthening the back.", instruction: "Pull the dumbbell toward your waist while keeping your back stable.", youtubeEmbedUrl: "", animationKey: "dumbbell-rows" },
   ],
   "Chest Press Machine": [
