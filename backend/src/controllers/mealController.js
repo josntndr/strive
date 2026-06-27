@@ -40,9 +40,73 @@ const vegetarianMeals = [
   },
 ];
 
+const highProteinMeals = [
+  {
+    breakfast: ["Eggs, chicken tapa, and rice", 520, 40],
+    lunch: ["Grilled chicken breast, rice, and vegetables", 640, 52],
+    snack: ["Greek yogurt and boiled eggs", 260, 24],
+    dinner: ["Bangus, rice, and pinakbet", 600, 46],
+  },
+  {
+    breakfast: ["Tuna and egg scramble with rice", 500, 38],
+    lunch: ["Beef and broccoli with rice", 660, 48],
+    snack: ["Milk or protein shake", 220, 25],
+    dinner: ["Chicken adobo with rice", 620, 50],
+  },
+];
+
+const budgetMeals = [
+  {
+    breakfast: ["Egg and garlic fried rice", 380, 14],
+    lunch: ["Monggo with malunggay and rice", 480, 20],
+    snack: ["Banana and peanuts", 200, 8],
+    dinner: ["Sardines with rice and kangkong", 470, 24],
+  },
+  {
+    breakfast: ["Oatmeal with banana", 350, 10],
+    lunch: ["Tortang talong with rice", 470, 16],
+    snack: ["Boiled saba banana", 160, 2],
+    dinner: ["Tofu and egg with rice", 460, 22],
+  },
+];
+
+const lowSugarMeals = [
+  {
+    breakfast: ["Eggs and sauteed vegetables", 320, 20],
+    lunch: ["Grilled chicken and green salad", 480, 42],
+    snack: ["Boiled eggs and nuts", 220, 14],
+    dinner: ["Baked fish with vegetables", 430, 38],
+  },
+  {
+    breakfast: ["Vegetable omelet", 300, 18],
+    lunch: ["Tuna salad with olive oil", 460, 36],
+    snack: ["Unsweetened yogurt", 150, 15],
+    dinner: ["Chicken and steamed vegetables", 450, 40],
+  },
+];
+
+const filipinoMeals = [
+  {
+    breakfast: ["Tapsilog (tapa, egg, rice)", 560, 30],
+    lunch: ["Chicken adobo with rice and vegetables", 640, 42],
+    snack: ["Fresh mango", 180, 3],
+    dinner: ["Sinigang na isda with rice", 540, 34],
+  },
+  {
+    breakfast: ["Longsilog (longganisa, egg, rice)", 580, 26],
+    lunch: ["Pork giniling with rice and carrots", 620, 36],
+    snack: ["Saba banana and peanuts", 210, 6],
+    dinner: ["Tinolang manok with rice", 560, 40],
+  },
+];
+
 const chooseMeals = (preference) => {
   const value = (preference || "").toLowerCase();
   if (value.includes("vegetarian")) return vegetarianMeals;
+  if (value.includes("filipino")) return filipinoMeals;
+  if (value.includes("high") && value.includes("protein")) return highProteinMeals;
+  if (value.includes("budget")) return budgetMeals;
+  if (value.includes("low") && value.includes("sugar")) return lowSugarMeals;
   return balancedMeals;
 };
 
@@ -59,7 +123,7 @@ const adjustForGoal = (meal, goal) => {
 
 const buildMeal = (type, mealTuple, goal) => {
   const [name, calories, protein] = adjustForGoal(mealTuple, goal);
-  return { type, name, calories, protein };
+  return { type, name, calories, protein, completed: false };
 };
 
 const generateMealDays = (profile) => {

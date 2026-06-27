@@ -15,6 +15,7 @@ type Meal = {
   name: string;
   calories: number;
   protein: number;
+  completed?: boolean;
 };
 
 type MealDay = {
@@ -27,6 +28,7 @@ type MealDay = {
 };
 
 type MealPlan = {
+  _id?: string;
   isActive?: boolean;
   days?: MealDay[];
   planData?: MealDay[];
@@ -64,6 +66,23 @@ export default function MealsPage() {
 
     loadMeals();
   }, [router]);
+
+  const toggleMeal = async (dayIdx: number, mealIdx: number) => {
+    if (!mealPlan) return;
+    const usePlanData = !mealPlan.days && Boolean(mealPlan.planData);
+    const source = mealPlan.days || mealPlan.planData || [];
+    const days = source.map((d, di) =>
+      di === dayIdx ? { ...d, meals: d.meals.map((m, mi) => (mi === mealIdx ? { ...m, completed: !m.completed } : m)) } : d
+    );
+    setMealPlan({ ...mealPlan, ...(usePlanData ? { planData: days } : { days }) });
+    if (mealPlan._id) {
+      try {
+        await api.put(`/api/meals/${mealPlan._id}`, { days });
+      } catch {
+        toast.error("Marked locally, but couldn't sync to the server.");
+      }
+    }
+  };
 
   if (isLoading) {
     return (
@@ -131,12 +150,18 @@ export default function MealsPage() {
                           </div>
                           <div>
                             <p className="text-[10px] uppercase font-bold text-green-600 mb-0.5">{meal.type}</p>
-                            <h4 className="font-bold text-slate-900 group-hover:text-green-700 transition-colors">{meal.name}</h4>
+                            <h4 className={`font-bold transition-colors ${meal.completed ? "text-slate-400 line-through" : "text-slate-900 group-hover:text-green-700"}`}>{meal.name}</h4>
                             <p className="text-xs text-slate-500">{meal.calories} kcal - {meal.protein}g protein</p>
                           </div>
                         </div>
-                        <button className="p-2 text-slate-500 hover:text-green-600 transition-colors">
-                          <CheckCircle2 className="w-6 h-6" />
+                        <button
+                          type="button"
+                          onClick={() => toggleMeal(idx, mIdx)}
+                          aria-label={meal.completed ? `Mark ${meal.type} not done` : `Mark ${meal.type} done`}
+                          aria-pressed={Boolean(meal.completed)}
+                          className={`p-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded-lg ${meal.completed ? "text-green-600" : "text-slate-400 hover:text-green-600"}`}
+                        >
+                          <CheckCircle2 className={`w-6 h-6 ${meal.completed ? "fill-green-100" : ""}`} />
                         </button>
                       </div>
                     ))}

@@ -1,5 +1,16 @@
 const mongoose = require("mongoose");
 
+const mealItemSchema = new mongoose.Schema(
+  {
+    type: { type: String, default: "" },
+    name: { type: String, default: "" },
+    calories: { type: Number, default: 0 },
+    protein: { type: Number, default: 0 },
+    completed: { type: Boolean, default: false },
+  },
+  { _id: false }
+);
+
 const mealPlanDaySchema = new mongoose.Schema(
   {
     day: { type: String, required: true, trim: true },
@@ -7,8 +18,11 @@ const mealPlanDaySchema = new mongoose.Schema(
     lunch: { type: String, default: "" },
     snack: { type: String, default: "" },
     dinner: { type: String, default: "" },
+    meals: { type: [mealItemSchema], default: [] },
     estimatedCalories: { type: Number, default: 0 },
     estimatedProtein: { type: Number, default: 0 },
+    totalCalories: { type: Number, default: 0 },
+    totalProtein: { type: Number, default: 0 },
     completed: { type: Boolean, default: false },
   },
   { _id: false }
@@ -42,9 +56,5 @@ const mealPlanSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-
-mealPlanSchema.virtual("meals").get(function meals() {
-  return this.days;
-});
 
 module.exports = mongoose.models.MealPlan || mongoose.model("MealPlan", mealPlanSchema);

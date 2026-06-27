@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ChevronRight,
@@ -38,7 +38,41 @@ export default function SetupPage() {
     restrictions: "",
   });
 
-  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
+  // Hydrate the form with the user's existing profile so editing doesn't reset fields.
+  useEffect(() => {
+    if (!getToken()) return;
+    api
+      .get("/api/profile")
+      .then((res) => {
+        const p = res.data || {};
+        setFormData((prev) => ({
+          ...prev,
+          age: p.age != null ? String(p.age) : prev.age,
+          gender: p.gender || prev.gender,
+          height: p.height != null ? String(p.height) : prev.height,
+          weight: p.weight != null ? String(p.weight) : prev.weight,
+          goals: p.fitnessGoal ? String(p.fitnessGoal).split(",").map((g: string) => g.trim()).filter(Boolean) : prev.goals,
+          experienceLevel: p.workoutExperience || prev.experienceLevel,
+          location: p.workoutLocation || prev.location,
+          daysPerWeek: p.workoutDaysPerWeek != null ? String(p.workoutDaysPerWeek) : prev.daysPerWeek,
+          duration: p.workoutDuration != null ? String(p.workoutDuration) : prev.duration,
+          focus: p.targetBodyFocus || prev.focus,
+          dietaryPreference: p.dietaryPreference || prev.dietaryPreference,
+          restrictions: p.foodRestrictions || prev.restrictions,
+        }));
+      })
+      .catch(() => {});
+  }, []);
+
+  const step1Valid = Boolean(formData.age && formData.height && formData.weight);
+
+  const nextStep = () => {
+    if (currentStep === 1 && !step1Valid) {
+      toast.error("Please fill in your age, height, and weight to continue.");
+      return;
+    }
+    setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
+  };
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
   const toggleGoal = (goal: string) => {
@@ -239,6 +273,16 @@ export default function SetupPage() {
                   </select>
                 </div>
                 <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Workout Duration</label>
+                  <select
+                    value={formData.duration}
+                    onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  >
+                    {[30, 45, 60, 75, 90].map((d) => <option key={d} value={d}>{d} minutes</option>)}
+                  </select>
+                </div>
+                <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Dietary Preference</label>
                   <select
                     value={formData.dietaryPreference}
@@ -248,6 +292,7 @@ export default function SetupPage() {
                     <option>Balanced</option>
                     <option>High protein</option>
                     <option>Budget friendly</option>
+                    <option>Filipino meal style</option>
                     <option>Vegetarian</option>
                     <option>Low sugar</option>
                   </select>
@@ -301,7 +346,8 @@ export default function SetupPage() {
             {currentStep < STEPS.length ? (
               <button
                 onClick={nextStep}
-                className="flex items-center px-8 py-3 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
+                disabled={currentStep === 1 && !step1Valid}
+                className="flex items-center px-8 py-3 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Continue
                 <ChevronRight className="w-5 h-5 ml-2" />

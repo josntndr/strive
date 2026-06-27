@@ -3,7 +3,7 @@
 :root {
   --text-primary: #0f172a;
   --text-secondary: #334155;
-  --text-muted: #64748b;
+  --text-muted: #475569;
   --text-light: #f8fafc;
   --background-light: #fbf5f0;
   --background-card: #ffffff;
@@ -35,9 +35,9 @@
   --color-blue-200: #ffc8b4;
   --color-blue-300: #ffa888;
   --color-blue-400: #fa835c;
-  --color-blue-500: #f3653c;
-  --color-blue-600: #ed4f28;
-  --color-blue-700: #cc3f1d;
+  --color-blue-500: #e0512c;
+  --color-blue-600: #cc3f1d;
+  --color-blue-700: #b3361a;
   --color-blue-800: #a5341b;
   --color-blue-900: #832e1b;
 

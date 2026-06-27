@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,6 +12,8 @@ interface ModalProps {
 }
 
 export const Modal = ({ isOpen, onClose, title, children, onAccept }: ModalProps) => {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -19,6 +21,13 @@ export const Modal = ({ isOpen, onClose, title, children, onAccept }: ModalProps
     if (isOpen) {
       document.body.style.overflow = "hidden";
       window.addEventListener("keydown", handleEsc);
+      // Move focus into the dialog so keyboard/screen-reader users start inside it.
+      const id = requestAnimationFrame(() => closeRef.current?.focus());
+      return () => {
+        document.body.style.overflow = "unset";
+        window.removeEventListener("keydown", handleEsc);
+        cancelAnimationFrame(id);
+      };
     }
     return () => {
       document.body.style.overflow = "unset";
@@ -31,19 +40,26 @@ export const Modal = ({ isOpen, onClose, title, children, onAccept }: ModalProps
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300" 
+      <div
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300"
         onClick={onClose}
       />
-      
+
       {/* Modal Content */}
-      <div className="relative bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-100 flex flex-col max-h-[90vh] animate-in zoom-in-95 fade-in duration-300">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        className="relative bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-100 flex flex-col max-h-[90vh] animate-in zoom-in-95 fade-in duration-300"
+      >
         {/* Header */}
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-slate-900">{title}</h2>
-          <button 
+          <h2 id="modal-title" className="text-xl font-bold text-slate-900">{title}</h2>
+          <button
+            ref={closeRef}
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-500"
+            aria-label="Close dialog"
+            className="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <X className="w-6 h-6" />
           </button>

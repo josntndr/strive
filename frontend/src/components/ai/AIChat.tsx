@@ -185,7 +185,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
               ))}
 
               {loading && (
-                <div className="flex justify-start">
+                <div className="flex justify-start" role="status" aria-live="polite">
                   <div className="inline-flex items-center gap-2 rounded-2xl rounded-bl-sm border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-500">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Thinking…
@@ -211,7 +211,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
 
             {/* Error */}
             {error && (
-              <div className="border-t border-red-100 bg-red-50 px-4 py-2 text-xs text-red-600">{error}</div>
+              <div role="alert" className="border-t border-red-100 bg-red-50 px-4 py-2 text-xs text-red-700">{error}</div>
             )}
 
             {/* Input */}
@@ -227,6 +227,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 maxLength={1000}
+                aria-label="Message Strive Assistant"
                 placeholder="Ask about workouts, meals, or tips…"
                 className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-400"
               />

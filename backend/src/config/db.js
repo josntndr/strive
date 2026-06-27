@@ -28,6 +28,12 @@ const validateEnv = () => {
     throw new Error("Missing JWT_SECRET in backend/.env. Please add a secure JWT secret.");
   }
 
+  const secret = process.env.JWT_SECRET.trim();
+  const weakSecrets = ["replace_this_with_a_secure_secret", "secret", "changeme", "your_jwt_secret", "jwt_secret"];
+  if (weakSecrets.includes(secret.toLowerCase()) || secret.length < 16) {
+    throw new Error("Insecure JWT_SECRET. Set a strong, unique secret (at least 16 characters) in backend/.env.");
+  }
+
   if (getDatabaseMode() !== "mongo") {
     return;
   }

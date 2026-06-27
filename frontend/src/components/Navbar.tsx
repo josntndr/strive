@@ -86,8 +86,9 @@ export const Navbar = () => {
                   <span className="text-sm text-slate-600 font-medium">{user.fullName || user.name}</span>
                   <button
                     onClick={() => signOut()}
-                    className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                     title="Sign Out"
+                    aria-label="Sign out"
                   >
                     <LogOut className="h-5 w-5" />
                   </button>
@@ -96,7 +97,7 @@ export const Navbar = () => {
             ) : (
               <>
                 <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
-                  Contact
+                  Login
                 </Link>
                 <Link
                   href="/register"
@@ -112,7 +113,9 @@ export const Navbar = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-md text-slate-600 hover:text-blue-600 hover:bg-slate-100 transition-colors"
+              className="p-2 rounded-md text-slate-600 hover:text-blue-600 hover:bg-slate-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -157,7 +160,7 @@ export const Navbar = () => {
                 className="block text-base font-medium text-slate-600 py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Contact
+                Login
               </Link>
               <Link
                 href="/register"

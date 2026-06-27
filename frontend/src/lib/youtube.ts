@@ -18,5 +18,7 @@ export function getYouTubeEmbedUrl(url?: string): string {
     return `https://www.youtube.com/embed/${shortMatch[1]}`;
   }
 
-  return url;
+  // Unrecognized / non-YouTube URL: return "" so callers show the fallback
+  // instead of rendering a broken iframe.
+  return "";
 }
