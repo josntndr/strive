@@ -95,9 +95,138 @@ const connectDB = async () => {
   }
 };
 
+// --- Object-database storage backend -----------------------------------------
+// Uses Vercel Blob (private, token-gated) when BLOB_READ_WRITE_TOKEN is set
+// (i.e. on Vercel), so the JSON database persists on a read-only serverless
+// filesystem. Locally it falls back to the on-disk db.json file.
+//
+// CRITICAL: each collection is stored in its OWN blob (strive-db/<name>.json),
+// never one big DB blob. Vercel Blob is eventually consistent, so a read can
+// briefly return a stale copy. With one combined blob, a read-modify-write of
+// (say) the profile would read a stale DB that is missing a just-registered
+// user, then write the whole thing back and ERASE that user. Splitting per
+// collection means a profile write only ever touches the profiles blob, so it
+// can never clobber the users blob. Each writer persists only its collection.
+const useBlobStorage = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+const COLLECTIONS = Object.keys(DEFAULT_DB);
+const blobPathFor = (name) => `strive-db/${name}.json`;
+const cloneDefault = () => JSON.parse(JSON.stringify(DEFAULT_DB));
+
+let blobLib;
+const getBlob = () => blobLib || (blobLib = require("@vercel/blob"));
+
+// Write-through cache to paper over Blob's eventual consistency. Vercel reuses
+// a warm function instance for a user's rapid sequential requests, so when this
+// instance has written a collection in the last RECENT_TTL_MS we overlay those
+// records on top of the (possibly still-stale) blob read. This makes the common
+// flow — register → save profile → immediately generate a plan — read its own
+// fresh writes instead of briefly missing them.
+const RECENT_TTL_MS = 60000;
+const recentWrites = new Map(); // name -> { items, at }
+
+const rememberWrite = (name, items) => {
+  recentWrites.set(name, { items: items || [], at: Date.now() });
+};
+
+const idOf = (record) => record?._id ?? record?.id;
+
+const overlayRecent = (name, fromBlob) => {
+  const cached = recentWrites.get(name);
+  if (!cached || Date.now() - cached.at > RECENT_TTL_MS) return fromBlob;
+  // Union by id, preferring this instance's just-written version.
+  const merged = new Map();
+  for (const item of fromBlob) merged.set(idOf(item), item);
+  for (const item of cached.items) merged.set(idOf(item), item);
+  return [...merged.values()];
+};
+
+const readCollectionFromBlob = async (name) => {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  // head(pathname) is read-after-write consistent (unlike list), so the data
+  // the very next request reads always reflects the previous write.
+  let meta;
+  try {
+    meta = await getBlob().head(blobPathFor(name), { token });
+  } catch (error) {
+    if (error?.name === "BlobNotFoundError" || /not\s*found/i.test(error?.message || "")) {
+      return [];
+    }
+    throw error;
+  }
+  // Cache-bust + no-store so we never get a stale CDN copy.
+  const res = await fetch(`${meta.url}?ts=${Date.now()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: "no-store",
+  });
+  if (res.status === 404) return [];
+  if (!res.ok) throw new Error(`Blob read failed for ${name}: ${res.status}`);
+  const text = await res.text();
+  if (!text) return [];
+  const parsed = JSON.parse(text);
+  return Array.isArray(parsed) ? parsed : [];
+};
+
+const writeCollectionToBlob = async (name, items) => {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  await getBlob().put(blobPathFor(name), JSON.stringify(items || []), {
+    access: "private",
+    token,
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: "application/json",
+    cacheControlMaxAge: 0, // never CDN-cache the DB, so reads are always fresh
+  });
+  rememberWrite(name, items); // serve our own fresh write until the blob catches up
+};
+
+const readDatabase = async () => {
+  if (useBlobStorage()) {
+    const db = cloneDefault();
+    await Promise.all(
+      COLLECTIONS.map(async (name) => {
+        db[name] = overlayRecent(name, await readCollectionFromBlob(name));
+      })
+    );
+    return db;
+  }
+
+  await ensureJsonDatabaseFile();
+  const raw = JSON.parse(await fs.readFile(dataFile, "utf8"));
+  // Merge over the default shape so every collection array always exists.
+  return { ...cloneDefault(), ...(raw && typeof raw === "object" ? raw : {}) };
+};
+
+// Persist a single collection. This is the safe primitive every writer should
+// use, so it never rewrites collections it didn't change.
+const writeCollection = async (name, items) => {
+  if (!COLLECTIONS.includes(name)) throw new Error(`Unknown collection: ${name}`);
+  if (useBlobStorage()) return writeCollectionToBlob(name, items);
+
+  await fs.mkdir(dataDir, { recursive: true });
+  await ensureJsonDatabaseFile();
+  const raw = JSON.parse(await fs.readFile(dataFile, "utf8"));
+  const db = { ...cloneDefault(), ...(raw && typeof raw === "object" ? raw : {}) };
+  db[name] = items || [];
+  await fs.writeFile(dataFile, JSON.stringify(db, null, 2));
+};
+
+// Persist the whole DB (only used for seeding/reset). Writes every collection.
+const writeDatabase = async (db) => {
+  const full = { ...cloneDefault(), ...(db && typeof db === "object" ? db : {}) };
+  if (useBlobStorage()) {
+    await Promise.all(COLLECTIONS.map((name) => writeCollectionToBlob(name, full[name])));
+    return;
+  }
+  await fs.mkdir(dataDir, { recursive: true });
+  await fs.writeFile(dataFile, JSON.stringify(full, null, 2));
+};
+
 connectDB.validateEnv = validateEnv;
 connectDB.getDatabaseMode = getDatabaseMode;
 connectDB.ensureJsonDatabaseFile = ensureJsonDatabaseFile;
 connectDB.dataFile = dataFile;
+connectDB.readDatabase = readDatabase;
+connectDB.writeCollection = writeCollection;
+connectDB.writeDatabase = writeDatabase;
 
 module.exports = connectDB;

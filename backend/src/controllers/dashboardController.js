@@ -22,11 +22,7 @@ const getWorkoutStreak = (plan) => {
   return streak;
 };
 
-const readJsonDb = async () => {
-  await connectDB.ensureJsonDatabaseFile();
-  const file = await fs.readFile(connectDB.dataFile, "utf8");
-  return JSON.parse(file);
-};
+const readJsonDb = () => connectDB.readDatabase();
 
 const getLatestPlan = (plans, userId) =>
   [...(plans || [])]

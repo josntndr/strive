@@ -156,15 +156,8 @@ const generateMealDays = (profile) => {
   });
 };
 
-const readJsonDb = async () => {
-  await connectDB.ensureJsonDatabaseFile();
-  const file = await fs.readFile(connectDB.dataFile, "utf8");
-  return JSON.parse(file);
-};
-
-const writeJsonDb = async (db) => {
-  await fs.writeFile(connectDB.dataFile, JSON.stringify(db, null, 2));
-};
+const readJsonDb = () => connectDB.readDatabase();
+const writeMealPlans = (plans) => connectDB.writeCollection("mealPlans", plans);
 
 const generateMealPlan = async (req, res, next) => {
   try {
@@ -190,7 +183,7 @@ const generateMealPlan = async (req, res, next) => {
       };
 
       db.mealPlans.push(mealPlan);
-      await writeJsonDb(db);
+      await writeMealPlans(db.mealPlans);
 
       return res.status(201).json({
         message: "Meal plan generated successfully.",
@@ -239,7 +232,7 @@ const updateMealPlan = async (req, res, next) => {
       if (index === -1) return res.status(404).json({ message: "Meal plan not found." });
 
       db.mealPlans[index] = { ...db.mealPlans[index], ...req.body, updatedAt: new Date().toISOString() };
-      await writeJsonDb(db);
+      await writeMealPlans(db.mealPlans);
       return res.json({ message: "Meal plan updated successfully.", mealPlan: db.mealPlans[index] });
     }
 
@@ -263,7 +256,7 @@ const deleteMealPlan = async (req, res, next) => {
       const before = db.mealPlans.length;
       db.mealPlans = db.mealPlans.filter((plan) => !(String(plan._id) === String(req.params.id) && String(plan.user) === String(req.user.id)));
       if (db.mealPlans.length === before) return res.status(404).json({ message: "Meal plan not found." });
-      await writeJsonDb(db);
+      await writeMealPlans(db.mealPlans);
       return res.json({ message: "Meal plan deleted successfully." });
     }
 

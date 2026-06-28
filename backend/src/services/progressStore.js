@@ -6,15 +6,8 @@ const connectDB = require("../config/db");
 const getMode = () => connectDB.getDatabaseMode();
 const dataFile = connectDB.dataFile;
 
-const readJsonDb = async () => {
-  await connectDB.ensureJsonDatabaseFile();
-  const file = await fs.readFile(dataFile, "utf8");
-  return JSON.parse(file);
-};
-
-const writeJsonDb = async (db) => {
-  await fs.writeFile(dataFile, JSON.stringify(db, null, 2));
-};
+const readJsonDb = () => connectDB.readDatabase();
+const writeProgress = (records) => connectDB.writeCollection("progressRecords", records);
 
 const formatRecord = (record) => {
   if (!record) return null;
@@ -81,7 +74,7 @@ const createProgressRecord = async (userId, payload) => {
     };
 
     db.progressRecords.push(record);
-    await writeJsonDb(db);
+    await writeProgress(db.progressRecords);
     return formatRecord(record);
   }
 

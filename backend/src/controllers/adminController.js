@@ -5,10 +5,7 @@ const FitnessProfile = require("../models/FitnessProfile");
 const WorkoutPlan = require("../models/WorkoutPlan");
 const MealPlan = require("../models/MealPlan");
 
-const readJsonDb = async () => {
-  await connectDB.ensureJsonDatabaseFile();
-  return JSON.parse(await fs.readFile(connectDB.dataFile, "utf8"));
-};
+const readJsonDb = () => connectDB.readDatabase();
 
 const getGoalStats = async () => {
   const stats = await FitnessProfile.aggregate([

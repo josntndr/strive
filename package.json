@@ -1,0 +1,10 @@
+{
+  "name": "strive",
+  "private": true,
+  "description": "Strive — run the whole app (frontend + backend + local database) as one server.",
+  "scripts": {
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start",
+    "app": "npm --prefix frontend run build && npm --prefix backend start"
+  }
+}

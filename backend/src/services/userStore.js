@@ -32,15 +32,8 @@ const publicUser = (user) => {
   return safe;
 };
 
-const readJsonDb = async () => {
-  await connectDB.ensureJsonDatabaseFile();
-  const file = await fs.readFile(connectDB.dataFile, "utf8");
-  return JSON.parse(file);
-};
-
-const writeJsonDb = async (db) => {
-  await fs.writeFile(connectDB.dataFile, JSON.stringify(db, null, 2));
-};
+const readJsonDb = () => connectDB.readDatabase();
+const writeUsers = (users) => connectDB.writeCollection("users", users);
 
 const findJsonUserByEmail = async (email) => {
   const db = await readJsonDb();
@@ -116,7 +109,7 @@ const createUser = async (userData) => {
     };
 
     db.users.push(record);
-    await writeJsonDb(db);
+    await writeUsers(db.users);
     return publicUser(record);
   }
 

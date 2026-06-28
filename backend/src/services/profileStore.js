@@ -14,15 +14,8 @@ const normalizeNumber = (value) => {
 
 const dataFile = connectDB.dataFile;
 
-const readJsonDb = async () => {
-  await connectDB.ensureJsonDatabaseFile();
-  const file = await fs.readFile(dataFile, "utf8");
-  return JSON.parse(file);
-};
-
-const writeJsonDb = async (db) => {
-  await fs.writeFile(dataFile, JSON.stringify(db, null, 2));
-};
+const readJsonDb = () => connectDB.readDatabase();
+const writeProfiles = (profiles) => connectDB.writeCollection("fitnessProfiles", profiles);
 
 const mapProfileInput = (profileData) => {
   const fitnessGoal = Array.isArray(profileData.goals)
@@ -132,7 +125,7 @@ const createOrUpdateProfile = async (userId, profileData) => {
       db.fitnessProfiles.push(record);
     }
 
-    await writeJsonDb(db);
+    await writeProfiles(db.fitnessProfiles);
     return formatProfile(record);
   }
 

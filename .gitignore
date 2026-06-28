@@ -15,3 +15,7 @@ npm-debug.log*
 # Build output
 .next/
 dist/
+frontend/out/
+
+# Tunnel binary (downloaded on demand)
+cloudflared.exe

@@ -1,6 +1,36 @@
 # Strive Deployment Guide
 
-Strive is two apps + a database:
+## Run it all on your own machine (recommended — one app, data stored locally)
+
+This runs the entire app as a single server. The Express backend serves the
+built Next.js frontend AND the API, and all data is stored on your computer in
+`backend/data/db.json` (no cloud database needed).
+
+```bash
+# 1. Install dependencies (first time only)
+npm --prefix frontend install
+npm --prefix backend install
+
+# 2. Build the frontend and start the one server
+npm run app          # from the project root
+
+# 3. Open the app
+#    http://localhost:5000
+```
+
+`npm run app` = build the frontend (`frontend/out`) + start the backend, which
+serves both the website and `/api/*` on **http://localhost:5000**. Re-run it
+after code changes. Your data lives in `backend/data/db.json`.
+
+To make this local app reachable from the internet while keeping the data on
+your machine, run a tunnel in another terminal, e.g.
+`cloudflared tunnel --url http://localhost:5000` (or `ngrok http 5000`).
+
+---
+
+## Cloud option (separate hosting)
+
+Strive can also run as two apps + a cloud database:
 
 - **Frontend** — Next.js (`frontend/`) → Vercel
 - **Backend** — Express API (`backend/`) → Vercel serverless (`backend/api/index.js` + `backend/vercel.json`)
