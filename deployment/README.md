@@ -29,33 +29,38 @@ your machine, run a tunnel in another terminal, such as:
 cloudflared tunnel --url http://localhost:5000
 ```
 
-## Cloud deployment: one Vercel app
+## Cloud deployment
 
-Use one Vercel project for the portfolio deployment:
+The portfolio deployment uses the Strive frontend project plus the existing
+production backend project:
 
-- Website + API: root project (`vercel.json`)
-- Frontend: static Next.js export from `frontend/out`
-- Backend: Express serverless function at `/api/*`
+- Website: https://strive-fitness-app.vercel.app
+- API: https://backend-one-sigma-19.vercel.app
 - Database: MongoDB Atlas or Vercel Blob storage
 
 ## Live deployment
 
 - App: https://strive-fitness-app.vercel.app
-- Health check: https://strive-fitness-app.vercel.app/api/health
+- Backend health check: https://backend-one-sigma-19.vercel.app/api/health
 
-The frontend calls the API on the same origin in production, so do not set
-`NEXT_PUBLIC_API_URL` on the unified Vercel project unless you intentionally
-want to point at a separate backend.
+The frontend Vercel project must set:
 
-## Environment variables
+```env
+NEXT_PUBLIC_API_URL=https://backend-one-sigma-19.vercel.app
+```
 
-Set these in the unified Vercel project under Settings -> Environment Variables:
+`NEXT_PUBLIC_*` values are inlined into the frontend build, so redeploy the
+frontend after changing this value.
+
+## Backend environment variables
+
+Set these in the backend Vercel project under Settings -> Environment Variables:
 
 ```env
 DB_MODE=mongo
 MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/strive?retryWrites=true&w=majority
 JWT_SECRET=<a long random secret>
-CLIENT_URL=https://strive-fitness-app.vercel.app
+CLIENT_URL=https://strive-fitness-app.vercel.app,https://frontend-chi-taupe-87.vercel.app
 NODE_ENV=production
 
 # Optional AI chat:
@@ -75,13 +80,17 @@ filesystem writes will not persist.
 3. In Network Access, add IP `0.0.0.0/0` because Vercel serverless uses dynamic IPs.
 4. In Connect -> Drivers, copy the `mongodb+srv://...` connection string.
 5. Put your password in the connection string and append a database name, such as `/strive`.
-6. Set the URI as `MONGO_URI` in the Vercel project, then redeploy the app.
+6. Set the URI as `MONGO_URI` in the backend Vercel project, then redeploy the backend.
 
 ## Deploy command
 
-From the project root:
+Deploy the backend from `backend/` and the frontend from the project root:
 
 ```bash
+cd backend
+vercel deploy --prod
+
+cd ..
 vercel deploy --prod
 ```
 
