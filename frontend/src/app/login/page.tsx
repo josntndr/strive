@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { toast } from "react-hot-toast";
-import { postJson, saveAuth } from "@/lib/api";
+import { getToken, postJson, saveAuth } from "@/lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,6 +16,12 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (getToken()) {
+      router.replace("/dashboard");
+    }
+  }, [router]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +45,7 @@ export default function LoginPage() {
 
       saveAuth(response.data.token, response.data.user);
       toast.success("Logged in successfully!");
-      router.push("/dashboard");
+      router.replace("/dashboard");
     } catch (error: unknown) {
       toast.error(
         error instanceof Error

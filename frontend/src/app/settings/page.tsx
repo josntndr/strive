@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Save, Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { api, getStoredUser, getToken } from "@/lib/api";
+import { api, clearAuth, getStoredUser, getToken, isUnauthorizedError } from "@/lib/api";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -24,6 +26,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const fetchProfile = async () => {
       if (!getToken()) {
+        router.replace("/login");
         setIsLoading(false);
         return;
       }
@@ -38,7 +41,13 @@ export default function SettingsPage() {
             email: user?.email || "",
           });
         }
-      } catch {
+      } catch (error: unknown) {
+        if (isUnauthorizedError(error)) {
+          clearAuth();
+          router.replace("/login");
+          return;
+        }
+
         toast.error("Failed to load settings");
       } finally {
         setIsLoading(false);
@@ -46,7 +55,7 @@ export default function SettingsPage() {
     };
 
     fetchProfile();
-  }, []);
+  }, [router]);
 
   const onSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();

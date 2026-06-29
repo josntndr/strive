@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { toast } from "react-hot-toast";
-import { api, getApiErrorMessage, getToken } from "@/lib/api";
+import { api, clearAuth, getApiErrorMessage, getToken, isUnauthorizedError } from "@/lib/api";
 
 const STEPS = [
   { id: 1, title: "Basic Info", description: "Your physical profile" },
@@ -40,7 +40,11 @@ export default function SetupPage() {
 
   // Hydrate the form with the user's existing profile so editing doesn't reset fields.
   useEffect(() => {
-    if (!getToken()) return;
+    if (!getToken()) {
+      router.replace("/login");
+      return;
+    }
+
     api
       .get("/api/profile")
       .then((res) => {
@@ -61,8 +65,13 @@ export default function SetupPage() {
           restrictions: p.foodRestrictions || prev.restrictions,
         }));
       })
-      .catch(() => {});
-  }, []);
+      .catch((error: unknown) => {
+        if (isUnauthorizedError(error)) {
+          clearAuth();
+          router.replace("/login");
+        }
+      });
+  }, [router]);
 
   const step1Valid = Boolean(formData.age && formData.height && formData.weight);
 
@@ -93,7 +102,7 @@ export default function SetupPage() {
   const onSubmit = async () => {
     if (!getToken()) {
       toast.error("Please log in first.");
-      router.push("/login");
+      router.replace("/login");
       return;
     }
 
@@ -104,8 +113,14 @@ export default function SetupPage() {
         goal: formData.goals.join(", "),
       });
       toast.success("Profile saved successfully!");
-      router.push("/dashboard");
+      router.replace("/dashboard");
     } catch (error: unknown) {
+      if (isUnauthorizedError(error)) {
+        clearAuth();
+        router.replace("/login");
+        return;
+      }
+
       toast.error(getApiErrorMessage(error, "Error saving profile"));
     } finally {
       setIsLoading(false);

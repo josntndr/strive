@@ -7,7 +7,7 @@ import { Navbar } from "@/components/Navbar";
 import { Modal } from "@/components/Modal";
 import type { LucideIcon } from "lucide-react";
 import { Dumbbell, ChevronRight, Info, Clock, Target, CheckCircle2, Loader2, Home, Building2, ShieldAlert, TriangleAlert, Repeat2, PlayCircle } from "lucide-react";
-import { api, getToken } from "@/lib/api";
+import { api, clearAuth, getToken, isUnauthorizedError } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import { resolveWorkoutVideo } from "@/lib/workoutDemoMap";
 import { normalizeExerciseName } from "@/lib/normalizeExerciseName";
@@ -106,7 +106,8 @@ export default function WorkoutsPage() {
   useEffect(() => {
     const loadWorkouts = async () => {
       if (!getToken()) {
-        router.push("/login");
+        router.replace("/login");
+        setIsLoading(false);
         return;
       }
 
@@ -115,7 +116,13 @@ export default function WorkoutsPage() {
         const plans = res.data as WorkoutPlan[];
         const activePlan = plans.find((plan) => plan.isActive) || plans[0] || null;
         setWorkoutPlan(enhanceWorkoutPlan(activePlan));
-      } catch {
+      } catch (error: unknown) {
+        if (isUnauthorizedError(error)) {
+          clearAuth();
+          router.replace("/login");
+          return;
+        }
+
         toast.error("Failed to load workouts");
       } finally {
         setIsLoading(false);

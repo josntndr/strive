@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { AIChat } from "@/components/ai/AIChat";
 import {
@@ -22,7 +23,7 @@ import {
   Calendar
 } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { api, getApiErrorMessage, getToken } from "@/lib/api";
+import { api, clearAuth, getApiErrorMessage, getToken, isUnauthorizedError } from "@/lib/api";
 
 type ProgressRecord = {
   id: string;
@@ -34,6 +35,7 @@ type ProgressRecord = {
 };
 
 export default function ProgressPage() {
+  const router = useRouter();
   const [records, setRecords] = useState<ProgressRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,8 +46,9 @@ export default function ProgressPage() {
     notes: ""
   });
 
-  const fetchRecords = async () => {
+  const fetchRecords = useCallback(async () => {
     if (!getToken()) {
+      router.replace("/login");
       setIsLoading(false);
       return;
     }
@@ -54,11 +57,17 @@ export default function ProgressPage() {
       const res = await api.get<ProgressRecord[]>("/api/progress");
       setRecords(res.data);
     } catch (error: unknown) {
+      if (isUnauthorizedError(error)) {
+        clearAuth();
+        router.replace("/login");
+        return;
+      }
+
       toast.error(getApiErrorMessage(error, "Failed to load progress records"));
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -66,7 +75,7 @@ export default function ProgressPage() {
     }, 0);
 
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [fetchRecords]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

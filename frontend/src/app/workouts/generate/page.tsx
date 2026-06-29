@@ -7,7 +7,7 @@ import { Loader2, Sparkles, ArrowRight, ArrowLeft, Minus, Plus, Dumbbell, Activi
 import type { LucideIcon } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { toast } from "react-hot-toast";
-import { api, getToken } from "@/lib/api";
+import { api, clearAuth, getToken, isUnauthorizedError } from "@/lib/api";
 
 type Focus = { label: string; icon: LucideIcon; blurb: string };
 
@@ -32,7 +32,7 @@ export default function GenerateWorkoutPage() {
   useEffect(() => {
     if (!getToken()) {
       toast.error("Please log in first.");
-      router.push("/login");
+      router.replace("/login");
     }
   }, [router]);
 
@@ -42,8 +42,14 @@ export default function GenerateWorkoutPage() {
     try {
       await api.post("/api/workouts/generate", { focus, exerciseCount: count });
       toast.success("Session generated!");
-      router.push("/workouts");
-    } catch {
+      router.replace("/workouts");
+    } catch (error: unknown) {
+      if (isUnauthorizedError(error)) {
+        clearAuth();
+        router.replace("/login");
+        return;
+      }
+
       toast.error("Failed to generate session");
       setLoading(false);
     }

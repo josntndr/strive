@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { AIChat } from "@/components/ai/AIChat";
 import { Utensils, ChevronRight, Flame, Zap, CheckCircle2, Loader2 } from "lucide-react";
-import { api, getToken } from "@/lib/api";
+import { api, clearAuth, getToken, isUnauthorizedError } from "@/lib/api";
 import { toast } from "react-hot-toast";
 
 type Meal = {
@@ -49,7 +49,8 @@ export default function MealsPage() {
   useEffect(() => {
     const loadMeals = async () => {
       if (!getToken()) {
-        router.push("/login");
+        router.replace("/login");
+        setIsLoading(false);
         return;
       }
 
@@ -57,7 +58,13 @@ export default function MealsPage() {
         const res = await api.get("/api/meals");
         const plans = res.data as MealPlan[];
         setMealPlan(plans.find((plan) => plan.isActive) || plans[0] || null);
-      } catch {
+      } catch (error: unknown) {
+        if (isUnauthorizedError(error)) {
+          clearAuth();
+          router.replace("/login");
+          return;
+        }
+
         toast.error("Failed to load meals");
       } finally {
         setIsLoading(false);

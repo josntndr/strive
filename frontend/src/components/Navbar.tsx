@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { LogOut, Menu, X } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { useEffect, useState } from "react";
-import { clearAuth, getStoredUser, getToken } from "@/lib/api";
+import { AUTH_CHANGED_EVENT, clearAuth, getStoredUser, getToken } from "@/lib/api";
 import type { AuthUser } from "@/lib/api";
 
 const navLinks = [
@@ -28,17 +28,27 @@ export const Navbar = () => {
   const [user, setUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => {
+    const syncUser = () => {
       setUser(getToken() ? getStoredUser() : null);
       setMounted(true);
-    });
-    return () => cancelAnimationFrame(id);
+    };
+
+    const id = requestAnimationFrame(syncUser);
+    window.addEventListener(AUTH_CHANGED_EVENT, syncUser);
+    window.addEventListener("storage", syncUser);
+
+    return () => {
+      cancelAnimationFrame(id);
+      window.removeEventListener(AUTH_CHANGED_EVENT, syncUser);
+      window.removeEventListener("storage", syncUser);
+    };
   }, []);
 
   const signOut = () => {
     clearAuth();
     setUser(null);
-    router.push("/login");
+    setIsMenuOpen(false);
+    router.replace("/login");
   };
 
   if (!mounted) {

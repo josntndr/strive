@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Utensils, Sparkles } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { api, getToken } from "@/lib/api";
+import { api, clearAuth, getToken, isUnauthorizedError } from "@/lib/api";
 
 export default function GenerateMealPage() {
   const router = useRouter();
@@ -13,17 +13,23 @@ export default function GenerateMealPage() {
     const generate = async () => {
       if (!getToken()) {
         toast.error("Please log in first.");
-        router.push("/login");
+        router.replace("/login");
         return;
       }
 
       try {
         await api.post("/api/meals/generate");
         toast.success("Meal plan generated!");
-        router.push("/meals");
-      } catch {
+        router.replace("/meals");
+      } catch (error: unknown) {
+        if (isUnauthorizedError(error)) {
+          clearAuth();
+          router.replace("/login");
+          return;
+        }
+
         toast.error("Failed to generate plan");
-        router.push("/dashboard");
+        router.replace("/dashboard");
       }
     };
 

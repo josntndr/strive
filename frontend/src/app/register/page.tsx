@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2, ArrowRight, ShieldCheck, FileText, Eye, EyeOff } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { toast } from "react-hot-toast";
 import { Modal } from "@/components/Modal";
-import { postJson, saveAuth } from "@/lib/api";
+import { getToken, postJson, saveAuth } from "@/lib/api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -23,6 +23,12 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
   });
+
+  useEffect(() => {
+    if (getToken()) {
+      router.replace("/dashboard");
+    }
+  }, [router]);
 
   const isFormValid = 
     formData.name.trim() !== "" &&
@@ -72,7 +78,7 @@ export default function RegisterPage() {
 
       saveAuth(response.data.token, response.data.user);
       toast.success("Account created successfully!");
-      router.push("/profile-setup");
+      router.replace("/profile-setup");
     } catch (error: unknown) {
       toast.error(
         error instanceof Error

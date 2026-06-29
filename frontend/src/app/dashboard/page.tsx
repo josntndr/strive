@@ -16,7 +16,7 @@ import {
   Award,
   Loader2,
 } from "lucide-react";
-import { api, getToken } from "@/lib/api";
+import { api, clearAuth, getCurrentUser, getToken, isUnauthorizedError } from "@/lib/api";
 import { toast } from "react-hot-toast";
 
 type FitnessProfile = {
@@ -63,30 +63,41 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isActive = true;
+
     const loadDashboard = async () => {
       if (!getToken()) {
-        router.push("/login");
+        router.replace("/login");
+        if (isActive) setIsLoading(false);
         return;
       }
 
       try {
+        await getCurrentUser();
         const res = await api.get("/api/dashboard");
         if (!res.data.profile) {
-          router.push("/profile-setup");
+          router.replace("/profile-setup");
           return;
         }
-        setDashboard(res.data);
+        if (isActive) setDashboard(res.data);
       } catch (error: unknown) {
-        toast.error("Failed to load dashboard");
-        if (typeof error === "object" && error && "response" in error && (error.response as { status?: number })?.status === 401) {
-          router.push("/login");
+        if (isUnauthorizedError(error)) {
+          clearAuth();
+          router.replace("/login");
+          return;
         }
+
+        toast.error("Failed to load dashboard");
       } finally {
-        setIsLoading(false);
+        if (isActive) setIsLoading(false);
       }
     };
 
     loadDashboard();
+
+    return () => {
+      isActive = false;
+    };
   }, [router]);
 
   if (isLoading) {

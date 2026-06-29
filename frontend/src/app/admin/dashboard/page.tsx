@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { 
   Users, 
@@ -12,7 +13,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { api } from "@/lib/api";
+import { api, clearAuth, getToken, isUnauthorizedError } from "@/lib/api";
 
 type GoalStat = {
   goal: string;
@@ -28,15 +29,28 @@ type AdminStats = {
 };
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
+      if (!getToken()) {
+        router.replace("/login");
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const res = await api.get("/api/admin/analytics");
         setStats(res.data);
-      } catch {
+      } catch (error: unknown) {
+        if (isUnauthorizedError(error)) {
+          clearAuth();
+          router.replace("/login");
+          return;
+        }
+
         toast.error("Failed to load admin stats");
       } finally {
         setIsLoading(false);
@@ -44,7 +58,7 @@ export default function AdminDashboard() {
     };
 
     fetchStats();
-  }, []);
+  }, [router]);
 
   if (isLoading) {
     return (

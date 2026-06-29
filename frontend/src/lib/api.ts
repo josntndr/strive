@@ -2,6 +2,10 @@
 
 import axios from "axios";
 
+export const AUTH_TOKEN_KEY = "striveToken";
+export const AUTH_USER_KEY = "striveUser";
+export const AUTH_CHANGED_EVENT = "strive-auth-changed";
+
 export type AuthUser = {
   id: string;
   fullName?: string;
@@ -29,7 +33,7 @@ type JsonResponse<T> = {
 
 api.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
-    const token = localStorage.getItem("striveToken");
+    const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -38,15 +42,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+const notifyAuthChanged = () => {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(AUTH_CHANGED_EVENT));
+};
+
 export const saveAuth = (token: string, user: AuthUser) => {
-  localStorage.setItem("striveToken", token);
-  localStorage.setItem("striveUser", JSON.stringify(user));
+  localStorage.setItem(AUTH_TOKEN_KEY, token);
+  localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+  notifyAuthChanged();
 };
 
 export const getStoredUser = (): AuthUser | null => {
   if (typeof window === "undefined") return null;
 
-  const rawUser = localStorage.getItem("striveUser");
+  const rawUser = localStorage.getItem(AUTH_USER_KEY);
   if (!rawUser) return null;
 
   try {
@@ -57,13 +67,33 @@ export const getStoredUser = (): AuthUser | null => {
 };
 
 export const clearAuth = () => {
-  localStorage.removeItem("striveToken");
-  localStorage.removeItem("striveUser");
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  localStorage.removeItem(AUTH_USER_KEY);
+  sessionStorage.removeItem(AUTH_TOKEN_KEY);
+  sessionStorage.removeItem(AUTH_USER_KEY);
+  notifyAuthChanged();
 };
 
 export const getToken = () => {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("striveToken");
+  return localStorage.getItem(AUTH_TOKEN_KEY);
+};
+
+export const hasAuthSession = () => Boolean(getToken());
+
+export const isUnauthorizedError = (error: unknown) =>
+  axios.isAxiosError(error) && error.response?.status === 401;
+
+export const getCurrentUser = async () => {
+  const token = getToken();
+  if (!token) return null;
+
+  const response = await api.get<{ user: AuthUser }>("/api/auth/me");
+  if (response.data.user) {
+    saveAuth(token, response.data.user);
+  }
+
+  return response.data.user;
 };
 
 export const getApiErrorMessage = (error: unknown, fallback: string) => {
