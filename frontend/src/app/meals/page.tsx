@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { AIChat } from "@/components/ai/AIChat";
-import { Utensils, ChevronRight, Flame, Zap, CheckCircle2, Plus, Loader2 } from "lucide-react";
+import { Utensils, ChevronRight, Flame, Zap, CheckCircle2, Loader2 } from "lucide-react";
 import { api, getToken } from "@/lib/api";
 import { toast } from "react-hot-toast";
 
@@ -135,8 +135,8 @@ export default function MealsPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
-                    <Summary icon={Flame} label="Calories" value={`${dayPlan.totalCalories || dayPlan.estimatedCalories} kcal`} color="text-orange-500" />
-                    <Summary icon={Zap} label="Protein" value={`${dayPlan.totalProtein || dayPlan.estimatedProtein}g`} color="text-yellow-500" />
+                    <Summary icon={Flame} label="Calories" value={`${dayPlan.totalCalories ?? dayPlan.estimatedCalories ?? 0} kcal`} color="text-orange-500" />
+                    <Summary icon={Zap} label="Protein" value={`${dayPlan.totalProtein ?? dayPlan.estimatedProtein ?? 0}g`} color="text-yellow-500" />
                   </div>
                 </div>
 
@@ -165,10 +165,6 @@ export default function MealsPage() {
                         </button>
                       </div>
                     ))}
-                    <button className="p-4 rounded-2xl border border-dashed border-slate-200 hover:border-green-400 hover:bg-green-50/20 transition-all flex items-center justify-center gap-2 text-slate-500 hover:text-green-600">
-                      <Plus className="w-5 h-5" />
-                      <span className="text-sm font-bold">Add Custom Meal</span>
-                    </button>
                   </div>
                 </div>
               </div>

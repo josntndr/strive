@@ -111,10 +111,6 @@ export default function ProgressPage() {
                   </div>
                   <h2 className="font-bold text-slate-900">Weight Trend</h2>
                 </div>
-                <select className="bg-slate-50 border-none text-sm font-semibold text-slate-600 rounded-lg px-3 py-1.5 focus:ring-0">
-                  <option>Last 30 Days</option>
-                  <option>Last 3 Months</option>
-                </select>
               </div>
               
               <div className="h-[300px] w-full">
@@ -130,9 +126,9 @@ export default function ProgressPage() {
                       <Line 
                         type="monotone" 
                         dataKey="weight" 
-                        stroke="#2563eb" 
-                        strokeWidth={3} 
-                        dot={{ fill: '#2563eb', strokeWidth: 2, r: 4 }} 
+                        stroke="#cc3f1d"
+                        strokeWidth={3}
+                        dot={{ fill: '#cc3f1d', strokeWidth: 2, r: 4 }}
                         activeDot={{ r: 6, strokeWidth: 0 }}
                       />
                     </LineChart>

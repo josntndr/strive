@@ -13,6 +13,9 @@
   --danger-red: #dc2626;
   --background: var(--background-light);
   --foreground: var(--text-primary);
+  /* Strive is a light-themed app. Pin the scheme so OS dark mode can't flip
+     form controls or the body background to dark while cards stay light. */
+  color-scheme: light;
 }
 
 @theme inline {
@@ -51,13 +54,6 @@
   --color-ink: #1c1b1a;
   --color-brand-purple: #7c3aed;
   --color-brand-amber: #f6a623;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

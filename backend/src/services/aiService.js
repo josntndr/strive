@@ -80,9 +80,25 @@ const ruleBasedReply = (message, context = {}) => {
     return "Please stop the activity and consult a qualified healthcare professional before continuing. I can only give general fitness guidance, not medical advice.";
   }
 
+  // 1b. Fear / nervousness / low confidence — reassure supportively first.
+  if (/(afraid|scared|nervous|anxious|intimidat|worried|unsure|doubt|embarrass|can'?t do (this|it)|not strong enough|too weak)/.test(text)) {
+    const ex = current
+      ? ` For ${context.currentExercise}, begin with fewer reps or an easier variation and focus on slow, controlled form.`
+      : "";
+    return `That's completely okay — feeling nervous is normal and everyone starts somewhere. Go at your own pace, breathe, and you can stop or rest any time. Start with a lighter version and build up as you get comfortable.${ex} I can suggest easier alternatives whenever you'd like.`;
+  }
+
   // 2. Greeting.
   if (/^(hi|hello|hey|yo|sup|good (morning|afternoon|evening))\b/.test(text.trim())) {
     return "Hi! I'm Strive Assistant. I can help with workouts, exercise form, home or gym alternatives, meals, progress tracking, and using Strive. What would you like help with?";
+  }
+
+  // 2b. Easier / modified version of an exercise.
+  if (/(easier|simpler|modif|regression|less intense|beginner version|scale (it )?down|make it easier)/.test(text)) {
+    const target = findAlternativeTarget(text) || findAlternativeTarget(current);
+    const name = context.currentExercise || (target && target.name) || "this exercise";
+    const swaps = target ? ` You can also try ${listWords(target.alts)} as gentler options.` : " You can also use a wall, chair, or just your bodyweight for support.";
+    return `To make ${name} easier, reduce the range of motion, lower the reps (try 2 sets of 8), slow the tempo, and rest a little longer between sets.${swaps} Build up gradually as it starts to feel easier.`;
   }
 
   // 3. Alternative / "instead of" intent (uses current exercise context too).
@@ -124,9 +140,19 @@ const ruleBasedReply = (message, context = {}) => {
     return `A great starting point is ${base} days per week with rest days in between so your body can recover. Mix in some full-body or split sessions, and add more days gradually as you get stronger.`;
   }
 
+  // 7b. Skipping a session / rest days.
+  if (/(skip|rest day|day off|too tired|don'?t feel like|not feeling it|take a break|miss(ing)? (a )?(day|workout)|can i skip)/.test(text)) {
+    return "It's okay to take a rest day when your body needs it — recovery is part of progress. If you're just feeling unmotivated, try a shorter or lighter session instead of skipping entirely. One missed day won't undo your progress; just pick it back up tomorrow.";
+  }
+
   // 8. Motivation / consistency.
   if (/(motivat|consistent|consistency|give up|lazy|stick|habit|discourag|keep going|stay on track)/.test(text)) {
     return "Consistency beats intensity. Start small, schedule workouts like appointments, track your wins, and aim for progress not perfection. Missing one day is fine — just pick it back up the next day. You've got this!";
+  }
+
+  // 8b. "What is my workout today?" — point to the plan.
+  if (/(what('?s| is)?\s*(my)?\s*(workout|exercise|session|plan)\s*(today|now|for today)|today'?s\s*(workout|session|plan)|workout today)/.test(text)) {
+    return "Head to the Workouts page to see today's session. Tap any exercise for step-by-step instructions, a demo video, setup tips, and home or gym alternatives. Want help with a specific exercise from your plan?";
   }
 
   // 9. App usage.

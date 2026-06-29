@@ -49,6 +49,7 @@ type WorkoutDay = {
   focus: string;
   workoutLocation?: string;
   exercises: Exercise[];
+  completed?: boolean;
 };
 
 type WorkoutPlan = {
@@ -171,6 +172,28 @@ export default function WorkoutsPage() {
         await api.put(`/api/workouts/${workoutPlan._id}`, { days: updated.days || updated.planData });
       } catch {
         toast.error("Switched locally, but couldn't sync to the server.");
+      }
+    }
+  };
+
+  const toggleDayComplete = async (dayIdx: number) => {
+    if (!workoutPlan) return;
+    const usePlanData = !workoutPlan.days && Boolean(workoutPlan.planData);
+    const source = workoutPlan.days || workoutPlan.planData || [];
+    const days = source.map((d, di) =>
+      di === dayIdx
+        ? { ...d, completed: !d.completed, exercises: d.exercises.map((e) => ({ ...e, completed: !d.completed })) }
+        : d
+    );
+    const updated: WorkoutPlan = { ...workoutPlan, ...(usePlanData ? { planData: days } : { days }) };
+    setWorkoutPlan(updated);
+    toast.success(days[dayIdx].completed ? "Workout completed! Great job." : "Marked as not done.");
+
+    if (workoutPlan._id) {
+      try {
+        await api.put(`/api/workouts/${workoutPlan._id}`, { days: updated.days || updated.planData });
+      } catch {
+        toast.error("Marked locally, but couldn't sync to the server.");
       }
     }
   };
@@ -301,9 +324,17 @@ export default function WorkoutsPage() {
                     ))}
                   </div>
                   <div className="mt-8 flex justify-center">
-                    <button className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all shadow-lg">
+                    <button
+                      type="button"
+                      onClick={() => toggleDayComplete(idx)}
+                      className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all shadow-lg ${
+                        dayPlan.completed
+                          ? "bg-green-600 text-white hover:bg-green-700"
+                          : "bg-slate-900 text-white hover:bg-slate-800"
+                      }`}
+                    >
                       <CheckCircle2 className="w-5 h-5" />
-                      Complete Workout
+                      {dayPlan.completed ? "Completed" : "Complete Workout"}
                     </button>
                   </div>
                 </div>

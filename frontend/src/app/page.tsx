@@ -241,8 +241,8 @@ export default function Home() {
             <div className="pt-8 text-sm text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
               <p>&copy; 2026 Strive Fitness. All rights reserved.</p>
               <div className="flex gap-6">
-                <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-                <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
+                <Link href="/register" className="hover:text-white transition-colors">Get Started</Link>
+                <Link href="/login" className="hover:text-white transition-colors">Login</Link>
               </div>
             </div>
           </div>
