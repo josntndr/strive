@@ -10,11 +10,11 @@ export type AuthUser = {
   role: "user" | "admin";
 };
 
-// When NEXT_PUBLIC_API_URL is "" (the unified single-server build), API calls
-// go to the same origin. `??` preserves that empty string; only an unset var
-// (standalone local dev) falls back to the separate backend port.
+// When NEXT_PUBLIC_API_URL is "" (or unset in production), API calls go to the
+// same origin. Local frontend-only dev still falls back to the backend port.
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+  process.env.NEXT_PUBLIC_API_URL ??
+  (process.env.NODE_ENV === "production" ? "" : "http://localhost:5000");
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

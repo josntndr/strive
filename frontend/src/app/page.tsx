@@ -40,12 +40,7 @@ export default function Home() {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Copy */}
               <Reveal>
-                <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-medium text-blue-700 shadow-sm">
-                  <Star className="w-4 h-4 fill-current text-blue-600" />
-                  <span>Transform your fitness journey today</span>
-                </div>
-
-                <h1 className="mt-6 text-5xl sm:text-6xl font-extrabold leading-[1.05] tracking-tight text-ink">
+                <h1 className="text-5xl sm:text-6xl font-extrabold leading-[1.05] tracking-tight text-ink">
                   Never Give Up <Star className="inline w-9 h-9 -mt-3 fill-current text-blue-600" /> <br className="hidden sm:block" />
                   On Your <span className="text-blue-600">Goals</span>
                 </h1>
@@ -238,12 +233,8 @@ export default function Home() {
                 <Link href="/login" className="hover:text-white transition-colors">Login</Link>
               </div>
             </div>
-            <div className="pt-8 text-sm text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="pt-8 text-sm text-center md:text-left">
               <p>&copy; 2026 Strive Fitness. All rights reserved.</p>
-              <div className="flex gap-6">
-                <Link href="/register" className="hover:text-white transition-colors">Get Started</Link>
-                <Link href="/login" className="hover:text-white transition-colors">Login</Link>
-              </div>
             </div>
           </div>
         </footer>

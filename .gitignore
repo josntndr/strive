@@ -19,3 +19,6 @@ frontend/out/
 
 # Tunnel binary (downloaded on demand)
 cloudflared.exe
+
+# Vercel project links
+.vercel/
