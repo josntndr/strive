@@ -59,7 +59,14 @@ export function AIChat({ currentExercise }: AIChatProps) {
       setMounted(true);
       setLoggedIn(Boolean(getToken()));
     });
-    return () => cancelAnimationFrame(id);
+
+    const handleOpen = () => setOpen(true);
+    window.addEventListener("open-ai-chat", handleOpen);
+
+    return () => {
+      cancelAnimationFrame(id);
+      window.removeEventListener("open-ai-chat", handleOpen);
+    };
   }, []);
 
   // Lazily load profile context the first time the panel opens.
