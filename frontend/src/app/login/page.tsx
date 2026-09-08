@@ -92,13 +92,13 @@ export default function LoginPage() {
             Track Your <span className="bg-gradient-to-r from-blue-400 via-coral to-amber-300 bg-clip-text text-transparent">Transformation.</span>
           </h1>
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-medium">
-            Join thousands of dedicated members achieving personalized fitness goals, custom nutrition plans, and daily AI coaching.
+            Achieve your personal fitness goals with custom nutrition plans, smart workouts, and daily AI coaching.
           </p>
 
           <div className="flex items-center gap-5 pt-2">
             <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2.5 text-white">
-              <p className="text-lg font-extrabold">10k+</p>
-              <p className="text-[11px] text-slate-300 font-medium">Active Members</p>
+              <p className="text-lg font-extrabold">100% Free</p>
+              <p className="text-[11px] text-slate-300 font-medium">To Get Started</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2.5 text-white">
               <p className="text-lg font-extrabold">100%</p>

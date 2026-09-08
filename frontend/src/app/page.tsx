@@ -84,8 +84,8 @@ export default function Home() {
 
                   {/* Floating stat badge */}
                   <div className="absolute left-0 top-10 rounded-2xl bg-brand-purple px-4 py-2.5 text-white shadow-xl shadow-brand-purple/30 animate-floaty backdrop-blur-sm border border-purple-400/30">
-                    <p className="text-lg font-extrabold leading-none">10k+</p>
-                    <p className="text-[11px] font-medium opacity-90">Members training</p>
+                    <p className="text-lg font-extrabold leading-none">Instant</p>
+                    <p className="text-[11px] font-medium opacity-90">AI Plan Generation</p>
                   </div>
 
                   {/* Floating coach card */}
