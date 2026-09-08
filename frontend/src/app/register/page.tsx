@@ -137,8 +137,6 @@ export default function RegisterPage() {
         <div className="absolute top-10 left-10 w-48 h-48 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="my-auto mx-auto w-full max-w-md bg-white/95 backdrop-blur-2xl rounded-[2rem] border border-white shadow-xl shadow-slate-300/50 overflow-hidden relative z-10">
-          {/* Top Accent Bar */}
-          <div className="h-1.5 w-full bg-gradient-to-r from-blue-600 via-coral to-amber-500" />
 
           <div className="p-6 sm:p-8">
             {/* Mobile Brand Header */}
