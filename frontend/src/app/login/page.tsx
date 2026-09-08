@@ -87,9 +87,6 @@ export default function LoginPage() {
 
         {/* Center Quote & Badges */}
         <div className="relative z-10 max-w-lg my-auto space-y-5">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-white/15">
-            ✨ AI-Powered Fitness Platform
-          </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight tracking-tight">
             Fuel Your Ambition. <br />
             Track Your <span className="bg-gradient-to-r from-blue-400 via-coral to-amber-300 bg-clip-text text-transparent">Transformation.</span>
