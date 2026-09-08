@@ -91,188 +91,243 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link href="/" className="flex justify-center items-center space-x-2 group">
-          <div className="bg-blue-600 p-2 rounded-xl group-hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">
-            <BrandMark className="h-8 w-8 text-white" />
-          </div>
-          <span className="text-3xl font-extrabold text-slate-900 tracking-tight">Strive</span>
-        </Link>
-        <h2 className="mt-8 text-center text-3xl font-bold text-slate-900 tracking-tight">
-          Start your transformation
-        </h2>
-        <p className="mt-3 text-center text-sm text-slate-500 font-medium">
-          Already a member?{" "}
-          <Link href="/login" className="font-bold text-blue-600 hover:text-blue-500 transition-colors">
-            Sign in here
+    <div className="min-h-screen grid lg:grid-cols-2 bg-slate-50 selection:bg-blue-500 selection:text-white">
+      {/* 1st Panel: Fitness Visual & Showcase */}
+      <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden bg-slate-900">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-65 scale-105 transition-transform duration-1000"
+          style={{ backgroundImage: `url('/images/fitness_auth.jpg')` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-slate-900/40" />
+
+        {/* Top Logo */}
+        <div className="relative z-10">
+          <Link href="/" className="inline-flex items-center space-x-3 group">
+            <div className="bg-blue-600/90 p-2.5 rounded-2xl backdrop-blur-md group-hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/30">
+              <BrandMark className="h-7 w-7 text-white" />
+            </div>
+            <span className="text-2xl font-extrabold text-white tracking-tight">Strive</span>
           </Link>
-        </p>
+        </div>
+
+        {/* Center Quote & Badges */}
+        <div className="relative z-10 max-w-lg my-auto space-y-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-white/15">
+            💪 Start Your Journey Today
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight tracking-tight">
+            Build Strong Habits. <br />
+            Achieve Your <span className="bg-gradient-to-r from-blue-400 to-amber-300 bg-clip-text text-transparent">Full Potential.</span>
+          </h1>
+          <p className="text-slate-300 text-base leading-relaxed font-medium">
+            Create your account in seconds to receive custom workouts, smart meal plans, and intelligent progress tracking.
+          </p>
+
+          <div className="flex items-center gap-6 pt-4">
+            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-5 py-3 text-white">
+              <p className="text-xl font-extrabold">100% Free</p>
+              <p className="text-xs text-slate-300 font-medium">To Get Started</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-5 py-3 text-white">
+              <p className="text-xl font-extrabold">Instant</p>
+              <p className="text-xs text-slate-300 font-medium">AI Plan Generation</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer info */}
+        <div className="relative z-10 flex items-center justify-between text-xs text-slate-400 font-medium">
+          <p>&copy; 2026 Strive Fitness</p>
+          <Link href="/" className="hover:text-white transition-colors">Back to Home &rarr;</Link>
+        </div>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-10 px-6 shadow-2xl shadow-slate-200/60 sm:rounded-[2.5rem] sm:px-12 border border-slate-100">
-          <form className="space-y-6" onSubmit={onSubmit}>
-            <div>
-              <label htmlFor="name" className="block text-sm font-bold text-slate-700 mb-2">
-                Full Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                autoComplete="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="block w-full px-4 py-3 bg-white text-slate-900 border border-slate-200 rounded-xl shadow-sm placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all text-base sm:text-sm font-medium"
-                placeholder="Enter your full name"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-bold text-slate-700 mb-2">
-                Email Address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="block w-full px-4 py-3 bg-white text-slate-900 border border-slate-200 rounded-xl shadow-sm placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all text-base sm:text-sm font-medium"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="password" className="block text-sm font-bold text-slate-700 mb-2">
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                    autoComplete="new-password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="block w-full px-4 py-3 pr-11 bg-white text-slate-900 border border-slate-200 rounded-xl shadow-sm placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all text-base sm:text-sm font-medium"
-                    placeholder="••••••••"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-500 hover:text-blue-600 transition-colors"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
+      {/* 2nd Panel: Form Container */}
+      <div className="flex flex-col justify-center py-12 px-6 sm:px-12 lg:px-16 bg-white overflow-y-auto">
+        <div className="mx-auto w-full max-w-md">
+          {/* Mobile Brand Link */}
+          <div className="lg:hidden mb-8">
+            <Link href="/" className="inline-flex items-center space-x-2.5">
+              <div className="bg-blue-600 p-2 rounded-xl text-white">
+                <BrandMark className="h-6 w-6 text-white" />
               </div>
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-bold text-slate-700 mb-2">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    required
-                    autoComplete="new-password"
-                    value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    className="block w-full px-4 py-3 pr-11 bg-white text-slate-900 border border-slate-200 rounded-xl shadow-sm placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all text-base sm:text-sm font-medium"
-                    placeholder="••••••••"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-500 hover:text-blue-600 transition-colors"
-                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
-            </div>
+              <span className="text-2xl font-extrabold text-slate-900 tracking-tight">Strive</span>
+            </Link>
+          </div>
 
-            <div className="flex items-start">
-              <div className="flex items-center h-5">
+          <div>
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Start your transformation</h2>
+            <p className="mt-2 text-sm text-slate-600 font-medium">
+              Already a member?{" "}
+              <Link href="/login" className="font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                Sign in here
+              </Link>
+            </p>
+          </div>
+
+          <div className="mt-8">
+            <form className="space-y-5" onSubmit={onSubmit}>
+              <div>
+                <label htmlFor="name" className="block text-sm font-bold text-slate-700 mb-1.5">
+                  Full Name
+                </label>
                 <input
-                  id="terms"
-                  name="terms"
-                  type="checkbox"
-                  checked={acceptedTerms}
-                  onChange={(e) => setAcceptedTerms(e.target.checked)}
-                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-slate-300 rounded-lg cursor-pointer transition-colors"
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  autoComplete="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="block w-full px-4 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                  placeholder="Enter your full name"
                 />
               </div>
-              <div className="ml-3 text-sm">
-                <label htmlFor="terms" className="font-medium text-slate-600 cursor-pointer select-none">
-                  I agree to the{" "}
-                  <button 
-                    type="button"
-                    onClick={() => setShowTerms(true)}
-                    className="text-blue-600 font-bold hover:underline"
-                  >
-                    Terms
-                  </button>{" "}
-                  and{" "}
-                  <button 
-                    type="button"
-                    onClick={() => setShowPrivacy(true)}
-                    className="text-blue-600 font-bold hover:underline"
-                  >
-                    Privacy Policy
-                  </button>
-                </label>
-              </div>
-            </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                onClick={(e) => {
-                  if (!isFormValid && !isLoading) {
-                    e.preventDefault();
-                    if (!acceptedTerms) {
-                      toast.error("You must agree to the Terms and Privacy Policy before creating an account.");
-                    } else if (formData.password !== formData.confirmPassword) {
-                      toast.error("Passwords do not match.");
-                    } else if (formData.name.trim() === "" || !formData.email.includes("@") || formData.password.length < 6) {
-                      toast.error("Please fill in all fields correctly.");
+              <div>
+                <label htmlFor="email" className="block text-sm font-bold text-slate-700 mb-1.5">
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="block w-full px-4 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="password" className="block text-sm font-bold text-slate-700 mb-1.5">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      required
+                      autoComplete="new-password"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      className="block w-full px-4 py-3 pr-11 bg-slate-50 text-slate-900 border border-slate-200 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-blue-600 transition-colors"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="confirmPassword" className="block text-sm font-bold text-slate-700 mb-1.5">
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      required
+                      autoComplete="new-password"
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                      className="block w-full px-4 py-3 pr-11 bg-slate-50 text-slate-900 border border-slate-200 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-blue-600 transition-colors"
+                      aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-start pt-1">
+                <div className="flex items-center h-5">
+                  <input
+                    id="terms"
+                    name="terms"
+                    type="checkbox"
+                    checked={acceptedTerms}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-slate-300 rounded-lg cursor-pointer transition-colors"
+                  />
+                </div>
+                <div className="ml-3 text-sm">
+                  <label htmlFor="terms" className="font-medium text-slate-600 cursor-pointer select-none">
+                    I agree to the{" "}
+                    <button 
+                      type="button"
+                      onClick={() => setShowTerms(true)}
+                      className="text-blue-600 font-bold hover:underline"
+                    >
+                      Terms
+                    </button>{" "}
+                    and{" "}
+                    <button 
+                      type="button"
+                      onClick={() => setShowPrivacy(true)}
+                      className="text-blue-600 font-bold hover:underline"
+                    >
+                      Privacy Policy
+                    </button>
+                  </label>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  onClick={(e) => {
+                    if (!isFormValid && !isLoading) {
+                      e.preventDefault();
+                      if (!acceptedTerms) {
+                        toast.error("You must agree to the Terms and Privacy Policy before creating an account.");
+                      } else if (formData.password !== formData.confirmPassword) {
+                        toast.error("Passwords do not match.");
+                      } else if (formData.name.trim() === "" || !formData.email.includes("@") || formData.password.length < 6) {
+                        toast.error("Please fill in all fields correctly.");
+                      }
                     }
-                  }
-                }}
-                className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-2xl shadow-lg text-base font-bold text-white transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/20 ${
-                  isFormValid 
-                    ? "bg-blue-600 hover:bg-blue-700 shadow-blue-100" 
-                    : "bg-blue-600/70 hover:bg-blue-600"
-                }`}
-              >
-                {isLoading ? (
-                  <Loader2 className="w-6 h-6 animate-spin" />
-                ) : (
-                  <span className="flex items-center">
-                    Create My Account
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </span>
+                  }}
+                  className={`w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-full shadow-lg text-sm font-bold text-white transition-all active:scale-95 ${
+                    isFormValid 
+                      ? "bg-blue-600 hover:bg-blue-700 shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30" 
+                      : "bg-blue-600/70 hover:bg-blue-600 shadow-blue-500/10"
+                  }`}
+                >
+                  {isLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      Create My Account
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  )}
+                </button>
+                {!acceptedTerms && !isLoading && (
+                  <p className="mt-2.5 text-center text-xs text-slate-400 font-medium">
+                    Please accept the terms to enable account creation.
+                  </p>
                 )}
-              </button>
-              {!acceptedTerms && !isLoading && (
-                <p className="mt-3 text-center text-xs text-slate-500 font-medium">
-                  Please accept the terms to enable account creation.
-                </p>
-              )}
-            </div>
-          </form>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 
