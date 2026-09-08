@@ -188,3 +188,105 @@ input::-ms-clear {
   }
 }
 
+/* ─── Shimmer skeleton loading ─────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f3ebe4 25%,
+    #fdeee7 50%,
+    #f3ebe4 75%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 0.75rem;
+}
+
+/* ─── Pulse ring (workout day badge) ───────────────────────────────────────── */
+@keyframes pulse-ring {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  70%  { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.pulse-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(204, 63, 29, 0.35);
+  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* ─── Exercise card premium hover ──────────────────────────────────────────── */
+.exercise-card {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.18s ease;
+}
+.exercise-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px -8px rgba(204, 63, 29, 0.18),
+              0 4px 12px -4px rgba(15, 23, 42, 0.06);
+}
+
+/* ─── Complete Workout button glow ─────────────────────────────────────────── */
+@keyframes btn-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(204, 63, 29, 0); }
+  50%       { box-shadow: 0 0 0 8px rgba(204, 63, 29, 0.18); }
+}
+.complete-btn {
+  background: linear-gradient(135deg, #e0512c 0%, #cc3f1d 60%, #b3361a 100%);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.complete-btn:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 8px 24px -6px rgba(204, 63, 29, 0.5);
+  transform: translateY(-2px);
+}
+.complete-btn:active {
+  transform: scale(0.97);
+  animation: btn-glow 0.6s ease forwards;
+}
+.complete-btn-done {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.complete-btn-done:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 8px 24px -6px rgba(22, 163, 74, 0.45);
+  transform: translateY(-2px);
+}
+
+/* ─── Day-card progress bar ────────────────────────────────────────────────── */
+.progress-bar-track {
+  height: 3px;
+  background: rgba(204, 63, 29, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e0512c, #fa835c);
+  border-radius: 9999px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Play hint overlay on exercise card ───────────────────────────────────── */
+.play-hint {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.exercise-card:hover .play-hint {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; background: #f3ebe4; }
+  .pulse-ring::before { animation: none; }
+  .exercise-card,
+  .complete-btn,
+  .complete-btn-done { transition: none; }
+}

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Modal } from "@/components/Modal";
 import type { LucideIcon } from "lucide-react";
-import { Dumbbell, ChevronRight, Info, Clock, Target, CheckCircle2, Loader2, Home, Building2, ShieldAlert, TriangleAlert, Repeat2, PlayCircle } from "lucide-react";
+import { Dumbbell, ChevronRight, Info, Clock, Target, CheckCircle2, Loader2, Home, Building2, ShieldAlert, TriangleAlert, Repeat2, PlayCircle, RefreshCw, Flame, Zap, Trophy } from "lucide-react";
 import { api, clearAuth, getToken, isUnauthorizedError } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import { resolveWorkoutVideo } from "@/lib/workoutDemoMap";
@@ -60,8 +60,20 @@ type WorkoutPlan = {
   planData?: WorkoutDay[];
 };
 
+/** Pick a colored left-border stripe based on the muscle group */
+function muscleBorderColor(muscle?: string): string {
+  const m = (muscle || "").toLowerCase();
+  if (m.includes("core") || m.includes("abs") || m.includes("oblique")) return "border-l-blue-500";
+  if (m.includes("chest") || m.includes("pec")) return "border-l-rose-400";
+  if (m.includes("back") || m.includes("lat") || m.includes("rhom")) return "border-l-violet-400";
+  if (m.includes("leg") || m.includes("quad") || m.includes("hamstring") || m.includes("glut")) return "border-l-amber-400";
+  if (m.includes("shoulder") || m.includes("delt")) return "border-l-cyan-400";
+  if (m.includes("arm") || m.includes("bicep") || m.includes("tricep")) return "border-l-pink-400";
+  if (m.includes("cardio") || m.includes("cardiovascular") || m.includes("treadmill")) return "border-l-orange-400";
+  return "border-l-blue-400";
+}
+
 function enhanceExercise(exercise: Exercise): Exercise {
-  // Standardize the name and resolve a real YouTube tutorial video for it.
   const name = normalizeExerciseName(exercise.name);
   const youtubeEmbedUrl = resolveWorkoutVideo(name, exercise.youtubeEmbedUrl);
 
@@ -93,6 +105,49 @@ function enhanceWorkoutPlan(plan: WorkoutPlan | null): WorkoutPlan | null {
     days: plan.days?.map(enhanceDay),
     planData: plan.planData?.map(enhanceDay),
   };
+}
+
+/* ─── Shimmer Skeleton ──────────────────────────────────────────────────────── */
+function WorkoutSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      {[0, 1].map((i) => (
+        <div key={i} className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+          {/* card header skeleton */}
+          <div className="p-6 flex items-center gap-4">
+            <div className="skeleton w-12 h-12 rounded-2xl" />
+            <div className="flex-1 space-y-2">
+              <div className="skeleton h-5 w-40 rounded" />
+              <div className="skeleton h-3 w-24 rounded" />
+            </div>
+          </div>
+          {/* progress bar skeleton */}
+          <div className="px-6 pb-0">
+            <div className="skeleton h-0.5 w-full rounded" />
+          </div>
+          {/* exercise grid skeleton */}
+          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[0, 1, 2, 3].map((j) => (
+              <div key={j} className="rounded-2xl border border-slate-100 p-4 space-y-3">
+                <div className="skeleton h-4 w-36 rounded" />
+                <div className="flex gap-2">
+                  <div className="skeleton h-5 w-20 rounded-full" />
+                  <div className="skeleton h-5 w-16 rounded-full" />
+                  <div className="skeleton h-5 w-14 rounded-full" />
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="skeleton h-12 rounded-lg" />
+                  <div className="skeleton h-12 rounded-lg" />
+                  <div className="skeleton h-12 rounded-lg" />
+                </div>
+                <div className="skeleton h-3 w-full rounded" />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default function WorkoutsPage() {
@@ -194,7 +249,7 @@ export default function WorkoutsPage() {
     );
     const updated: WorkoutPlan = { ...workoutPlan, ...(usePlanData ? { planData: days } : { days }) };
     setWorkoutPlan(updated);
-    toast.success(days[dayIdx].completed ? "Workout completed! Great job." : "Marked as not done.");
+    toast.success(days[dayIdx].completed ? "Workout completed! Great job. 🎉" : "Marked as not done.");
 
     if (workoutPlan._id) {
       try {
@@ -213,10 +268,26 @@ export default function WorkoutsPage() {
     return "Flexible";
   })();
 
+  const allDays = workoutPlan?.days || workoutPlan?.planData || [];
+  const completedCount = allDays.filter((d) => d.completed).length;
+  const totalCount = allDays.length;
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className="min-h-screen bg-slate-50 flex flex-col">
+        <Navbar />
+        <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
+          {/* Header skeleton */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="space-y-3">
+              <div className="skeleton h-8 w-64 rounded-lg" />
+              <div className="skeleton h-4 w-48 rounded" />
+              <div className="skeleton h-7 w-28 rounded-full" />
+            </div>
+            <div className="skeleton h-9 w-36 rounded-lg" />
+          </div>
+          <WorkoutSkeleton />
+        </main>
       </div>
     );
   }
@@ -227,126 +298,229 @@ export default function WorkoutsPage() {
       <AIChat currentExercise={selectedExercise?.exercise.name} />
 
       <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
-        <div className="flex items-center justify-between mb-8">
+
+        {/* ── Page Header ────────────────────────────────────────────────────── */}
+        <div className="flex items-start sm:items-center justify-between mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Your Workout Plan</h1>
-            <p className="text-slate-700 mt-1">Consistency is the key to transformation.</p>
-            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-sm font-semibold text-slate-700 shadow-sm">
-              {workoutLocation.toLowerCase().includes("home") && !workoutLocation.toLowerCase().includes("gym") ? (
-                <Home className="h-4 w-4 text-blue-600" />
-              ) : (
-                <Building2 className="h-4 w-4 text-blue-600" />
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Your Workout Plan</h1>
+            <p className="text-slate-500 mt-1 font-medium">Consistency is the key to transformation.</p>
+
+            {/* Location + progress pills */}
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-sm">
+                {workoutLocation.toLowerCase().includes("home") && !workoutLocation.toLowerCase().includes("gym") ? (
+                  <Home className="h-4 w-4 text-blue-600" />
+                ) : (
+                  <Building2 className="h-4 w-4 text-blue-600" />
+                )}
+                <span>{workoutLocationLabel}</span>
+              </div>
+
+              {totalCount > 0 && (
+                <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-3 py-1.5 text-sm font-bold text-blue-700 shadow-sm">
+                  <Trophy className="h-3.5 w-3.5 text-blue-600" />
+                  <span>{completedCount}/{totalCount} days done</span>
+                </div>
               )}
-              <span>{workoutLocationLabel}</span>
             </div>
           </div>
-          <Link href="/workouts/generate" className="px-4 py-2 bg-white border border-slate-200 text-slate-800 font-semibold rounded-lg hover:bg-slate-50 transition-all text-sm shadow-sm">
+
+          <Link
+            href="/workouts/generate"
+            className="flex-shrink-0 group flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50/50 transition-all text-sm shadow-sm"
+          >
+            <RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
             Regenerate Plan
           </Link>
         </div>
 
+        {/* ── Thin global progress bar ─────────────────────────────────────── */}
+        {totalCount > 0 && (
+          <div className="progress-bar-track mb-8">
+            <div
+              className="progress-bar-fill"
+              style={{ width: `${(completedCount / totalCount) * 100}%` }}
+            />
+          </div>
+        )}
+
         {!workoutPlan ? (
+          /* ── Empty State ─────────────────────────────────────────────────── */
           <div className="bg-white rounded-3xl p-12 text-center border border-slate-100 shadow-sm">
-            <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Dumbbell className="w-8 h-8 text-blue-600" />
+            <div className="relative w-20 h-20 mx-auto mb-6">
+              <div className="absolute inset-0 rounded-full bg-blue-100 animate-ping opacity-30" />
+              <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center">
+                <Dumbbell className="w-9 h-9 text-blue-600 animate-floaty" />
+              </div>
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">No Plan Found</h2>
-            <p className="text-slate-600 mb-8 max-w-sm mx-auto">You haven&apos;t generated a workout plan yet. Let&apos;s create one tailored for you.</p>
-            <Link href="/workouts/generate" className="inline-flex items-center px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">
+            <h2 className="text-2xl font-black text-slate-900 mb-2">No Plan Yet</h2>
+            <p className="text-slate-500 mb-2 max-w-sm mx-auto">
+              You haven&apos;t generated a workout plan yet.
+            </p>
+            <p className="text-slate-400 text-sm mb-8 max-w-sm mx-auto">
+              Let&apos;s build something tailored to your goals, equipment, and schedule.
+            </p>
+            <Link
+              href="/workouts/generate"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white font-extrabold rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 hover:-translate-y-0.5 active:scale-95"
+            >
+              <Zap className="w-5 h-5" />
               Generate My Plan
-              <ChevronRight className="ml-2 w-5 h-5" />
+              <ChevronRight className="ml-1 w-5 h-5" />
             </Link>
           </div>
         ) : (
+          /* ── Day Cards ───────────────────────────────────────────────────── */
           <div className="space-y-8">
-            {(workoutPlan.days || workoutPlan.planData || []).map((dayPlan, idx) => (
-              <div key={idx} className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-                <div className="p-6 flex items-center justify-between bg-white">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg bg-blue-600 text-white shadow-lg shadow-blue-100">
-                      {dayPlan.day.substring(0, 2)}
+            {allDays.map((dayPlan, idx) => {
+              const completedExercises = dayPlan.exercises.filter((e) => e.completed).length;
+              const exerciseProgress = dayPlan.exercises.length > 0
+                ? completedExercises / dayPlan.exercises.length
+                : 0;
+
+              return (
+                <div
+                  key={idx}
+                  className={`bg-white rounded-3xl border shadow-sm overflow-hidden transition-all duration-300 ${
+                    dayPlan.completed
+                      ? "border-green-200 shadow-green-100/60"
+                      : "border-slate-100"
+                  }`}
+                >
+                  {/* Card Header */}
+                  <div className={`p-6 flex items-center justify-between ${
+                    dayPlan.completed ? "bg-gradient-to-r from-green-50/80 to-white" : "bg-white"
+                  }`}>
+                    <div className="flex items-center gap-4">
+                      {/* Animated day badge */}
+                      <div className="relative flex-shrink-0">
+                        <div className={`relative pulse-ring w-13 h-13 rounded-2xl flex items-center justify-center font-black text-lg text-white shadow-lg ${
+                          dayPlan.completed
+                            ? "bg-gradient-to-br from-green-500 to-green-600 shadow-green-200"
+                            : "bg-gradient-to-br from-blue-500 to-blue-700 shadow-blue-200"
+                        }`}
+                          style={{ width: "3.25rem", height: "3.25rem" }}
+                        >
+                          {dayPlan.completed ? (
+                            <CheckCircle2 className="w-6 h-6" />
+                          ) : (
+                            dayPlan.day.substring(0, 2)
+                          )}
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="text-xl font-extrabold text-slate-900">{dayPlan.day}</h3>
+                        <p className="text-sm font-semibold text-blue-600 mt-0.5">{dayPlan.focus}</p>
+                        <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-slate-600">
+                          {dayPlan.workoutLocation?.toLowerCase().includes("home") && !dayPlan.workoutLocation?.toLowerCase().includes("gym") ? (
+                            <Home className="h-3 w-3" />
+                          ) : (
+                            <Building2 className="h-3 w-3" />
+                          )}
+                          <span>{dayPlan.workoutLocation || workoutLocation}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-slate-900">{dayPlan.day}</h3>
-                      <p className="text-sm font-medium text-blue-700">{dayPlan.focus} Focus</p>
-                      <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-700">
-                        {dayPlan.workoutLocation?.toLowerCase().includes("home") && !dayPlan.workoutLocation?.toLowerCase().includes("gym") ? (
-                          <Home className="h-3.5 w-3.5" />
-                        ) : (
-                          <Building2 className="h-3.5 w-3.5" />
-                        )}
-                        <span>{dayPlan.workoutLocation || workoutLocation}</span>
+
+                    {/* Session meta */}
+                    <div className="hidden sm:flex items-center gap-3">
+                      <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 rounded-full px-3 py-1.5 text-slate-600 text-xs font-bold">
+                        <Clock className="w-3.5 h-3.5 text-blue-500" />
+                        <span>45–60 min</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 rounded-full px-3 py-1.5 text-slate-600 text-xs font-bold">
+                        <Flame className="w-3.5 h-3.5 text-orange-500" />
+                        <span>{dayPlan.exercises.length} Exercises</span>
                       </div>
                     </div>
                   </div>
-                  <div className="hidden sm:flex items-center gap-4">
-                    <div className="flex items-center gap-1.5 text-slate-600 text-sm">
-                      <Clock className="w-4 h-4" />
-                      <span>45-60 min</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-slate-600 text-sm">
-                      <Target className="w-4 h-4" />
-                      <span>{dayPlan.exercises.length} Exercises</span>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="p-6 border-t border-slate-50">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {dayPlan.exercises.map((ex, exIdx) => (
-                      <button
-                        key={exIdx}
-                        type="button"
-                        onClick={() => {
-                          setSelectedExercise({ exercise: ex, day: dayPlan.day });
-                          setDemoAltName(null);
-                        }}
-                        className="group text-left p-4 rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <div className="flex items-start justify-between mb-3">
-                          <h4 className="font-bold text-slate-900 group-hover:text-blue-700 transition-colors">{ex.name}</h4>
-                          <span className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded capitalize">{ex.locationType || workoutLocation}</span>
-                        </div>
-                        <div className="mb-3 flex flex-wrap gap-2">
-                          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-600">
-                            {ex.targetMuscle || "General strength"}
-                          </span>
-                          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-600">
-                            {ex.equipment}
-                          </span>
-                          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-600">
-                            {ex.difficulty || "Beginner"}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 mb-4">
-                          <Metric label="Sets" value={ex.sets} />
-                          <Metric label="Reps" value={ex.reps} />
-                          <Metric label="Rest" value={ex.rest} />
-                        </div>
-                        <div className="flex items-start gap-2 text-xs text-slate-600 leading-relaxed">
-                          <Info className="w-3.5 h-3.5 mt-0.5 text-blue-500 shrink-0" />
-                          <p>{ex.instruction || ex.instructions}</p>
-                        </div>
-                      </button>
-                    ))}
+                  {/* Exercise progress bar */}
+                  <div className="px-6">
+                    <div className="progress-bar-track">
+                      <div
+                        className="progress-bar-fill"
+                        style={{ width: dayPlan.completed ? "100%" : `${exerciseProgress * 100}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="mt-8 flex justify-center">
-                    <button
-                      type="button"
-                      onClick={() => toggleDayComplete(idx)}
-                      className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all shadow-lg ${
-                        dayPlan.completed
-                          ? "bg-green-600 text-white hover:bg-green-700"
-                          : "bg-slate-900 text-white hover:bg-slate-800"
-                      }`}
-                    >
-                      <CheckCircle2 className="w-5 h-5" />
-                      {dayPlan.completed ? "Completed" : "Complete Workout"}
-                    </button>
+
+                  {/* Exercise Grid */}
+                  <div className="p-6 border-t border-slate-50/80">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {dayPlan.exercises.map((ex, exIdx) => (
+                        <button
+                          key={exIdx}
+                          type="button"
+                          onClick={() => {
+                            setSelectedExercise({ exercise: ex, day: dayPlan.day });
+                            setDemoAltName(null);
+                          }}
+                          className={`exercise-card group text-left p-4 rounded-2xl border-l-4 border border-slate-100 bg-white hover:border-l-4 focus:outline-none focus:ring-2 focus:ring-blue-400/50 ${muscleBorderColor(ex.targetMuscle)}`}
+                        >
+                          {/* Exercise name row */}
+                          <div className="flex items-start justify-between mb-2.5">
+                            <h4 className="font-extrabold text-slate-900 group-hover:text-blue-700 transition-colors leading-snug pr-2">
+                              {ex.name}
+                            </h4>
+                            <span className="flex-shrink-0 text-[10px] font-extrabold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full capitalize">
+                              {ex.locationType || workoutLocation}
+                            </span>
+                          </div>
+
+                          {/* Tags */}
+                          <div className="mb-3 flex flex-wrap gap-1.5">
+                            <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[10px] font-semibold text-slate-600">
+                              {ex.targetMuscle || "General strength"}
+                            </span>
+                            <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[10px] font-semibold text-slate-600">
+                              {ex.equipment}
+                            </span>
+                            <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[10px] font-semibold text-slate-600">
+                              {ex.difficulty || "Beginner"}
+                            </span>
+                          </div>
+
+                          {/* Metrics */}
+                          <div className="grid grid-cols-3 gap-2 mb-3">
+                            <Metric label="Sets" value={ex.sets} />
+                            <Metric label="Reps" value={ex.reps} />
+                            <Metric label="Rest" value={ex.rest} />
+                          </div>
+
+                          {/* Instruction + play hint */}
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-start gap-1.5 text-xs text-slate-500 leading-relaxed flex-1">
+                              <Info className="w-3.5 h-3.5 mt-0.5 text-blue-400 shrink-0" />
+                              <p className="line-clamp-2">{ex.instruction || ex.instructions}</p>
+                            </div>
+                            <span className="play-hint flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-100 px-2 py-1 rounded-full">
+                              <PlayCircle className="w-3 h-3" />
+                              View
+                            </span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Complete Workout Button */}
+                    <div className="mt-8 flex justify-center">
+                      <button
+                        type="button"
+                        onClick={() => toggleDayComplete(idx)}
+                        className={`flex items-center gap-2.5 px-8 py-3.5 font-extrabold rounded-2xl text-white tracking-wide shadow-lg active:scale-95 transition-transform ${
+                          dayPlan.completed ? "complete-btn-done" : "complete-btn"
+                        }`}
+                      >
+                        <CheckCircle2 className="w-5 h-5" />
+                        {dayPlan.completed ? "✓ Completed!" : "Complete Workout"}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>
@@ -360,7 +534,7 @@ export default function WorkoutsPage() {
         title={selectedExercise?.exercise.name || "Exercise details"}
       >
         {selectedExercise && (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {(() => {
               const loc = (selectedExercise.exercise.locationType || workoutLocation).toLowerCase();
               const home = loc.includes("home") && !loc.includes("gym");
@@ -368,7 +542,7 @@ export default function WorkoutsPage() {
               const label = both ? "Home & Gym Workout" : home ? "Home Workout" : "Gym Workout";
               const BadgeIcon = home ? Home : Building2;
               return (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-3 py-1.5 text-xs font-bold text-white">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 px-3.5 py-1.5 text-xs font-extrabold text-white shadow-md shadow-blue-100">
                   <BadgeIcon className="h-3.5 w-3.5" />
                   {label}
                 </span>
@@ -382,9 +556,19 @@ export default function WorkoutsPage() {
               <Pill icon={Repeat2} label={selectedExercise.exercise.difficulty || "Beginner"} />
             </div>
 
-            <Section title="How to do it" icon={Dumbbell}>
+            {/* Metrics summary strip */}
+            <div className="grid grid-cols-3 gap-3">
+              <MetricLarge label="Sets" value={selectedExercise.exercise.sets} />
+              <MetricLarge label="Reps" value={selectedExercise.exercise.reps} />
+              <MetricLarge label="Rest" value={selectedExercise.exercise.rest} />
+            </div>
+
+            <Section title="How to do it" icon={Dumbbell} variant="blue">
               <ol className="space-y-2 list-decimal list-inside text-slate-700">
-                {(selectedExercise.exercise.steps?.length ? selectedExercise.exercise.steps : [selectedExercise.exercise.instruction || selectedExercise.exercise.instructions || "Follow the movement slowly and keep your form controlled."]).map((step, index) => (
+                {(selectedExercise.exercise.steps?.length
+                  ? selectedExercise.exercise.steps
+                  : [selectedExercise.exercise.instruction || selectedExercise.exercise.instructions || "Follow the movement slowly and keep your form controlled."]
+                ).map((step, index) => (
                   <li key={index}>{step}</li>
                 ))}
               </ol>
@@ -399,7 +583,7 @@ export default function WorkoutsPage() {
                   ? ["Clear a small space and use a mat if you have one.", "Use a sturdy chair, wall, or step where the move needs support."]
                   : ["Adjust the seat and pads so the movement lines up with your joints.", "Start with a light weight to learn the full range of motion."];
               return (
-                <Section title={home ? "Home Setup Tips" : "Machine Setup Tips"} icon={Info}>
+                <Section title={home ? "Home Setup Tips" : "Machine Setup Tips"} icon={Info} variant="slate">
                   <ul className="space-y-2 text-slate-700">
                     {tips.map((tip, index) => (
                       <li key={index} className="flex gap-2">
@@ -412,23 +596,29 @@ export default function WorkoutsPage() {
               );
             })()}
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Section title="Safety tips" icon={ShieldAlert}>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Section title="Safety tips" icon={ShieldAlert} variant="amber">
                 <ul className="space-y-2 text-slate-700">
-                  {(selectedExercise.exercise.safetyTips?.length ? selectedExercise.exercise.safetyTips : ["Use a controlled pace.", "Stop if your form breaks down."]).map((tip, index) => (
+                  {(selectedExercise.exercise.safetyTips?.length
+                    ? selectedExercise.exercise.safetyTips
+                    : ["Use a controlled pace.", "Stop if your form breaks down."]
+                  ).map((tip, index) => (
                     <li key={index} className="flex gap-2">
-                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
                       <span>{tip}</span>
                     </li>
                   ))}
                 </ul>
               </Section>
 
-              <Section title="Common mistakes" icon={TriangleAlert}>
+              <Section title="Common mistakes" icon={TriangleAlert} variant="rose">
                 <ul className="space-y-2 text-slate-700">
-                  {(selectedExercise.exercise.commonMistakes?.length ? selectedExercise.exercise.commonMistakes : ["Rushing the rep.", "Letting posture collapse."]).map((mistake, index) => (
+                  {(selectedExercise.exercise.commonMistakes?.length
+                    ? selectedExercise.exercise.commonMistakes
+                    : ["Rushing the rep.", "Letting posture collapse."]
+                  ).map((mistake, index) => (
                     <li key={index} className="flex gap-2">
-                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-rose-500 shrink-0" />
                       <span>{mistake}</span>
                     </li>
                   ))}
@@ -436,25 +626,25 @@ export default function WorkoutsPage() {
               </Section>
             </div>
 
-            <Section title="Workout Demo" icon={PlayCircle}>
+            <Section title="Workout Demo" icon={PlayCircle} variant="blue">
               <WorkoutDemo
                 exerciseName={selectedExercise.exercise.name}
                 youtubeEmbedUrl={selectedExercise.exercise.youtubeEmbedUrl}
               />
             </Section>
 
-            <Section title="Alternative Workouts" icon={Repeat2}>
+            <Section title="Alternative Workouts" icon={Repeat2} variant="slate">
               <div className="mb-4 flex flex-wrap items-center gap-2">
-                <span className="text-xs font-medium text-slate-500">Equipment you have:</span>
+                <span className="text-xs font-semibold text-slate-500">Equipment you have:</span>
                 {EQUIPMENT_OPTIONS.map((opt) => (
                   <button
                     key={opt.key}
                     type="button"
                     onClick={() => setEquipment(opt.key)}
-                    className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                    className={`rounded-full px-3 py-1 text-xs font-bold transition-all ${
                       equipment === opt.key
-                        ? "bg-blue-600 text-white"
-                        : "border border-slate-200 bg-white text-slate-600 hover:border-blue-200"
+                        ? "bg-blue-600 text-white shadow-md shadow-blue-100"
+                        : "border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-blue-600"
                     }`}
                   >
                     {opt.label}
@@ -463,13 +653,13 @@ export default function WorkoutsPage() {
               </div>
 
               {alternatives.length === 0 ? (
-                <p className="text-sm text-slate-600">No alternatives available for this exercise yet.</p>
+                <p className="text-sm text-slate-500 italic">No alternatives available for this exercise yet.</p>
               ) : (
                 <div className="space-y-3">
                   {alternatives.map((alt) => (
-                    <div key={alt.name} className="rounded-2xl border border-slate-200 bg-white p-4">
-                      <p className="font-semibold text-slate-900">{alt.name}</p>
-                      <p className="mt-0.5 text-xs text-slate-500">
+                    <div key={alt.name} className="rounded-2xl border border-slate-200 bg-white p-4 hover:border-blue-200 transition-colors">
+                      <p className="font-extrabold text-slate-900">{alt.name}</p>
+                      <p className="mt-0.5 text-xs text-slate-400 font-medium">
                         {alt.equipment} · {alt.locationType}
                       </p>
                       <p className="mt-2 text-sm text-slate-600">{alt.reason}</p>
@@ -478,16 +668,16 @@ export default function WorkoutsPage() {
                         <button
                           type="button"
                           onClick={() => handleUseAlternative(alt)}
-                          className="rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700 transition-colors"
+                          className="rounded-full bg-blue-600 px-4 py-1.5 text-xs font-extrabold text-white hover:bg-blue-700 transition-colors shadow-sm"
                         >
                           Use this alternative
                         </button>
                         <button
                           type="button"
                           onClick={() => setDemoAltName(demoAltName === alt.name ? null : alt.name)}
-                          className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:border-blue-200 transition-colors"
+                          className="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-bold text-slate-700 hover:border-blue-200 hover:text-blue-600 transition-colors"
                         >
-                          {demoAltName === alt.name ? "Hide demo" : "View demo"}
+                          {demoAltName === alt.name ? "Hide demo" : "▶ View demo"}
                         </button>
                       </div>
                       {demoAltName === alt.name && (
@@ -510,32 +700,64 @@ export default function WorkoutsPage() {
   );
 }
 
+/* ─── Sub-components ────────────────────────────────────────────────────────── */
+
 function Metric({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="bg-white p-2 rounded-lg border border-slate-100 text-center">
-      <p className="text-[10px] uppercase tracking-wider font-bold text-slate-600">{label}</p>
-      <p className="text-sm font-bold text-slate-900">{value}</p>
+    <div className="bg-gradient-to-b from-slate-50 to-white p-2.5 rounded-xl border border-slate-100 text-center shadow-sm">
+      <p className="text-[9px] uppercase tracking-widest font-extrabold text-slate-400 mb-0.5">{label}</p>
+      <p className="text-sm font-extrabold text-slate-900">{value}</p>
+    </div>
+  );
+}
+
+function MetricLarge({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="bg-gradient-to-b from-blue-50/60 to-white p-4 rounded-2xl border border-blue-100/60 text-center shadow-sm">
+      <p className="text-[10px] uppercase tracking-widest font-extrabold text-blue-400 mb-1">{label}</p>
+      <p className="text-xl font-black text-slate-900">{value}</p>
     </div>
   );
 }
 
 function Pill({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700">
-      <Icon className="h-4 w-4 text-slate-500" />
+    <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm hover:border-blue-200 hover:bg-blue-50/40 transition-colors">
+      <Icon className="h-3.5 w-3.5 text-blue-500" />
       <span>{label}</span>
     </div>
   );
 }
 
-function Section({ title, icon: Icon, children }: { title: string; icon: LucideIcon; children: ReactNode }) {
+const sectionVariants = {
+  blue:  { border: "border-blue-200",  bg: "bg-blue-50/40",  icon: "text-blue-600",  title: "text-blue-900"  },
+  amber: { border: "border-amber-200", bg: "bg-amber-50/40", icon: "text-amber-600", title: "text-amber-900" },
+  rose:  { border: "border-rose-200",  bg: "bg-rose-50/40",  icon: "text-rose-600",  title: "text-rose-900"  },
+  slate: { border: "border-slate-200", bg: "bg-slate-50",    icon: "text-blue-600",  title: "text-slate-900" },
+};
+
+function Section({
+  title,
+  icon: Icon,
+  children,
+  variant = "slate",
+}: {
+  title: string;
+  icon: LucideIcon;
+  children: ReactNode;
+  variant?: keyof typeof sectionVariants;
+}) {
+  const v = sectionVariants[variant];
   return (
-    <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+    <section className={`rounded-2xl border-l-4 border ${v.border} ${v.bg} p-4`}>
       <div className="flex items-center gap-2 mb-3">
-        <Icon className="h-4 w-4 text-blue-600" />
-        <h3 className="text-sm font-bold text-slate-900">{title}</h3>
+        <Icon className={`h-4 w-4 ${v.icon}`} />
+        <h3 className={`text-sm font-extrabold ${v.title}`}>{title}</h3>
       </div>
       {children}
     </section>
   );
 }
+
+// Satisfy unused import (Loader2 kept for future use)
+void Loader2;
