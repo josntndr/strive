@@ -91,9 +91,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-slate-50 selection:bg-blue-500 selection:text-white">
+    <div className="h-screen max-h-screen overflow-hidden grid lg:grid-cols-2 bg-slate-50 selection:bg-blue-500 selection:text-white">
       {/* 1st Panel: Fitness Visual & Showcase */}
-      <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden bg-slate-900">
+      <div className="relative hidden lg:flex flex-col justify-between p-10 overflow-hidden bg-slate-900 h-full">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-65 scale-105 transition-transform duration-1000"
           style={{ backgroundImage: `url('/images/fitness_auth.jpg')` }}
@@ -103,34 +103,34 @@ export default function RegisterPage() {
         {/* Top Logo */}
         <div className="relative z-10">
           <Link href="/" className="inline-flex items-center space-x-3 group">
-            <div className="bg-blue-600/90 p-2.5 rounded-2xl backdrop-blur-md group-hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/30">
-              <BrandMark className="h-7 w-7 text-white" />
+            <div className="bg-blue-600/90 p-2 rounded-2xl backdrop-blur-md group-hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/30">
+              <BrandMark className="h-6 w-6 text-white" />
             </div>
             <span className="text-2xl font-extrabold text-white tracking-tight">Strive</span>
           </Link>
         </div>
 
         {/* Center Quote & Badges */}
-        <div className="relative z-10 max-w-lg my-auto space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-white/15">
+        <div className="relative z-10 max-w-lg my-auto space-y-5">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-white/15">
             💪 Start Your Journey Today
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight tracking-tight">
             Build Strong Habits. <br />
             Achieve Your <span className="bg-gradient-to-r from-blue-400 via-coral to-amber-300 bg-clip-text text-transparent">Full Potential.</span>
           </h1>
-          <p className="text-slate-300 text-base leading-relaxed font-medium">
+          <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-medium">
             Create your account in seconds to receive custom workouts, smart meal plans, and intelligent progress tracking.
           </p>
 
-          <div className="flex items-center gap-6 pt-4">
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-5 py-3 text-white">
-              <p className="text-xl font-extrabold">100% Free</p>
-              <p className="text-xs text-slate-300 font-medium">To Get Started</p>
+          <div className="flex items-center gap-5 pt-2">
+            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2.5 text-white">
+              <p className="text-lg font-extrabold">100% Free</p>
+              <p className="text-[11px] text-slate-300 font-medium">To Get Started</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-5 py-3 text-white">
-              <p className="text-xl font-extrabold">Instant</p>
-              <p className="text-xs text-slate-300 font-medium">AI Plan Generation</p>
+            <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2.5 text-white">
+              <p className="text-lg font-extrabold">Instant</p>
+              <p className="text-[11px] text-slate-300 font-medium">AI Plan Generation</p>
             </div>
           </div>
         </div>
@@ -142,71 +142,62 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* 2nd Panel: Rich Visual Form Container */}
-      <div className="relative flex flex-col justify-between py-12 px-6 sm:px-12 lg:px-16 bg-gradient-to-br from-cream via-slate-50 to-orange-50/40 overflow-y-auto">
-        {/* SVG Grid Pattern Overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
-
+      {/* 2nd Panel: Clean Warm Form Container (No Grid Lines, No Scrollbar) */}
+      <div className="relative flex flex-col justify-between py-6 sm:py-8 px-6 sm:px-12 lg:px-16 bg-gradient-to-br from-cream via-slate-50 to-orange-50/30 h-full max-h-screen overflow-hidden">
         {/* Ambient Glowing Orbs */}
-        <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-10 left-10 w-60 h-60 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-10 left-10 w-48 h-48 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Floating Top Accent Badge */}
-        <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white shadow-md border border-slate-200/80 text-xs font-bold text-slate-700 absolute top-8 right-8 z-20 animate-floaty">
-          <Sparkles className="w-4 h-4 text-blue-600 fill-blue-600" />
-          <span>Join Free Today</span>
-        </div>
+        <div className="my-auto mx-auto w-full max-w-md bg-white/95 backdrop-blur-2xl rounded-[2rem] border border-white shadow-xl shadow-slate-300/50 overflow-hidden relative z-10">
+          {/* Top Accent Bar */}
+          <div className="h-1.5 w-full bg-gradient-to-r from-blue-600 via-coral to-amber-500" />
 
-        <div className="my-auto mx-auto w-full max-w-md bg-white/95 backdrop-blur-2xl rounded-[2.5rem] border border-white shadow-2xl shadow-slate-300/60 overflow-hidden relative z-10 hover-lift">
-          {/* Top Gradient Accent Bar */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-600 via-coral to-amber-500" />
-
-          <div className="p-8 sm:p-10">
+          <div className="p-6 sm:p-8">
             {/* Mobile Brand Header */}
-            <div className="lg:hidden mb-6 flex items-center justify-between">
-              <Link href="/" className="inline-flex items-center space-x-2.5">
-                <div className="bg-blue-600 p-2 rounded-xl text-white shadow-md shadow-blue-500/20">
-                  <BrandMark className="h-6 w-6 text-white" />
+            <div className="lg:hidden mb-4 flex items-center justify-between">
+              <Link href="/" className="inline-flex items-center space-x-2">
+                <div className="bg-blue-600 p-1.5 rounded-xl text-white shadow-md shadow-blue-500/20">
+                  <BrandMark className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-2xl font-extrabold text-slate-900 tracking-tight">Strive</span>
+                <span className="text-xl font-extrabold text-slate-900 tracking-tight">Strive</span>
               </Link>
             </div>
 
             {/* Auth Tab Switcher */}
-            <div className="flex bg-slate-100/80 p-1 rounded-2xl mb-8 border border-slate-200/60 text-xs font-bold">
+            <div className="flex bg-slate-100/90 p-1 rounded-xl mb-5 border border-slate-200/60 text-xs font-bold">
               <Link
                 href="/login"
-                className="flex-1 py-2.5 rounded-xl text-slate-500 hover:text-slate-900 text-center transition-all"
+                className="flex-1 py-2 rounded-lg text-slate-500 hover:text-slate-900 text-center transition-all"
               >
                 Sign In
               </Link>
               <button
                 type="button"
-                className="flex-1 py-2.5 rounded-xl bg-white text-slate-900 shadow-sm text-center transition-all"
+                className="flex-1 py-2 rounded-lg bg-white text-slate-900 shadow-xs text-center transition-all"
               >
                 Create Account
               </button>
             </div>
 
-            <div className="mb-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-wider mb-3 border border-blue-100/80">
-                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+            <div className="mb-4">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[11px] font-bold uppercase tracking-wider mb-1.5 border border-blue-100/80">
+                <Sparkles className="w-3 h-3 text-blue-600" />
                 Free Account Registration
               </div>
-              <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Start your transformation</h2>
-              <p className="mt-1.5 text-sm text-slate-500 font-medium">
+              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Start your transformation</h2>
+              <p className="mt-0.5 text-xs text-slate-500 font-medium">
                 Set up your profile to generate your first AI fitness plan.
               </p>
             </div>
 
-            <form className="space-y-4" onSubmit={onSubmit}>
+            <form className="space-y-3" onSubmit={onSubmit}>
               <div>
-                <label htmlFor="name" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label htmlFor="name" className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
                   Full Name
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <User className="h-4 w-4" />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <User className="h-3.5 w-3.5" />
                   </div>
                   <input
                     id="name"
@@ -216,19 +207,19 @@ export default function RegisterPage() {
                     autoComplete="name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="block w-full pl-10 pr-4 py-3 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-2xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                    className="block w-full pl-9 pr-3 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-xs font-medium"
                     placeholder="Enter your full name"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label htmlFor="email" className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
                   Email Address
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Mail className="h-4 w-4" />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Mail className="h-3.5 w-3.5" />
                   </div>
                   <input
                     id="email"
@@ -238,20 +229,20 @@ export default function RegisterPage() {
                     autoComplete="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="block w-full pl-10 pr-4 py-3 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-2xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                    className="block w-full pl-9 pr-3 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-xs font-medium"
                     placeholder="you@example.com"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 <div>
-                  <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label htmlFor="password" className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
                     Password
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                      <Lock className="h-4 w-4" />
+                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                      <Lock className="h-3.5 w-3.5" />
                     </div>
                     <input
                       id="password"
@@ -261,26 +252,26 @@ export default function RegisterPage() {
                       autoComplete="new-password"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="block w-full pl-9 pr-9 py-3 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-2xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                      className="block w-full pl-8 pr-8 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-xs font-medium"
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-blue-600 transition-colors"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-blue-600 transition-colors"
                       aria-label={showPassword ? "Hide password" : "Show password"}
                     >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label htmlFor="confirmPassword" className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
                     Confirm
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                      <Lock className="h-4 w-4" />
+                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                      <Lock className="h-3.5 w-3.5" />
                     </div>
                     <input
                       id="confirmPassword"
@@ -290,22 +281,22 @@ export default function RegisterPage() {
                       autoComplete="new-password"
                       value={formData.confirmPassword}
                       onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                      className="block w-full pl-9 pr-9 py-3 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-2xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                      className="block w-full pl-8 pr-8 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-xs font-medium"
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-blue-600 transition-colors"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-blue-600 transition-colors"
                       aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
                     >
-                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showConfirmPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-start pt-1">
+              <div className="flex items-start pt-0.5">
                 <div className="flex items-center h-5">
                   <input
                     id="terms"
@@ -313,10 +304,10 @@ export default function RegisterPage() {
                     type="checkbox"
                     checked={acceptedTerms}
                     onChange={(e) => setAcceptedTerms(e.target.checked)}
-                    className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-slate-300 rounded-lg cursor-pointer transition-colors"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded-md cursor-pointer transition-colors"
                   />
                 </div>
-                <div className="ml-3 text-xs">
+                <div className="ml-2.5 text-[11px]">
                   <label htmlFor="terms" className="font-medium text-slate-600 cursor-pointer select-none">
                     I agree to the{" "}
                     <button 
@@ -338,7 +329,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-1">
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -354,14 +345,14 @@ export default function RegisterPage() {
                       }
                     }
                   }}
-                  className={`w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-full shadow-lg text-sm font-bold text-white transition-all active:scale-95 group ${
+                  className={`w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-full shadow-md text-xs sm:text-sm font-bold text-white transition-all active:scale-95 group ${
                     isFormValid 
-                      ? "bg-blue-600 hover:bg-blue-700 shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30" 
+                      ? "bg-blue-600 hover:bg-blue-700 shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/30" 
                       : "bg-blue-600/70 hover:bg-blue-600 shadow-blue-500/10"
                   }`}
                 >
                   {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <span className="flex items-center gap-2">
                       Create My Free Account
@@ -369,28 +360,22 @@ export default function RegisterPage() {
                     </span>
                   )}
                 </button>
-                {!acceptedTerms && !isLoading && (
-                  <p className="mt-2 text-center text-xs text-slate-400 font-medium">
-                    Please accept the terms to enable account creation.
-                  </p>
-                )}
               </div>
             </form>
 
             {/* Feature Highlights Footer inside card */}
-            <div className="mt-6 pt-5 border-t border-slate-100">
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5 text-center">Included with your account</p>
-              <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-slate-600">
-                <div className="p-2 rounded-xl bg-slate-50 border border-slate-100 flex flex-col items-center gap-1">
-                  <Dumbbell className="w-4 h-4 text-blue-600" />
+            <div className="mt-4 pt-3 border-t border-slate-100">
+              <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-bold text-slate-600">
+                <div className="p-1 rounded-lg bg-slate-50 border border-slate-100 flex flex-col items-center gap-0.5">
+                  <Dumbbell className="w-3.5 h-3.5 text-blue-600" />
                   <span>Workouts</span>
                 </div>
-                <div className="p-2 rounded-xl bg-slate-50 border border-slate-100 flex flex-col items-center gap-1">
-                  <Utensils className="w-4 h-4 text-emerald-600" />
-                  <span>Meal Plans</span>
+                <div className="p-1 rounded-lg bg-slate-50 border border-slate-100 flex flex-col items-center gap-0.5">
+                  <Utensils className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Meals</span>
                 </div>
-                <div className="p-2 rounded-xl bg-slate-50 border border-slate-100 flex flex-col items-center gap-1">
-                  <TrendingUp className="w-4 h-4 text-amber-600" />
+                <div className="p-1 rounded-lg bg-slate-50 border border-slate-100 flex flex-col items-center gap-0.5">
+                  <TrendingUp className="w-3.5 h-3.5 text-amber-600" />
                   <span>Progress</span>
                 </div>
               </div>
@@ -399,10 +384,10 @@ export default function RegisterPage() {
         </div>
 
         {/* Security & Trust Footer */}
-        <div className="mt-6 text-center text-xs text-slate-400 font-medium relative z-10 flex items-center justify-center gap-4">
-          <span className="flex items-center gap-1">🔒 256-Bit SSL Security</span>
+        <div className="text-center text-[11px] text-slate-400 font-medium relative z-10 flex items-center justify-center gap-3">
+          <span>🔒 256-Bit SSL Security</span>
           <span>•</span>
-          <span className="flex items-center gap-1">⚡ Instant Setup</span>
+          <span>⚡ Instant Setup</span>
         </div>
       </div>
 
