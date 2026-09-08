@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2, ArrowRight, ShieldCheck, FileText, Eye, EyeOff } from "lucide-react";
+import { Loader2, ArrowRight, ShieldCheck, FileText, Eye, EyeOff, User, Mail, Lock, Sparkles } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { toast } from "react-hot-toast";
 import { Modal } from "@/components/Modal";
@@ -142,9 +142,13 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* 2nd Panel: Form Container */}
-      <div className="flex flex-col justify-center py-12 px-6 sm:px-12 lg:px-16 bg-white overflow-y-auto">
-        <div className="mx-auto w-full max-w-md">
+      {/* 2nd Panel: Styled Glassmorphic Form Card */}
+      <div className="relative flex flex-col justify-center py-12 px-6 sm:px-12 lg:px-16 bg-gradient-to-br from-cream/90 via-slate-50 to-orange-50/30 overflow-y-auto">
+        {/* Ambient Glowing Orbs */}
+        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-10 left-10 w-48 h-48 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="mx-auto w-full max-w-md bg-white/90 backdrop-blur-xl p-8 sm:p-10 rounded-[2.5rem] border border-white/80 shadow-2xl shadow-slate-200/70 hover-lift relative z-10">
           {/* Mobile Brand Link */}
           <div className="lg:hidden mb-8">
             <Link href="/" className="inline-flex items-center space-x-2.5">
@@ -155,7 +159,11 @@ export default function RegisterPage() {
             </Link>
           </div>
 
-          <div>
+          <div className="mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-wider mb-3 border border-blue-100/80">
+              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+              Free Registration
+            </div>
             <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Start your transformation</h2>
             <p className="mt-2 text-sm text-slate-600 font-medium">
               Already a member?{" "}
@@ -165,48 +173,61 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          <div className="mt-8">
-            <form className="space-y-5" onSubmit={onSubmit}>
+          <div>
+            <form className="space-y-4" onSubmit={onSubmit}>
               <div>
-                <label htmlFor="name" className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label htmlFor="name" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                   Full Name
                 </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  autoComplete="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="block w-full px-4 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
-                  placeholder="Enter your full name"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <User className="h-4 w-4" />
+                  </div>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    autoComplete="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="block w-full pl-10 pr-4 py-3 bg-slate-50/80 text-slate-900 border border-slate-200/90 rounded-2xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                    placeholder="Enter your full name"
+                  />
+                </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-bold text-slate-700 mb-1.5">
+                <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                   Email Address
                 </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="block w-full px-4 py-3 bg-slate-50 text-slate-900 border border-slate-200 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
-                  placeholder="you@example.com"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <Mail className="h-4 w-4" />
+                  </div>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="block w-full pl-10 pr-4 py-3 bg-slate-50/80 text-slate-900 border border-slate-200/90 rounded-2xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                    placeholder="you@example.com"
+                  />
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="password" className="block text-sm font-bold text-slate-700 mb-1.5">
+                  <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                     Password
                   </label>
                   <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                      <Lock className="h-4 w-4" />
+                    </div>
                     <input
                       id="password"
                       name="password"
@@ -215,24 +236,27 @@ export default function RegisterPage() {
                       autoComplete="new-password"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="block w-full px-4 py-3 pr-11 bg-slate-50 text-slate-900 border border-slate-200 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                      className="block w-full pl-9 pr-9 py-3 bg-slate-50/80 text-slate-900 border border-slate-200/90 rounded-2xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-blue-600 transition-colors"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-blue-600 transition-colors"
                       aria-label={showPassword ? "Hide password" : "Show password"}
                     >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-bold text-slate-700 mb-1.5">
-                    Confirm Password
+                  <label htmlFor="confirmPassword" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Confirm
                   </label>
                   <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                      <Lock className="h-4 w-4" />
+                    </div>
                     <input
                       id="confirmPassword"
                       name="confirmPassword"
@@ -241,16 +265,16 @@ export default function RegisterPage() {
                       autoComplete="new-password"
                       value={formData.confirmPassword}
                       onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                      className="block w-full px-4 py-3 pr-11 bg-slate-50 text-slate-900 border border-slate-200 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
+                      className="block w-full pl-9 pr-9 py-3 bg-slate-50/80 text-slate-900 border border-slate-200/90 rounded-2xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-sm font-medium"
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-blue-600 transition-colors"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-blue-600 transition-colors"
                       aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
                     >
-                      {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
@@ -267,7 +291,7 @@ export default function RegisterPage() {
                     className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-slate-300 rounded-lg cursor-pointer transition-colors"
                   />
                 </div>
-                <div className="ml-3 text-sm">
+                <div className="ml-3 text-xs">
                   <label htmlFor="terms" className="font-medium text-slate-600 cursor-pointer select-none">
                     I agree to the{" "}
                     <button 
@@ -305,7 +329,7 @@ export default function RegisterPage() {
                       }
                     }
                   }}
-                  className={`w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-full shadow-lg text-sm font-bold text-white transition-all active:scale-95 ${
+                  className={`w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-full shadow-lg text-sm font-bold text-white transition-all active:scale-95 group ${
                     isFormValid 
                       ? "bg-blue-600 hover:bg-blue-700 shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30" 
                       : "bg-blue-600/70 hover:bg-blue-600 shadow-blue-500/10"
@@ -316,12 +340,12 @@ export default function RegisterPage() {
                   ) : (
                     <span className="flex items-center gap-2">
                       Create My Account
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                     </span>
                   )}
                 </button>
                 {!acceptedTerms && !isLoading && (
-                  <p className="mt-2.5 text-center text-xs text-slate-400 font-medium">
+                  <p className="mt-2 text-center text-xs text-slate-400 font-medium">
                     Please accept the terms to enable account creation.
                   </p>
                 )}
