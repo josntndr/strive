@@ -71,8 +71,8 @@ export const Navbar = () => {
 
   if (!mounted) {
     return (
-      <header className="sticky top-4 z-50 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-        <div className="bg-white/90 backdrop-blur-xl border border-slate-200/80 rounded-full shadow-xl shadow-slate-200/60 px-6 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl border-b border-slate-200/80 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <div className="bg-blue-600 p-2 rounded-xl text-white">
               <BrandMark className="h-5.5 w-5.5 text-white" />
@@ -92,9 +92,8 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-4 sm:top-5 z-50 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full transition-all">
-      {/* Expanded Floating Island Capsule Navbar */}
-      <div className="bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-full shadow-xl shadow-slate-300/40 px-6 sm:px-8 py-3.5 sm:py-4 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href={logoHref} className="flex items-center gap-3 group">
           <div className="bg-gradient-to-tr from-blue-600 via-blue-500 to-indigo-600 p-2 rounded-2xl text-white shadow-md shadow-blue-500/25 group-hover:scale-105 transition-transform">
@@ -239,7 +238,7 @@ export const Navbar = () => {
 
       {/* Mobile / Tablet Drawer */}
       {isMenuOpen && (
-        <div className="lg:hidden mt-3 bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl p-5 space-y-2.5 shadow-2xl animate-in slide-in-from-top duration-200">
+        <div className="lg:hidden border-t border-slate-200/80 bg-white/98 backdrop-blur-2xl px-4 sm:px-6 py-4 space-y-2.5 shadow-xl animate-in slide-in-from-top duration-200">
           {isAppRoute ? (
             <>
               {appNavLinks.map((link) => {
