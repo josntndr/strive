@@ -24,7 +24,6 @@ import {
   Play,
   RotateCcw,
   MessageSquare,
-  Sparkles,
 } from "lucide-react";
 import { api, clearAuth, getCurrentUser, getToken, isUnauthorizedError } from "@/lib/api";
 import { toast } from "react-hot-toast";
@@ -79,13 +78,21 @@ type DashboardData = {
   profile: FitnessProfile;
 };
 
-const DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DAYS_OF_WEEK = [
+  { short: "Mon", full: "Monday", isWorkout: true, label: "Full Body" },
+  { short: "Tue", full: "Tuesday", isWorkout: false, label: "Rest & Recovery" },
+  { short: "Wed", full: "Wednesday", isWorkout: true, label: "Core & Stability" },
+  { short: "Thu", full: "Thursday", isWorkout: false, label: "Active Rest" },
+  { short: "Fri", full: "Friday", isWorkout: true, label: "Lower Body" },
+  { short: "Sat", full: "Saturday", isWorkout: true, label: "Upper & Cardio" },
+  { short: "Sun", full: "Sunday", isWorkout: false, label: "Rest" },
+];
 
 export default function DashboardPage() {
   const router = useRouter();
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [waterCups, setWaterCups] = useState(4); // 4 x 250ml = 1.0L default
+  const [waterCups, setWaterCups] = useState(4); // 4 x 250ml = 1.0L
   const [checklist, setChecklist] = useState<{ workout: boolean; protein: boolean; water: boolean }>({
     workout: false,
     protein: false,
@@ -197,20 +204,20 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-slate-50/70 flex flex-col">
         <Navbar />
         <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-          <div className="skeleton h-56 w-full rounded-3xl mb-8" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+          <div className="skeleton h-44 w-full rounded-2xl mb-6" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="skeleton h-32 rounded-3xl" />
+              <div key={i} className="skeleton h-28 rounded-2xl" />
             ))}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
-              <div className="skeleton h-80 rounded-3xl" />
-              <div className="skeleton h-80 rounded-3xl" />
+            <div className="lg:col-span-2 space-y-6">
+              <div className="skeleton h-80 rounded-2xl" />
+              <div className="skeleton h-72 rounded-2xl" />
             </div>
-            <div className="space-y-8">
-              <div className="skeleton h-60 rounded-3xl" />
-              <div className="skeleton h-60 rounded-3xl" />
+            <div className="space-y-6">
+              <div className="skeleton h-56 rounded-2xl" />
+              <div className="skeleton h-56 rounded-2xl" />
             </div>
           </div>
         </main>
@@ -224,15 +231,6 @@ export default function DashboardPage() {
   const workoutPlan = dashboard.latestWorkoutPlan;
   const mealPlan = dashboard.latestMealPlan;
 
-  // Split targets and take top 4 distinct tags to avoid run-on sentence
-  const rawGoals = dashboard.currentFitnessGoal
-    ? dashboard.currentFitnessGoal
-        .split(",")
-        .map((g) => g.trim())
-        .filter(Boolean)
-    : ["Improve overall fitness"];
-  const goalsList = Array.from(new Set(rawGoals));
-
   // Active workout day computation
   const workoutDays = workoutPlan?.days || [];
   const uncompletedWorkoutIndex = workoutDays.findIndex((d) => !d.completed);
@@ -240,7 +238,7 @@ export default function DashboardPage() {
   const activeWorkoutDay = workoutDays[activeWorkoutIndex] || null;
   const workoutDayNumber = activeWorkoutIndex + 1;
   const completedWorkoutsCount = workoutDays.filter((d) => d.completed).length;
-  const totalWorkoutDays = workoutDays.length;
+  const totalWorkoutDays = workoutDays.length || 1;
 
   // Active meal day computation
   const mealDays = mealPlan?.days || [];
@@ -257,482 +255,366 @@ export default function DashboardPage() {
   const targetFats = Math.round(userWeight * 0.9);
 
   return (
-    <div className="min-h-screen bg-slate-50/70 flex flex-col selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col selection:bg-blue-500 selection:text-white">
       <Navbar />
       <AIChat />
 
       <main className="flex-grow py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-        {/* ─── 1. Athlete Command Center Banner (Dark Luxury Contrast) ─── */}
-        <div className="relative mb-8 overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 sm:p-8 text-white border border-slate-800 shadow-xl">
-          {/* Subtle warm radial aura */}
-          <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-gradient-to-br from-[#e0512c]/25 to-amber-500/10 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-16 left-1/4 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl" />
-
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="space-y-3 max-w-2xl">
-              {/* Header tags */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-black uppercase tracking-wider border border-white/15 backdrop-blur-md">
-                  <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
-                  Active Program
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-slate-300 text-xs font-semibold border border-white/10">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                  {todayFormatted}
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  Week 1 on Track
-                </span>
-              </div>
-
-              {/* Greeting */}
-              <div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
-                  Welcome back, {dashboard.userName}
-                </h1>
-                <p className="text-slate-300 font-medium text-sm sm:text-base mt-1">
-                  Ready for today&apos;s session? Stay consistent and build momentum.
-                </p>
-              </div>
-
-              {/* Clean Goal Tags */}
-              <div className="pt-1 flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Targets:</span>
-                {goalsList.slice(0, 4).map((goal, idx) => (
-                  <span
-                    key={idx}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/15"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
-                    {goal}
-                  </span>
-                ))}
-                {goalsList.length > 4 && (
-                  <span className="text-xs font-semibold text-slate-400 self-center">
-                    +{goalsList.length - 4} more
-                  </span>
-                )}
-              </div>
+        {/* ─── 1. Executive Athlete Header Bar ─── */}
+        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-200/80">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                Active Training Cycle • {todayFormatted}
+              </span>
             </div>
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900">
+              Welcome back, {dashboard.userName.split(" ")[0]}
+            </h1>
+            <p className="text-slate-600 text-sm font-medium mt-1">
+              Week 1 &mdash; Scheduled focus: <strong className="text-slate-900">{activeWorkoutDay?.focus || "Core & Stability"}</strong>
+            </p>
+          </div>
 
-            {/* Weekly Schedule Strip */}
-            <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 flex flex-col gap-3 min-w-[270px] self-start lg:self-auto">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-300">Weekly Schedule</span>
-                <span className="text-xs font-extrabold text-orange-400">
-                  {profile.workoutDaysPerWeek || 3} Days Planned
-                </span>
-              </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/workouts"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+            >
+              <Play className="w-4 h-4 fill-white" />
+              <span>Start Session</span>
+            </Link>
+            <button
+              type="button"
+              onClick={openAIChat}
+              className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-sm font-bold shadow-2xs transition-all"
+            >
+              <MessageSquare className="w-4 h-4 text-slate-500" />
+              <span>Ask Coach</span>
+            </button>
+          </div>
+        </div>
 
-              {/* 7-day calendar row */}
-              <div className="grid grid-cols-7 gap-1.5 pt-1">
-                {DAYS_OF_WEEK.map((day, idx) => {
-                  const isToday = idx === currentDayOfWeekIdx;
-                  const isWorkoutDay = idx === 0 || idx === 2 || idx === 4;
-                  return (
-                    <div
-                      key={day}
-                      className={`flex flex-col items-center py-2 rounded-xl text-center transition-all ${
-                        isToday
-                          ? "bg-gradient-to-t from-[#e0512c] to-orange-500 text-white shadow-md font-black ring-2 ring-white/30"
-                          : "bg-white/5 text-slate-300 border border-white/5 font-bold"
-                      }`}
-                    >
-                      <span className={`text-[10px] uppercase ${isToday ? "text-white" : "text-slate-400"}`}>
-                        {day}
-                      </span>
-                      <div className="mt-1 flex items-center justify-center">
-                        {isWorkoutDay ? (
-                          <div className={`w-2 h-2 rounded-full ${isToday ? "bg-white" : "bg-orange-400"}`} />
-                        ) : (
-                          <div className={`w-1 h-1 rounded-full ${isToday ? "bg-white/60" : "bg-white/20"}`} />
-                        )}
+        {/* ─── 2. Weekly Training Schedule Timeline Strip ─── */}
+        <div className="mb-8 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+          <div className="flex items-center justify-between mb-3 px-1">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-blue-600" />
+              <span className="text-xs font-black uppercase tracking-wider text-slate-700">
+                Weekly Rhythm
+              </span>
+            </div>
+            <span className="text-xs font-bold text-slate-500">
+              {profile.workoutDaysPerWeek || 4} Sessions Planned This Week
+            </span>
+          </div>
+
+          <div className="grid grid-cols-7 gap-2">
+            {DAYS_OF_WEEK.map((item, idx) => {
+              const isToday = idx === currentDayOfWeekIdx;
+              return (
+                <div
+                  key={item.short}
+                  className={`flex flex-col items-center justify-between py-3 px-1.5 rounded-xl border text-center transition-all ${
+                    isToday
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/20 scale-[1.03]"
+                      : "bg-slate-50/70 border-slate-200/70 text-slate-700 hover:bg-white"
+                  }`}
+                >
+                  <span className={`text-[11px] font-black uppercase tracking-wider ${isToday ? "text-blue-100" : "text-slate-400"}`}>
+                    {item.short}
+                  </span>
+
+                  <div className="my-1.5">
+                    {item.isWorkout ? (
+                      <div
+                        className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                          isToday ? "bg-white text-blue-600 font-black text-xs" : "bg-blue-50 text-blue-600 border border-blue-100"
+                        }`}
+                      >
+                        <Dumbbell className="w-3.5 h-3.5" />
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    ) : (
+                      <div className={`w-2 h-2 rounded-full ${isToday ? "bg-white/70" : "bg-slate-300"}`} />
+                    )}
+                  </div>
 
-              <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium pt-0.5 border-t border-white/10">
-                <span>Focus: <strong className="text-white">{profile.targetBodyFocus || "Full body"}</strong></span>
-                <span>{profile.workoutLocation || "Gym & Home"}</span>
-              </div>
-            </div>
+                  <span className={`text-[10px] font-bold truncate max-w-full px-1 ${isToday ? "text-white" : "text-slate-500"}`}>
+                    {item.label}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* ─── 2. 4 Elevated Bento Metric Cards ─── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-          {/* Card 1: Workout Streak */}
-          <div className="stat-card bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:border-orange-300 transition-all group">
-            <div className="flex items-start justify-between">
-              <div className="p-3 rounded-2xl bg-orange-50 text-orange-600 border border-orange-100 group-hover:scale-105 transition-transform">
-                <Flame className="w-5 h-5" strokeWidth={2.2} />
+        {/* ─── 3. High-Density Performance Metric Ribbon ─── */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {/* Metric 1: Streak */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-blue-200 transition-all">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Streak</span>
+              <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
+                <Flame className="w-4 h-4" />
               </div>
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-700 border border-orange-100">
-                {dashboard.workoutStreak > 0 ? "Active Streak" : "Day 1 Ready"}
-              </span>
             </div>
-            <div className="mt-4">
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Workout Streak</p>
-              <div className="flex items-baseline gap-1.5 mt-0.5">
-                <span className="text-3xl font-black text-slate-900 tracking-tight">{dashboard.workoutStreak}</span>
-                <span className="text-sm font-bold text-slate-500">days</span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-black text-slate-900">{dashboard.workoutStreak}</span>
+              <span className="text-xs font-bold text-slate-500">days</span>
+            </div>
+            <p className="text-[11px] font-semibold text-slate-500 mt-1">
+              {dashboard.workoutStreak > 0 ? "Daily discipline active" : "Day 1 ready to start"}
+            </p>
+          </div>
+
+          {/* Metric 2: Completed Workouts */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-emerald-200 transition-all">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Completed</span>
+              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <CheckCircle2 className="w-4 h-4" />
               </div>
-              <div className="mt-2 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                <div
-                  className="bg-orange-500 h-full rounded-full transition-all"
-                  style={{ width: `${Math.min((dashboard.workoutStreak / 7) * 100, 100)}%` }}
-                />
-              </div>
-              <p className="text-xs text-slate-500 font-medium mt-1.5">
-                {dashboard.workoutStreak > 0 ? "Great habit! Keep the momentum." : "Complete today to start your streak."}
-              </p>
+            </div>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-black text-slate-900">{dashboard.totalCompletedWorkouts}</span>
+              <span className="text-xs font-bold text-slate-500">of {totalWorkoutDays} in plan</span>
+            </div>
+            <div className="mt-1.5 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div
+                className="bg-emerald-500 h-full rounded-full transition-all"
+                style={{ width: `${(completedWorkoutsCount / totalWorkoutDays) * 100}%` }}
+              />
             </div>
           </div>
 
-          {/* Card 2: Completed Workouts */}
-          <div className="stat-card bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:border-emerald-300 transition-all group">
-            <div className="flex items-start justify-between">
-              <div className="p-3 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 group-hover:scale-105 transition-transform">
-                <CheckCircle2 className="w-5 h-5" strokeWidth={2.2} />
+          {/* Metric 3: Weight */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-blue-200 transition-all">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Weight</span>
+              <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <TrendingUp className="w-4 h-4" />
               </div>
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
-                Sessions
-              </span>
             </div>
-            <div className="mt-4">
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Completed Workouts</p>
-              <div className="flex items-baseline gap-1.5 mt-0.5">
-                <span className="text-3xl font-black text-slate-900 tracking-tight">{dashboard.totalCompletedWorkouts}</span>
-                <span className="text-sm font-bold text-slate-500">total</span>
-              </div>
-              <div className="mt-2 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                <div
-                  className="bg-emerald-500 h-full rounded-full transition-all"
-                  style={{ width: totalWorkoutDays > 0 ? `${(completedWorkoutsCount / totalWorkoutDays) * 100}%` : "0%" }}
-                />
-              </div>
-              <p className="text-xs text-slate-500 font-medium mt-1.5">
-                {completedWorkoutsCount} of {totalWorkoutDays} in active plan
-              </p>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-black text-slate-900">{profile.weight || 48}</span>
+              <span className="text-xs font-bold text-slate-500">kg</span>
             </div>
+            <p className="text-[11px] font-semibold text-slate-500 mt-1">
+              Height: {profile.height || 157} cm &bull; BMI 19.5
+            </p>
           </div>
 
-          {/* Card 3: Current Weight */}
-          <div className="stat-card bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all group">
-            <div className="flex items-start justify-between">
-              <div className="p-3 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 group-hover:scale-105 transition-transform">
-                <TrendingUp className="w-5 h-5" strokeWidth={2.2} />
+          {/* Metric 4: Pace */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-purple-200 transition-all">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Fitness Level</span>
+              <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                <Award className="w-4 h-4" />
               </div>
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100">
-                {profile.height ? `${profile.height} cm` : "Metric"}
+            </div>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-black text-slate-900 capitalize">
+                {profile.workoutExperience || "Intermediate"}
               </span>
             </div>
-            <div className="mt-4">
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Current Weight</p>
-              <div className="flex items-baseline gap-1.5 mt-0.5">
-                <span className="text-3xl font-black text-slate-900 tracking-tight">
-                  {profile.weight ? profile.weight : "--"}
-                </span>
-                <span className="text-sm font-bold text-slate-500">kg</span>
-              </div>
-              <p className="text-xs text-slate-500 font-medium mt-2">
-                BMI 19.5 • Healthy range
-              </p>
-            </div>
-          </div>
-
-          {/* Card 4: Fitness Level */}
-          <div className="stat-card bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:border-purple-300 transition-all group">
-            <div className="flex items-start justify-between">
-              <div className="p-3 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 group-hover:scale-105 transition-transform">
-                <Award className="w-5 h-5" strokeWidth={2.2} />
-              </div>
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-100">
-                Level
-              </span>
-            </div>
-            <div className="mt-4">
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Fitness Level</p>
-              <div className="flex items-baseline gap-1.5 mt-0.5">
-                <span className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight capitalize">
-                  {profile.workoutExperience || "Beginner"}
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 font-medium mt-2">
-                {profile.workoutDuration ? `Target ${profile.workoutDuration}m sessions` : "Paced intensity"}
-              </p>
-            </div>
+            <p className="text-[11px] font-semibold text-slate-500 mt-1">
+              Target ~{profile.workoutDuration || 60}m sessions
+            </p>
           </div>
         </div>
 
-        {/* ─── 3. Main Content Grid ─── */}
+        {/* ─── 4. Main Two-Column Hub ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column (2 cols) */}
+          {/* Left / Center (2 cols) */}
           <div className="lg:col-span-2 space-y-8">
-            {/* ─── Today's Workout Card ─── */}
-            <div className="dashboard-card rounded-3xl overflow-hidden shadow-xs">
-              {/* Header */}
-              <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-blue-600 text-white shadow-xs">
-                    <Dumbbell className="w-5 h-5" strokeWidth={2.2} />
+            {/* ─── Today's Workout Session Player ─── */}
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
+              <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[11px] font-black uppercase tracking-wider border border-blue-200/70">
+                      Day {workoutDayNumber} of {totalWorkoutDays}
+                    </span>
+                    <span className="text-xs font-bold text-slate-500">
+                      &bull; {activeWorkoutDay?.completed ? "Completed" : "Scheduled Today"}
+                    </span>
                   </div>
-                  <div>
-                    <h2 className="font-black text-slate-900 text-base sm:text-lg tracking-tight">Today&apos;s Workout</h2>
-                    <p className="text-xs text-slate-500 font-medium">Daily training routine</p>
-                  </div>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+                    {activeWorkoutDay?.focus || "Core & Stability Routine"}
+                  </h2>
                 </div>
 
-                <Link
-                  href="/workouts"
-                  className="text-xs font-black text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors"
-                >
-                  <span>View Full Program</span>
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
+                <div className="flex items-center gap-2">
+                  <div className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <Activity className="w-3.5 h-3.5 text-blue-600" />
+                    <span>{activeWorkoutDay?.exercises?.length || 6} Movements</span>
+                  </div>
+                  <div className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-blue-600" />
+                    <span>~{profile.workoutDuration || 45}m</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Body */}
-              <div className="p-6 sm:p-8">
-                {workoutPlan && activeWorkoutDay ? (
-                  <div className="space-y-6">
-                    {/* Session Focus Header */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-slate-50 to-orange-50/40 border border-slate-200/70">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-700 font-black text-xs uppercase tracking-wider border border-blue-200/70">
-                            Day {workoutDayNumber} of {totalWorkoutDays}
-                          </span>
-                          {activeWorkoutDay.completed ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-xs border border-emerald-200">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                              Completed Today
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-orange-50 text-orange-700 font-bold text-xs border border-orange-200">
-                              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                              Ready to Start
-                            </span>
-                          )}
-                        </div>
-                        <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-2">
-                          {activeWorkoutDay.focus ? `${activeWorkoutDay.focus} Routine` : "Core & Strength"}
-                        </h3>
-                      </div>
-
-                      {/* Stat pills */}
-                      <div className="flex items-center gap-2 self-start sm:self-center">
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200/80 text-slate-700 text-xs font-bold shadow-2xs">
-                          <Activity className="w-4 h-4 text-blue-600" />
-                          <span>{activeWorkoutDay.exercises?.length || 6} Movements</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200/80 text-slate-700 text-xs font-bold shadow-2xs">
-                          <Clock className="w-4 h-4 text-blue-600" />
-                          <span>~{profile.workoutDuration || 45} mins</span>
-                        </div>
-                      </div>
+              {/* Workout Routine Timeline */}
+              <div className="p-6">
+                {activeWorkoutDay?.exercises && activeWorkoutDay.exercises.length > 0 ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider px-1">
+                      <span>Movement Sequence</span>
+                      <span>Target Work</span>
                     </div>
 
-                    {/* Featured Exercises List */}
-                    {activeWorkoutDay.exercises && activeWorkoutDay.exercises.length > 0 && (
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between px-1">
-                          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                            Exercise Routine Breakdown
-                          </span>
-                          <span className="text-xs font-semibold text-slate-500">
-                            Target Sets & Reps
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {activeWorkoutDay.exercises.slice(0, 4).map((ex, idx) => (
-                            <div
-                              key={idx}
-                              className="p-3.5 rounded-2xl bg-white border border-slate-200/80 hover:border-blue-200 hover:shadow-xs transition-all flex items-start justify-between gap-3"
-                            >
-                              <div className="flex items-start gap-2.5">
-                                <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-700 font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
-                                  {idx + 1}
-                                </span>
-                                <div>
-                                  <p className="font-black text-slate-900 text-sm leading-snug">{ex.name}</p>
-                                  <span className="inline-block text-[11px] font-semibold text-slate-400 mt-0.5">
-                                    {ex.targetMuscle || "Core / Stability"}
-                                  </span>
-                                </div>
-                              </div>
-                              <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-extrabold text-xs whitespace-nowrap">
-                                {ex.sets || 3} × {ex.reps || "12"}
+                    <div className="space-y-2">
+                      {activeWorkoutDay.exercises.map((ex, idx) => (
+                        <div
+                          key={idx}
+                          className="p-3.5 rounded-xl bg-slate-50/70 hover:bg-white border border-slate-200/60 hover:border-blue-200 hover:shadow-2xs transition-all flex items-center justify-between gap-4"
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="w-6 h-6 rounded-md bg-white border border-slate-200 text-slate-700 font-mono font-bold text-xs flex items-center justify-center shrink-0">
+                              {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                            </span>
+                            <div>
+                              <p className="font-bold text-slate-900 text-sm">{ex.name}</p>
+                              <span className="text-[11px] font-semibold text-slate-500">
+                                {ex.targetMuscle || "Core & Stabilizers"}
                               </span>
                             </div>
-                          ))}
-                        </div>
+                          </div>
 
-                        {activeWorkoutDay.exercises.length > 4 && (
-                          <div className="text-center py-1">
-                            <span className="text-xs font-semibold text-slate-500">
-                              +{activeWorkoutDay.exercises.length - 4} more exercises in full sequence
+                          <div className="flex items-center gap-3">
+                            <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200/80 text-xs font-bold text-slate-800 font-mono">
+                              {ex.sets || 3} sets &times; {ex.reps || "12 reps"}
                             </span>
                           </div>
-                        )}
-                      </div>
-                    )}
+                        </div>
+                      ))}
+                    </div>
 
-                    {/* CTA Actions */}
-                    <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                    <div className="pt-4 flex flex-col sm:flex-row items-center gap-3">
                       <Link
                         href="/workouts"
-                        className="complete-btn w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 text-white text-sm font-black rounded-2xl shadow-md active:scale-95"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black shadow-md shadow-blue-500/25 active:scale-95 transition-all"
                       >
                         <Play className="w-4 h-4 fill-white" />
-                        <span>{activeWorkoutDay.completed ? "Review Completed Session" : `Start Day ${workoutDayNumber} Workout`}</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <span>Start Workout Session</span>
                       </Link>
-
                       <Link
                         href="/workouts"
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-6 py-3.5 text-slate-700 text-sm font-bold rounded-2xl bg-slate-100 hover:bg-slate-200 transition-colors"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold transition-all"
                       >
-                        Full Program ({completedWorkoutsCount}/{totalWorkoutDays} done)
+                        <span>View Exercise Demos</span>
                       </Link>
                     </div>
                   </div>
                 ) : (
-                  /* Empty state */
-                  <div className="py-8 text-center max-w-md mx-auto">
-                    <div className="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-4 shadow-sm">
-                      <Dumbbell className="w-8 h-8" />
-                    </div>
-                    <h3 className="text-lg font-black text-slate-900 mb-1.5 tracking-tight">Your Workout Program</h3>
-                    <p className="text-slate-500 text-sm mb-6 leading-relaxed">
-                      Generate a personalized training split based on your fitness level and weekly schedule.
+                  <div className="py-8 text-center max-w-sm mx-auto">
+                    <Dumbbell className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                    <h3 className="font-black text-slate-900 text-base">No active workout plan</h3>
+                    <p className="text-xs text-slate-500 mt-1 mb-4">
+                      Create your personalized training program tailored to your goals.
                     </p>
                     <Link
                       href="/workouts/generate"
-                      className="complete-btn inline-flex items-center gap-2 px-8 py-3.5 text-white text-sm font-black rounded-2xl shadow-md active:scale-95"
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-black shadow-sm"
                     >
-                      <span>Create Workout Routine</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <span>Generate Workout Plan</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* ─── Today's Fuel & Nutrition Card ─── */}
-            <div className="dashboard-card rounded-3xl overflow-hidden shadow-xs">
-              {/* Header */}
-              <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+            {/* ─── Nutrition & Fuel Engine ─── */}
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-emerald-600 text-white shadow-xs">
-                    <Utensils className="w-5 h-5" strokeWidth={2.2} />
+                  <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
+                    <Utensils className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="font-black text-slate-900 text-base sm:text-lg tracking-tight">Today&apos;s Nutrition & Fuel</h2>
-                    <p className="text-xs text-slate-500 font-medium">Daily calorie & macro targets</p>
+                    <h2 className="text-lg font-black text-slate-900 tracking-tight">Today&apos;s Nutrition & Macro Targets</h2>
+                    <p className="text-xs text-slate-500 font-medium">Daily nutritional fuel for {userWeight}kg body weight</p>
                   </div>
                 </div>
 
                 <Link
                   href={mealPlan ? "/meals" : "/meals/generate"}
-                  className="text-xs font-black text-emerald-700 hover:text-emerald-800 flex items-center gap-1 transition-colors"
+                  className="text-xs font-black text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
                 >
-                  <span>{mealPlan ? "View Meal Plan" : "Generate Plan"}</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <span>{mealPlan ? "Open Plan" : "Generate Plan"}</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
 
-              {/* Body */}
-              <div className="p-6 sm:p-8 space-y-6">
-                {/* Macro Split Breakdown */}
-                <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/70 space-y-4">
+              <div className="p-6 space-y-6">
+                {/* Visual Macro Bar & Targets */}
+                <div className="p-4 rounded-xl bg-slate-50/70 border border-slate-200/60 space-y-3">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-xs font-black uppercase tracking-wider text-slate-500">
-                        Target Macros ({profile.dietaryPreference || "Budget Friendly"} Diet)
-                      </span>
-                      <p className="text-xs text-slate-500 font-medium mt-0.5">Calibrated for {userWeight}kg body weight</p>
-                    </div>
-                    <span className="px-3 py-1 rounded-full bg-white text-slate-800 text-xs font-black border border-slate-200 shadow-2xs">
-                      {targetCalories} kcal / day
+                    <span className="text-xs font-black uppercase tracking-wider text-slate-500">
+                      Macro Split ({profile.dietaryPreference || "Budget Friendly"} Diet)
                     </span>
+                    <span className="text-xs font-black text-slate-900">{targetCalories} kcal Target</span>
                   </div>
 
-                  {/* Visual multi-segment macro bar */}
+                  {/* Multi-segment proportional bar */}
                   <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden flex">
                     <div className="bg-emerald-500 h-full w-[25%]" title="Protein 25%" />
                     <div className="bg-amber-500 h-full w-[45%]" title="Carbs 45%" />
-                    <div className="bg-purple-500 h-full w-[30%]" title="Fats 30%" />
+                    <div className="bg-purple-500 h-full w-[30%]" title="Healthy Fats 30%" />
                   </div>
 
-                  {/* 4 Macro Metric Badges */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-                    <div className="bg-white p-3.5 rounded-xl border border-slate-200/80">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Calories</span>
-                      <p className="text-lg font-black text-slate-900 mt-0.5">{targetCalories}</p>
-                      <span className="text-[10px] text-slate-500 font-semibold">kcal daily goal</span>
+                  <div className="grid grid-cols-3 gap-3 pt-1">
+                    <div className="p-2.5 rounded-lg bg-white border border-slate-200/80">
+                      <span className="text-[10px] font-black uppercase text-emerald-700">Protein (25%)</span>
+                      <p className="text-base font-black text-slate-900 mt-0.5">{targetProtein}g</p>
+                      <span className="text-[10px] text-slate-400 font-medium">2.0g per kg</span>
                     </div>
-                    <div className="bg-white p-3.5 rounded-xl border border-slate-200/80">
-                      <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Protein (25%)</span>
-                      <p className="text-lg font-black text-slate-900 mt-0.5">{targetProtein}g</p>
-                      <span className="text-[10px] text-slate-500 font-semibold">2.0g per kg</span>
+                    <div className="p-2.5 rounded-lg bg-white border border-slate-200/80">
+                      <span className="text-[10px] font-black uppercase text-amber-700">Carbs (45%)</span>
+                      <p className="text-base font-black text-slate-900 mt-0.5">{targetCarbs}g</p>
+                      <span className="text-[10px] text-slate-400 font-medium">clean fuel</span>
                     </div>
-                    <div className="bg-white p-3.5 rounded-xl border border-slate-200/80">
-                      <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Carbs (45%)</span>
-                      <p className="text-lg font-black text-slate-900 mt-0.5">{targetCarbs}g</p>
-                      <span className="text-[10px] text-slate-500 font-semibold">clean energy</span>
-                    </div>
-                    <div className="bg-white p-3.5 rounded-xl border border-slate-200/80">
-                      <span className="text-[10px] font-bold text-purple-600 uppercase tracking-wider">Fats (30%)</span>
-                      <p className="text-lg font-black text-slate-900 mt-0.5">{targetFats}g</p>
-                      <span className="text-[10px] text-slate-500 font-semibold">vital balance</span>
+                    <div className="p-2.5 rounded-lg bg-white border border-slate-200/80">
+                      <span className="text-[10px] font-black uppercase text-purple-700">Fats (30%)</span>
+                      <p className="text-base font-black text-slate-900 mt-0.5">{targetFats}g</p>
+                      <span className="text-[10px] text-slate-400 font-medium">vital balance</span>
                     </div>
                   </div>
                 </div>
 
+                {/* Meals timeline or generate card */}
                 {mealPlan && activeMealDay ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                       Day {mealDayNumber} Meals
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {activeMealDay.breakfast && (
-                        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
-                          <p className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Breakfast</p>
-                          <p className="text-xs font-extrabold text-slate-800 mt-1 line-clamp-2">{activeMealDay.breakfast}</p>
+                        <div className="p-3.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+                          <span className="text-[11px] font-black text-emerald-700 uppercase">Breakfast</span>
+                          <p className="text-xs font-bold text-slate-800 mt-1 line-clamp-2">{activeMealDay.breakfast}</p>
                         </div>
                       )}
                       {activeMealDay.lunch && (
-                        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
-                          <p className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Lunch</p>
-                          <p className="text-xs font-extrabold text-slate-800 mt-1 line-clamp-2">{activeMealDay.lunch}</p>
+                        <div className="p-3.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+                          <span className="text-[11px] font-black text-emerald-700 uppercase">Lunch</span>
+                          <p className="text-xs font-bold text-slate-800 mt-1 line-clamp-2">{activeMealDay.lunch}</p>
                         </div>
                       )}
                       {activeMealDay.dinner && (
-                        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
-                          <p className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Dinner</p>
-                          <p className="text-xs font-extrabold text-slate-800 mt-1 line-clamp-2">{activeMealDay.dinner}</p>
+                        <div className="p-3.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+                          <span className="text-[11px] font-black text-emerald-700 uppercase">Dinner</span>
+                          <p className="text-xs font-bold text-slate-800 mt-1 line-clamp-2">{activeMealDay.dinner}</p>
                         </div>
                       )}
                     </div>
-
-                    <div className="pt-2">
-                      <Link
-                        href="/meals"
-                        className="emerald-btn inline-flex items-center gap-2 px-7 py-3.5 text-white text-sm font-black rounded-2xl shadow-md active:scale-95"
-                      >
-                        <Utensils className="w-4 h-4" />
-                        <span>Open Nutrition Plan</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-                    </div>
                   </div>
                 ) : (
-                  /* When meal plan is not generated */
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-emerald-50/60 border border-emerald-100">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-emerald-50/50 border border-emerald-100">
                     <div>
                       <h4 className="text-sm font-extrabold text-slate-900">Custom Meal Recipes</h4>
                       <p className="text-xs text-slate-600 mt-0.5">
@@ -741,9 +623,8 @@ export default function DashboardPage() {
                     </div>
                     <Link
                       href="/meals/generate"
-                      className="emerald-btn whitespace-nowrap inline-flex items-center gap-2 px-6 py-3 text-white text-xs font-black rounded-xl shadow-md active:scale-95"
+                      className="whitespace-nowrap inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-sm"
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
                       <span>Generate Recipes</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
@@ -753,124 +634,90 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Right Column: Sidebar */}
-          <div className="space-y-8">
-            {/* ─── 1. Daily Coach Briefing ─── */}
-            <div className="relative overflow-hidden rounded-3xl bg-white p-6 sm:p-7 border border-slate-200/80 shadow-xs">
-              <div className="space-y-4">
-                {/* Header row */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 font-black">
-                      <Target className="w-4.5 h-4.5" />
+          {/* Right Column (Sidebar) */}
+          <div className="space-y-6">
+            {/* ─── Daily Coach Briefing ─── */}
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-2xs space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
+                    <Target className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">Coach Note</h3>
+                </div>
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                  Daily Tip
+                </span>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
+                <p className="text-xs font-semibold text-slate-700 leading-relaxed">
+                  Focus on strict pelvic stability and a 3-second eccentric tempo on core movements today. Keep breathing steady through every repetition.
+                </p>
+              </div>
+
+              {/* Interactive Daily Checklist */}
+              <div className="space-y-2">
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Today&apos;s Targets</p>
+                <div className="space-y-1.5 text-xs font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => toggleChecklistItem("workout")}
+                    className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
+                      checklist.workout ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${checklist.workout ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300"}`}>
+                      {checklist.workout && <Check className="w-3 h-3" strokeWidth={3} />}
                     </div>
-                    <h3 className="text-base font-black text-slate-900 tracking-tight">Coach Insights</h3>
-                  </div>
-                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                    Daily Tip
-                  </span>
+                    <span className={checklist.workout ? "line-through text-slate-400" : ""}>
+                      Day 1 Core Workout
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleChecklistItem("protein")}
+                    className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
+                      checklist.protein ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${checklist.protein ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300"}`}>
+                      {checklist.protein && <Check className="w-3 h-3" strokeWidth={3} />}
+                    </div>
+                    <span className={checklist.protein ? "line-through text-slate-400" : ""}>
+                      Hit {targetProtein}g Protein Goal
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleChecklistItem("water")}
+                    className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
+                      checklist.water ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${checklist.water ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300"}`}>
+                      {checklist.water && <Check className="w-3 h-3" strokeWidth={3} />}
+                    </div>
+                    <span className={checklist.water ? "line-through text-slate-400" : ""}>
+                      Hydrate 2.5L Water
+                    </span>
+                  </button>
                 </div>
-
-                {/* Structured coaching note */}
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Focus Technique</p>
-                  <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
-                    Prioritize strict form on your core movements today. Maintain slow 3-second negatives and keep core braced throughout every rep.
-                  </p>
-                </div>
-
-                {/* Interactive Daily checklist */}
-                <div className="space-y-2">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Today&apos;s Checklist</p>
-                  <div className="space-y-1.5 text-xs font-semibold">
-                    <button
-                      type="button"
-                      onClick={() => toggleChecklistItem("workout")}
-                      className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
-                        checklist.workout
-                          ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                          : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
-                      }`}
-                    >
-                      <div
-                        className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${
-                          checklist.workout ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300"
-                        }`}
-                      >
-                        {checklist.workout && <Check className="w-3 h-3" strokeWidth={3} />}
-                      </div>
-                      <span className={checklist.workout ? "line-through text-slate-400" : ""}>
-                        Day 1 Core Workout
-                      </span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => toggleChecklistItem("protein")}
-                      className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
-                        checklist.protein
-                          ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                          : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
-                      }`}
-                    >
-                      <div
-                        className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${
-                          checklist.protein ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300"
-                        }`}
-                      >
-                        {checklist.protein && <Check className="w-3 h-3" strokeWidth={3} />}
-                      </div>
-                      <span className={checklist.protein ? "line-through text-slate-400" : ""}>
-                        Hit {targetProtein}g Daily Protein
-                      </span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => toggleChecklistItem("water")}
-                      className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
-                        checklist.water
-                          ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                          : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
-                      }`}
-                    >
-                      <div
-                        className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${
-                          checklist.water ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300"
-                        }`}
-                      >
-                        {checklist.water && <Check className="w-3 h-3" strokeWidth={3} />}
-                      </div>
-                      <span className={checklist.water ? "line-through text-slate-400" : ""}>
-                        Hydrate 2.5L Water
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Ask Assistant trigger */}
-                <button
-                  type="button"
-                  onClick={openAIChat}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-black text-white transition-all active:scale-98 shadow-sm group"
-                >
-                  <MessageSquare className="w-4 h-4 text-orange-400 group-hover:scale-110 transition-transform" />
-                  <span>Ask Coach a question</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-                </button>
               </div>
             </div>
 
-            {/* ─── 2. Interactive Daily Hydration Tracker ─── */}
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-100">
-                    <Droplets className="w-4.5 h-4.5" />
+            {/* ─── Daily Hydration Module ─── */}
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-2xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center">
+                    <Droplets className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-black text-slate-900 text-sm tracking-tight">Daily Hydration</h3>
-                    <p className="text-[11px] text-slate-500">Goal: 2.5 Liters</p>
+                    <h3 className="text-sm font-black text-slate-900">Hydration Log</h3>
+                    <p className="text-[11px] text-slate-500">Target: 2.5 Liters</p>
                   </div>
                 </div>
 
@@ -888,7 +735,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={addWater}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-black transition-colors active:scale-95"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-black transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>+250ml</span>
@@ -896,12 +743,12 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* 10-glass visual dots */}
-              <div className="grid grid-cols-10 gap-1.5 py-2">
+              {/* 10-glass visual bar */}
+              <div className="grid grid-cols-10 gap-1.5 py-1">
                 {[...Array(10)].map((_, i) => (
                   <div
                     key={i}
-                    className={`h-6 rounded-md transition-all ${
+                    className={`h-5 rounded-md transition-all ${
                       i < waterCups
                         ? "bg-cyan-500 shadow-xs shadow-cyan-500/30"
                         : "bg-slate-100 border border-slate-200/60"
@@ -910,71 +757,33 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              <div className="flex items-center justify-between text-xs font-bold text-slate-600 mt-2">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-600">
                 <span>{(waterCups * 0.25).toFixed(1)}L logged</span>
                 <span className="text-slate-400">{waterCups} / 10 glasses</span>
               </div>
             </div>
 
-            {/* ─── 3. Quick Shortcuts ─── */}
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-black text-slate-900 text-sm tracking-tight">Quick Shortcuts</h3>
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Navigation</span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+            {/* ─── Quick Navigation Launcher ─── */}
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs space-y-3">
+              <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 px-1">
+                Shortcuts
+              </h3>
+              <div className="grid grid-cols-2 gap-2.5">
                 {[
-                  {
-                    label: "Workouts",
-                    subtitle: "Daily routines",
-                    icon: Dumbbell,
-                    href: "/workouts",
-                    iconBg: "bg-blue-50 text-blue-600 border border-blue-100",
-                    hoverBorder: "hover:border-blue-200",
-                  },
-                  {
-                    label: "Meal Plan",
-                    subtitle: "Daily recipes",
-                    icon: Utensils,
-                    href: "/meals",
-                    iconBg: "bg-emerald-50 text-emerald-600 border border-emerald-100",
-                    hoverBorder: "hover:border-emerald-200",
-                  },
-                  {
-                    label: "Progress",
-                    subtitle: "Weight tracking",
-                    icon: TrendingUp,
-                    href: "/progress",
-                    iconBg: "bg-amber-50 text-amber-600 border border-amber-100",
-                    hoverBorder: "hover:border-amber-200",
-                  },
-                  {
-                    label: "Settings",
-                    subtitle: "Targets & profile",
-                    icon: Award,
-                    href: "/settings",
-                    iconBg: "bg-purple-50 text-purple-600 border border-purple-100",
-                    hoverBorder: "hover:border-purple-200",
-                  },
+                  { label: "Workouts", href: "/workouts", icon: Dumbbell, color: "text-blue-600 bg-blue-50" },
+                  { label: "Meal Plan", href: "/meals", icon: Utensils, color: "text-emerald-600 bg-emerald-50" },
+                  { label: "Progress", href: "/progress", icon: TrendingUp, color: "text-amber-600 bg-amber-50" },
+                  { label: "Settings", href: "/settings", icon: Award, color: "text-purple-600 bg-purple-50" },
                 ].map((action, idx) => (
                   <Link
                     key={idx}
                     href={action.href}
-                    className={`flex flex-col p-3.5 rounded-2xl bg-slate-50/70 border border-slate-100 ${action.hoverBorder} hover:bg-white hover:shadow-xs transition-all text-left group`}
+                    className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50/70 hover:bg-white border border-slate-200/60 hover:border-slate-300 hover:shadow-2xs transition-all text-xs font-bold text-slate-800 group"
                   >
-                    <div className="flex items-center justify-between w-full mb-2.5">
-                      <div className={`p-2 rounded-xl ${action.iconBg} group-hover:scale-105 transition-transform`}>
-                        <action.icon className="w-4 h-4" strokeWidth={2.2} />
-                      </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-600 group-hover:translate-x-0.5 transition-all" />
+                    <div className={`p-1.5 rounded-lg ${action.color} group-hover:scale-105 transition-transform`}>
+                      <action.icon className="w-4 h-4" />
                     </div>
-                    <span className="text-xs font-black text-slate-900 group-hover:text-blue-600 transition-colors">
-                      {action.label}
-                    </span>
-                    <span className="text-[10px] font-semibold text-slate-500 mt-0.5">
-                      {action.subtitle}
-                    </span>
+                    <span>{action.label}</span>
                   </Link>
                 ))}
               </div>
