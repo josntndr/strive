@@ -124,15 +124,15 @@ export const Navbar = () => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-2 text-sm px-4.5 py-2 rounded-full transition-all duration-150 ${
+                  className={`flex items-center gap-2 text-sm px-3.5 py-2 transition-colors group ${
                     active
-                      ? "bg-blue-50 text-blue-600 border border-blue-200/90 shadow-2xs font-black ring-1 ring-blue-500/10 scale-[1.02]"
-                      : "text-slate-600 hover:text-blue-600 hover:bg-slate-50 font-bold"
+                      ? "text-blue-600 font-extrabold"
+                      : "text-slate-500 hover:text-slate-900 font-semibold"
                   }`}
                 >
                   <Icon
                     className={`w-4.5 h-4.5 transition-colors ${
-                      active ? "text-blue-600 stroke-[2.5]" : "text-slate-400 group-hover:text-blue-600 stroke-[2]"
+                      active ? "text-blue-600 stroke-[2.5]" : "text-slate-400 group-hover:text-slate-700 stroke-[2]"
                     }`}
                   />
                   <span>{link.label}</span>
@@ -142,15 +142,15 @@ export const Navbar = () => {
             {user?.role === "admin" && (
               <Link
                 href="/admin/dashboard"
-                className={`flex items-center gap-2 text-sm font-extrabold px-4.5 py-2 rounded-full transition-all duration-150 ${
+                className={`flex items-center gap-2 text-sm px-3.5 py-2 transition-colors group ${
                   pathname.startsWith("/admin")
-                    ? "bg-amber-50/90 text-amber-600 border border-amber-200/80 shadow-xs scale-[1.02]"
-                    : "text-slate-600 hover:text-amber-600 hover:bg-slate-50"
+                    ? "text-amber-600 font-extrabold"
+                    : "text-slate-500 hover:text-slate-900 font-semibold"
                 }`}
               >
                 <ShieldCheck
-                  className={`w-4.5 h-4.5 ${
-                    pathname.startsWith("/admin") ? "text-amber-600" : "text-amber-500"
+                  className={`w-4.5 h-4.5 transition-colors ${
+                    pathname.startsWith("/admin") ? "text-amber-600 stroke-[2.5]" : "text-slate-400 group-hover:text-slate-700 stroke-[2]"
                   }`}
                 />
                 <span>Admin</span>
@@ -251,14 +251,14 @@ export const Navbar = () => {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`flex items-center gap-3 text-base font-black py-3 px-4 rounded-2xl transition-all ${
+                    className={`flex items-center gap-3 text-base py-3 px-4 rounded-xl transition-colors ${
                       active
-                        ? "bg-blue-50 text-blue-600 border border-blue-200/90 shadow-2xs ring-1 ring-blue-500/10"
-                        : "text-slate-700 hover:text-blue-600 hover:bg-slate-50 font-bold"
+                        ? "text-blue-600 font-extrabold"
+                        : "text-slate-600 hover:text-slate-900 font-semibold"
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className={`w-5 h-5 ${active ? "text-blue-600 stroke-[2.5]" : "text-slate-400 stroke-[2]"}`} />
                     <span>{link.label}</span>
                   </Link>
                 );
@@ -266,14 +266,14 @@ export const Navbar = () => {
               {user?.role === "admin" && (
                 <Link
                   href="/admin/dashboard"
-                  className={`flex items-center gap-3 text-base font-extrabold py-3 px-4 rounded-2xl transition-all ${
+                  className={`flex items-center gap-3 text-base py-3 px-4 rounded-xl transition-colors ${
                     pathname.startsWith("/admin")
-                      ? "bg-amber-50 text-amber-600 border border-amber-100"
-                      : "text-slate-700 hover:text-amber-600 hover:bg-slate-50"
+                      ? "text-amber-600 font-extrabold"
+                      : "text-slate-600 hover:text-slate-900 font-semibold"
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <ShieldCheck className="w-5 h-5 text-amber-500" />
+                  <ShieldCheck className={`w-5 h-5 ${pathname.startsWith("/admin") ? "text-amber-600 stroke-[2.5]" : "text-slate-400 stroke-[2]"}`} />
                   <span>Admin Panel</span>
                 </Link>
               )}
