@@ -8,25 +8,8 @@ import { AIChat } from "@/components/ai/AIChat";
 import {
   Save,
   Loader2,
-  User,
-  Mail,
-  Calendar,
-  Scale,
-  Ruler,
-  Target,
-  Dumbbell,
-  Utensils,
-  Zap,
-  Flame,
-  Shield,
-  Heart,
-  Sparkles,
-  Check,
   CheckCircle2,
   ChevronRight,
-  Activity,
-  Award,
-  Lock,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { api, clearAuth, getStoredUser, getToken, isUnauthorizedError } from "@/lib/api";
@@ -204,24 +187,18 @@ export default function SettingsPage() {
           <div className="lg:col-span-7 space-y-6">
             {/* Section 1: Physical Biometrics */}
             <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
-              <div className="flex items-center gap-2.5 pb-3 border-b border-stone-100">
-                <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
-                  <Activity className="w-4 h-4" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-black text-stone-900 uppercase tracking-wider">
-                    Physical Biometrics
-                  </h2>
-                  <p className="text-[11px] text-stone-500">
-                    Used to calculate metabolic burn rate and training intensity
-                  </p>
-                </div>
+              <div className="pb-3 border-b border-stone-100">
+                <h2 className="text-sm font-black text-stone-900 uppercase tracking-wider">
+                  Physical Biometrics
+                </h2>
+                <p className="text-[11px] text-stone-500">
+                  Used to calculate metabolic burn rate and training intensity
+                </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-stone-400" />
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5">
                     Full Name
                   </label>
                   <input
@@ -229,13 +206,12 @@ export default function SettingsPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-stone-400" />
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5">
                     Account Email
                   </label>
                   <input
@@ -247,8 +223,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-stone-400" />
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5">
                     Age (Years)
                   </label>
                   <input
@@ -258,20 +233,19 @@ export default function SettingsPage() {
                     required
                     value={formData.age}
                     onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="21"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
-                    <Heart className="w-3.5 h-3.5 text-stone-400" />
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5">
                     Biological Gender
                   </label>
                   <select
                     value={formData.gender}
                     onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="Female">Female</option>
                     <option value="Male">Male</option>
@@ -280,8 +254,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
-                    <Ruler className="w-3.5 h-3.5 text-stone-400" />
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5">
                     Height (cm)
                   </label>
                   <input
@@ -291,14 +264,13 @@ export default function SettingsPage() {
                     required
                     value={formData.height}
                     onChange={(e) => setFormData({ ...formData, height: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="157"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
-                    <Scale className="w-3.5 h-3.5 text-stone-400" />
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5">
                     Weight (kg)
                   </label>
                   <input
@@ -309,39 +281,33 @@ export default function SettingsPage() {
                     required
                     value={formData.weight}
                     onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="48"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Section 2: AI Fitness & Culinary Calibration */}
+            {/* Section 2: Training & Nutrition Calibration */}
             <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
-              <div className="flex items-center gap-2.5 pb-3 border-b border-stone-100">
-                <div className="p-2 rounded-xl bg-orange-50 text-orange-600">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-black text-stone-900 uppercase tracking-wider">
-                    AI Training & Nutrition Calibration
-                  </h2>
-                  <p className="text-[11px] text-stone-500">
-                    Controls the algorithms generating your workout and recipe blueprints
-                  </p>
-                </div>
+              <div className="pb-3 border-b border-stone-100">
+                <h2 className="text-sm font-black text-stone-900 uppercase tracking-wider">
+                  Training & Nutrition Calibration
+                </h2>
+                <p className="text-[11px] text-stone-500">
+                  Controls the parameters generating your workout and recipe blueprints
+                </p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
-                    <Target className="w-3.5 h-3.5 text-stone-400" />
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5">
                     Primary Fitness Objective
                   </label>
                   <select
                     value={formData.goal}
                     onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="Lose fat">Lose fat (Caloric Deficit & Tone)</option>
                     <option value="Gain muscle">Gain muscle (Hypertrophy & Surplus)</option>
@@ -352,14 +318,13 @@ export default function SettingsPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
-                      <Dumbbell className="w-3.5 h-3.5 text-stone-400" />
+                    <label className="block text-xs font-bold text-stone-700 mb-1.5">
                       Workout Experience
                     </label>
                     <select
                       value={formData.experienceLevel}
                       onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500 transition-all"
                     >
                       <option value="Beginner">Beginner (Foundational Form)</option>
                       <option value="Intermediate">Intermediate (Progressive Overload)</option>
@@ -368,14 +333,13 @@ export default function SettingsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
-                      <Utensils className="w-3.5 h-3.5 text-stone-400" />
+                    <label className="block text-xs font-bold text-stone-700 mb-1.5">
                       Dietary Blueprint Style
                     </label>
                     <select
                       value={formData.dietaryPreference}
                       onChange={(e) => setFormData({ ...formData, dietaryPreference: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500 transition-all"
                     >
                       <option value="Balanced">Balanced High-Protein</option>
                       <option value="Budget Friendly">Budget Friendly Whole Foods</option>
@@ -419,32 +383,24 @@ export default function SettingsPage() {
           <div className="lg:col-span-5 space-y-6">
             {/* Live Calibrated Telemetry Card */}
             <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
-                    <Zap className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
-                      Calculated Metabolic Impact
-                    </h3>
-                    <p className="text-[11px] text-stone-500">Live algorithm feedback</p>
-                  </div>
+              <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                <div>
+                  <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
+                    Calculated Metabolic Impact
+                  </h3>
+                  <p className="text-[11px] text-stone-500">Live biometric derivation</p>
                 </div>
 
-                <span className="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                   Live Sync
                 </span>
               </div>
 
               {/* Metric 1: Daily Caloric Target */}
-              <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200/70 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
-                    Daily Fuel Intake Target
-                  </span>
-                  <Flame className="w-3.5 h-3.5 text-orange-500" />
-                </div>
+              <div className="p-4 rounded-2xl bg-stone-50/80 border border-stone-200/70 space-y-1">
+                <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block">
+                  Daily Fuel Intake Target
+                </span>
                 <p className="text-2xl font-black text-stone-900">
                   ~{estimatedCalories} <span className="text-xs font-bold text-stone-400">kcal/day</span>
                 </p>
@@ -454,13 +410,10 @@ export default function SettingsPage() {
               </div>
 
               {/* Metric 2: Protein Target */}
-              <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200/70 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
-                    Daily Protein Allocation
-                  </span>
-                  <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                </div>
+              <div className="p-4 rounded-2xl bg-stone-50/80 border border-stone-200/70 space-y-1">
+                <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block">
+                  Daily Protein Allocation
+                </span>
                 <p className="text-2xl font-black text-stone-900">
                   ~{estimatedProtein} <span className="text-xs font-bold text-stone-400">grams/day</span>
                 </p>
@@ -470,13 +423,10 @@ export default function SettingsPage() {
               </div>
 
               {/* Metric 3: BMI Status */}
-              <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200/70 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
-                    Body Mass Index (BMI)
-                  </span>
-                  <Scale className="w-3.5 h-3.5 text-blue-600" />
-                </div>
+              <div className="p-4 rounded-2xl bg-stone-50/80 border border-stone-200/70 space-y-1">
+                <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block">
+                  Body Mass Index (BMI)
+                </span>
                 <p className="text-2xl font-black text-stone-900">
                   {bmiValue}{" "}
                   <span className="text-xs font-bold text-emerald-600 ml-1">
@@ -489,24 +439,18 @@ export default function SettingsPage() {
               </div>
 
               {/* Pro Coach Tip */}
-              <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-start gap-2.5">
-                <Sparkles className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
-                <p className="text-xs font-semibold text-blue-950 leading-relaxed">
-                  Adjusting your weight or fitness objective dynamically updates your workout set prescriptions and meal recipe caloric targets across the entire application.
-                </p>
+              <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200/70 text-xs text-stone-600 leading-relaxed">
+                Adjusting your weight or fitness objective dynamically recalculates workout volume and recipe caloric targets across your entire plan.
               </div>
             </div>
 
             {/* Account & Security Information */}
-            <div className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-xs space-y-3">
-              <div className="flex items-center gap-2 text-stone-900">
-                <Lock className="w-4 h-4 text-stone-500" />
-                <h3 className="text-xs font-black uppercase tracking-wider">
-                  Account Privacy & Security
-                </h3>
-              </div>
+            <div className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-xs space-y-2">
+              <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
+                Data Privacy & Encryption
+              </h3>
               <p className="text-xs text-stone-500 leading-relaxed">
-                Your biometric metrics and nutritional preferences are encrypted and used solely by Strive AI to generate personalized training and meal recommendations.
+                Your biometric metrics and nutritional preferences are stored securely and used exclusively to personalize your training and meal plans.
               </p>
             </div>
           </div>

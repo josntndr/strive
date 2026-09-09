@@ -25,7 +25,6 @@ import {
   Play,
   RotateCcw,
   MessageSquare,
-  Sparkles,
   Zap,
   Heart,
   Timer,
@@ -302,10 +301,9 @@ export default function DashboardPage() {
             </button>
             <Link
               href="/workouts/generate"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-black transition-all active:scale-95"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-black transition-all active:scale-95"
             >
-              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-              <span>AI Plan Builder</span>
+              <span>Custom Plan Builder</span>
             </Link>
           </div>
         </div>
@@ -323,7 +321,7 @@ export default function DashboardPage() {
               sizes="(max-width: 1280px) 100vw, 1280px"
             />
             {/* Multi-stop cinematic gradient to ensure perfect editorial text legibility */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/25" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/30" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent" />
           </div>
 
@@ -331,16 +329,13 @@ export default function DashboardPage() {
           <div className="relative z-10 p-6 sm:p-10 w-full max-w-3xl space-y-4">
             {/* Top Badges */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-black tracking-wider uppercase shadow-md shadow-blue-500/30">
-                <Flame className="w-3.5 h-3.5 fill-white" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-blue-600 text-white text-xs font-black tracking-wider uppercase shadow-md shadow-blue-500/30">
                 Featured Session &bull; Day {workoutDayNumber}
               </span>
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
-                <Activity className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
                 {profile.workoutExperience || "Intermediate"} Intensity
               </span>
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
-                <Target className="w-3.5 h-3.5 text-blue-300" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
                 {profile.targetBodyFocus || "Core & Balance"}
               </span>
             </div>
@@ -399,17 +394,12 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* 3A. Concentric Activity Rings Card (Apple Watch / Whoop Style) */}
           <div className="lg:col-span-5 bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-stone-100 text-stone-900">
-                  <Activity className="w-4 h-4 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
-                    Daily Discipline Telemetry
-                  </h3>
-                  <p className="text-[11px] text-stone-500">Live compliance & habit rings</p>
-                </div>
+            <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+              <div>
+                <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
+                  Daily Discipline Telemetry
+                </h3>
+                <p className="text-[11px] text-stone-500">Live compliance & habit rings</p>
               </div>
               <span className="text-xs font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                 {readinessScore}% Score
@@ -513,18 +503,13 @@ export default function DashboardPage() {
           <div className="lg:col-span-7 bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-xl bg-stone-100 text-stone-900">
-                    <Calendar className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
-                      Weekly Periodization Schedule
-                    </h3>
-                    <p className="text-[11px] text-stone-500">
-                      {profile.workoutDaysPerWeek || 4} Training days &bull; 3 Recovery days
-                    </p>
-                  </div>
+                <div>
+                  <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
+                    Weekly Periodization Schedule
+                  </h3>
+                  <p className="text-[11px] text-stone-500">
+                    {profile.workoutDaysPerWeek || 4} Training days &bull; 3 Recovery days
+                  </p>
                 </div>
                 <span className="text-xs font-bold text-stone-500">Cycle Week 1</span>
               </div>
@@ -808,15 +793,10 @@ export default function DashboardPage() {
 
             {/* ─── DAILY DISCIPLINE CHECKLIST ─── */}
             <div className="bg-white rounded-3xl border border-stone-200/80 p-6 shadow-xs space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-xl bg-stone-100 text-stone-900">
-                    <Target className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
-                    Daily Discipline Targets
-                  </h3>
-                </div>
+              <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
+                  Daily Discipline Targets
+                </h3>
                 <span className="text-xs font-bold text-stone-400">
                   {Object.values(checklist).filter(Boolean).length}/3 Cleared
                 </span>
@@ -896,17 +876,12 @@ export default function DashboardPage() {
 
             {/* ─── TACTILE HYDRATION MODULE ─── */}
             <div className="bg-white rounded-3xl border border-stone-200/80 p-6 shadow-xs space-y-3.5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-100">
-                    <Droplets className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black uppercase tracking-wider text-stone-900">
-                      Hydration Fuel
-                    </h4>
-                    <p className="text-[11px] text-stone-500">Target: 2.5 Liters</p>
-                  </div>
+              <div className="flex items-center justify-between pb-2 border-b border-stone-100">
+                <div>
+                  <h4 className="text-xs font-black uppercase tracking-wider text-stone-900">
+                    Hydration Fuel
+                  </h4>
+                  <p className="text-[11px] text-stone-500">Target: 2.5 Liters</p>
                 </div>
 
                 <div className="flex items-center gap-1.5">

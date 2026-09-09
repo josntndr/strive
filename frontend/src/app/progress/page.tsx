@@ -16,24 +16,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import {
-  TrendingUp,
-  Scale,
-  Activity,
-  History,
-  Plus,
   Loader2,
-  Calendar,
-  Flame,
-  Award,
-  Zap,
-  ChevronRight,
-  Sparkles,
-  ArrowUpRight,
-  ArrowDownRight,
-  CheckCircle2,
-  Check,
-  Info,
-  Heart,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { api, clearAuth, getApiErrorMessage, getToken, isUnauthorizedError } from "@/lib/api";
@@ -222,16 +205,13 @@ export default function ProgressPage() {
 
           <div className="relative z-10 p-6 sm:p-10 w-full max-w-3xl space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-blue-500/30">
-                <Activity className="w-3.5 h-3.5 fill-white" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-blue-600 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-blue-500/30">
                 Biometric Progression
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
-                <Scale className="w-3.5 h-3.5 text-orange-300" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
                 Baseline: {baseWeight} kg
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
                 BMI {bmi} (Optimal Range)
               </span>
             </div>
@@ -248,17 +228,15 @@ export default function ProgressPage() {
             <div className="pt-2 flex flex-wrap items-center gap-3">
               <a
                 href="#log-section"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-600/30 transition-all active:scale-95"
+                className="inline-flex items-center px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-600/30 transition-all active:scale-95"
               >
-                <Plus className="w-4 h-4" />
                 <span>Log Today&apos;s Biometrics</span>
               </a>
               <Link
                 href="/dashboard"
-                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white text-xs font-bold border border-white/25 transition-all"
+                className="inline-flex items-center px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white text-xs font-bold border border-white/25 transition-all"
               >
                 <span>Athlete Command Center</span>
-                <ChevronRight className="w-3.5 h-3.5 text-stone-300" />
               </Link>
             </div>
           </div>
@@ -267,14 +245,9 @@ export default function ProgressPage() {
         {/* ─── 2. BIOMETRIC PERFORMANCE TELEMETRY STRIP ─── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-5 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
-                Current Mass
-              </span>
-              <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
-                <Scale className="w-4 h-4" />
-              </div>
-            </div>
+            <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block">
+              Current Mass
+            </span>
             <p className="text-2xl sm:text-3xl font-black text-stone-900">
               {records[0]?.weight || baseWeight}{" "}
               <span className="text-xs font-bold text-stone-400">kg</span>
@@ -283,27 +256,17 @@ export default function ProgressPage() {
           </div>
 
           <div className="p-5 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
-                BMI Index
-              </span>
-              <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
-                <Heart className="w-4 h-4" />
-              </div>
-            </div>
+            <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block">
+              BMI Index
+            </span>
             <p className="text-2xl sm:text-3xl font-black text-stone-900">{bmi}</p>
             <p className="text-[11px] text-emerald-600 font-bold">Optimal Health Classification</p>
           </div>
 
           <div className="p-5 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
-                Workout Streak
-              </span>
-              <div className="p-2 rounded-xl bg-orange-50 text-orange-600">
-                <Flame className="w-4 h-4" />
-              </div>
-            </div>
+            <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block">
+              Workout Streak
+            </span>
             <p className="text-2xl sm:text-3xl font-black text-stone-900">
               {streak} <span className="text-xs font-bold text-stone-400">days</span>
             </p>
@@ -311,14 +274,9 @@ export default function ProgressPage() {
           </div>
 
           <div className="p-5 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
-                Logged Check-ins
-              </span>
-              <div className="p-2 rounded-xl bg-purple-50 text-purple-600">
-                <Award className="w-4 h-4" />
-              </div>
-            </div>
+            <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block">
+              Logged Check-ins
+            </span>
             <p className="text-2xl sm:text-3xl font-black text-stone-900">
               {records.length}{" "}
               <span className="text-xs font-bold text-stone-400">entries</span>
@@ -333,21 +291,16 @@ export default function ProgressPage() {
           <div className="lg:col-span-7 space-y-6">
             {/* Weight Trend Chart Card */}
             <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100">
-                    <TrendingUp className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-black text-stone-900 tracking-tight">
-                      Body Mass Progression Curve
-                    </h2>
-                    <p className="text-xs text-stone-500">
-                      {records.length > 1
-                        ? `Tracking dynamic shift across ${records.length} data points`
-                        : `Baseline established at ${baseWeight} kg`}
-                    </p>
-                  </div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-stone-100">
+                <div>
+                  <h2 className="text-lg font-black text-stone-900 tracking-tight">
+                    Body Mass Progression Curve
+                  </h2>
+                  <p className="text-xs text-stone-500">
+                    {records.length > 1
+                      ? `Tracking dynamic shift across ${records.length} data points`
+                      : `Baseline established at ${baseWeight} kg`}
+                  </p>
                 </div>
 
                 <span className="self-start sm:self-auto text-xs font-black px-3 py-1 rounded-full bg-stone-100 text-stone-700">
@@ -411,11 +364,8 @@ export default function ProgressPage() {
               </div>
 
               {records.length <= 1 && (
-                <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-100 flex items-center gap-2.5 text-xs text-stone-600">
-                  <Info className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>
-                    Your profile baseline is locked at <strong>{baseWeight} kg</strong>. Log regular check-ins to unlock dynamic weekly trend lines.
-                  </span>
+                <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-100 text-xs text-stone-600 leading-relaxed">
+                  Your profile baseline is locked at <strong>{baseWeight} kg</strong>. Log regular check-ins to unlock dynamic weekly trend lines.
                 </div>
               )}
             </div>
@@ -423,16 +373,11 @@ export default function ProgressPage() {
             {/* ─── Progression Timeline (History Feed) ─── */}
             <div className="bg-white rounded-3xl border border-stone-200/80 shadow-xs overflow-hidden">
               <div className="p-6 border-b border-stone-100 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-stone-100 text-stone-900">
-                    <History className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-stone-900 uppercase tracking-wider">
-                      Biometric Timeline
-                    </h3>
-                    <p className="text-[11px] text-stone-500">Historical transformation records</p>
-                  </div>
+                <div>
+                  <h3 className="text-sm font-black text-stone-900 uppercase tracking-wider">
+                    Biometric Timeline
+                  </h3>
+                  <p className="text-[11px] text-stone-500">Historical transformation records</p>
                 </div>
 
                 <span className="text-xs font-bold text-stone-400">
@@ -485,8 +430,8 @@ export default function ProgressPage() {
                   /* Baseline Establishment Card */
                   <div className="p-4 rounded-2xl bg-stone-50/80 border border-stone-200/70 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center shrink-0 font-bold text-xs">
-                        <Check className="w-4 h-4" />
+                      <div className="w-10 h-10 rounded-xl bg-stone-100 border border-stone-200 text-stone-800 font-mono font-black text-xs flex items-center justify-center shrink-0">
+                        00
                       </div>
                       <div>
                         <p className="font-extrabold text-stone-900 text-sm">
@@ -513,17 +458,12 @@ export default function ProgressPage() {
               id="log-section"
               className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-5"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2.5 rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-600/20">
-                    <Plus className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-stone-900 uppercase tracking-wider">
-                      Log Check-in
-                    </h3>
-                    <p className="text-[11px] text-stone-500">Record today&apos;s metrics</p>
-                  </div>
+              <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                <div>
+                  <h3 className="text-sm font-black text-stone-900 uppercase tracking-wider">
+                    Log Check-in
+                  </h3>
+                  <p className="text-[11px] text-stone-500">Record today&apos;s biometric metrics</p>
                 </div>
 
                 <span className="text-xs font-bold text-stone-400">Quick Entry</span>
@@ -533,8 +473,7 @@ export default function ProgressPage() {
                 {/* Weight Input with Stepper */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-black uppercase tracking-wider text-stone-700 flex items-center gap-1.5">
-                      <Scale className="w-3.5 h-3.5 text-blue-600" />
+                    <label className="text-xs font-black uppercase tracking-wider text-stone-700">
                       Current Weight (kg)
                     </label>
                     <span className="text-[11px] font-bold text-stone-400">
@@ -606,22 +545,22 @@ export default function ProgressPage() {
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {[
-                      { label: "High Energy", icon: "⚡" },
-                      { label: "Strong & Ready", icon: "💪" },
-                      { label: "Balanced", icon: "😌" },
-                      { label: "Sore / Rest Needed", icon: "😴" },
+                      { label: "High Energy", dotColor: "bg-emerald-500" },
+                      { label: "Strong & Ready", dotColor: "bg-blue-500" },
+                      { label: "Balanced", dotColor: "bg-amber-500" },
+                      { label: "Sore / Rest Needed", dotColor: "bg-stone-400" },
                     ].map((item) => (
                       <button
                         key={item.label}
                         type="button"
                         onClick={() => selectFeelingTag(item.label)}
-                        className={`p-2 rounded-xl text-[11px] font-bold border text-left flex items-center gap-1.5 transition-all ${
+                        className={`p-2.5 rounded-xl text-xs font-bold border text-left flex items-center gap-2 transition-all ${
                           selectedFeeling === item.label
-                            ? "bg-blue-50 border-blue-300 text-blue-700 shadow-2xs"
+                            ? "bg-blue-50 border-blue-400 text-blue-800 shadow-2xs"
                             : "bg-stone-50/70 border-stone-200/70 text-stone-700 hover:bg-stone-100"
                         }`}
                       >
-                        <span>{item.icon}</span>
+                        <span className={`w-2 h-2 rounded-full ${item.dotColor} shrink-0`} />
                         <span>{item.label}</span>
                       </button>
                     ))}
@@ -658,52 +597,43 @@ export default function ProgressPage() {
 
             {/* ─── Athletic Milestones & Achievements Card ─── */}
             <div className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-xs space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-xl bg-amber-50 text-amber-600">
-                    <Award className="w-4 h-4" />
-                  </div>
+              <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                <div>
                   <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
                     Discipline Badges
                   </h3>
+                  <p className="text-[11px] text-stone-500">Milestone benchmarks</p>
                 </div>
-                <span className="text-[11px] font-bold text-stone-400">Milestones</span>
+                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-stone-100 text-stone-600">
+                  Milestones
+                </span>
               </div>
 
               <div className="space-y-2.5">
-                <div className="p-3 rounded-2xl bg-stone-50 border border-stone-200/70 flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-lg">🎯</span>
-                    <div>
-                      <p className="text-xs font-black text-stone-900">Baseline Calibrated</p>
-                      <p className="text-[10px] text-stone-500">Weight & BMI established</p>
-                    </div>
+                <div className="p-3 rounded-2xl bg-stone-50/80 border border-stone-200/70 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-black text-stone-900">Baseline Calibrated</p>
+                    <p className="text-[10px] text-stone-500">Weight & BMI established</p>
                   </div>
                   <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
                     Unlocked
                   </span>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-stone-50 border border-stone-200/70 flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-lg">🔥</span>
-                    <div>
-                      <p className="text-xs font-black text-stone-900">Daily Ignition</p>
-                      <p className="text-[10px] text-stone-500">Training cycle activated</p>
-                    </div>
+                <div className="p-3 rounded-2xl bg-stone-50/80 border border-stone-200/70 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-black text-stone-900">Daily Ignition</p>
+                    <p className="text-[10px] text-stone-500">Training cycle activated</p>
                   </div>
                   <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
                     Active
                   </span>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-stone-50 border border-stone-200/70 flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-lg">⚖️</span>
-                    <div>
-                      <p className="text-xs font-black text-stone-900">Master of Consistency</p>
-                      <p className="text-[10px] text-stone-500">Log 5 biometric check-ins</p>
-                    </div>
+                <div className="p-3 rounded-2xl bg-stone-50/80 border border-stone-200/70 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-black text-stone-900">Master of Consistency</p>
+                    <p className="text-[10px] text-stone-500">Log 5 biometric check-ins</p>
                   </div>
                   <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-stone-200 text-stone-600">
                     {Math.min(records.length, 5)}/5

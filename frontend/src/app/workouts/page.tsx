@@ -14,25 +14,19 @@ import {
   Clock,
   Target,
   CheckCircle2,
-  Home,
-  Building2,
   ShieldAlert,
   TriangleAlert,
   Repeat2,
   PlayCircle,
   RefreshCw,
-  Flame,
   Zap,
-  Trophy,
   Play,
   Pause,
   RotateCcw,
   Check,
-  Sparkles,
   Layers,
   ArrowRight,
   Video,
-  Timer,
   Activity,
   CheckCheck,
 } from "lucide-react";
@@ -373,21 +367,14 @@ export default function WorkoutsPage() {
 
           <div className="relative z-10 p-6 sm:p-10 w-full max-w-3xl space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-blue-500/30">
-                <Flame className="w-3.5 h-3.5 fill-white" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-blue-600 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-blue-500/30">
                 Active Training Program
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
-                <Trophy className="w-3.5 h-3.5 text-amber-400" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
                 {completedCount}/{totalCount || 1} Sessions Done
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
-                {workoutLocation.toLowerCase().includes("home") && !workoutLocation.toLowerCase().includes("gym") ? (
-                  <Home className="w-3.5 h-3.5 text-blue-300" />
-                ) : (
-                  <Building2 className="w-3.5 h-3.5 text-blue-300" />
-                )}
-                <span>{workoutLocationLabel}</span>
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
+                {workoutLocationLabel}
               </span>
             </div>
 
@@ -406,7 +393,7 @@ export default function WorkoutsPage() {
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-white text-xs font-black border border-white/25 transition-all active:scale-95"
               >
                 <RefreshCw className="w-3.5 h-3.5 text-blue-300" />
-                <span>Regenerate AI Plan</span>
+                <span>Regenerate Plan</span>
               </Link>
               {currentDay && (
                 <button
@@ -428,23 +415,18 @@ export default function WorkoutsPage() {
 
         {/* ─── 2. REST INTERVAL TIMER BAR (INTERACTIVE LIVE FITNESS TOOL) ─── */}
         <div className="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-orange-50 text-orange-600 border border-orange-200 flex items-center justify-center shrink-0">
-              <Timer className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-xs font-black uppercase tracking-wider text-stone-900 flex items-center gap-2">
-                Live Rest Interval Timer
-                {timerActive && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-black animate-pulse">
-                    COUNTDOWN
-                  </span>
-                )}
-              </h3>
-              <p className="text-[11px] text-stone-500">
-                Optimize ATP replenishment and muscle recovery between sets
-              </p>
-            </div>
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-wider text-stone-900 flex items-center gap-2">
+              Live Rest Interval Timer
+              {timerActive && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-black animate-pulse">
+                  COUNTDOWN
+                </span>
+              )}
+            </h3>
+            <p className="text-[11px] text-stone-500">
+              Optimize ATP replenishment and muscle recovery between sets
+            </p>
           </div>
 
           <div className="flex items-center gap-2 self-end sm:self-auto">
@@ -504,7 +486,6 @@ export default function WorkoutsPage() {
               href="/workouts/generate"
               className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white font-black text-xs uppercase tracking-wider rounded-2xl hover:bg-blue-500 shadow-md shadow-blue-600/30 transition-all active:scale-95"
             >
-              <Sparkles className="w-4 h-4" />
               <span>Build Custom Plan</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
@@ -596,20 +577,13 @@ export default function WorkoutsPage() {
 
                   {/* Session Badges & Telemetry */}
                   <div className="flex flex-wrap items-center gap-2">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs">
-                      <Clock className="w-3.5 h-3.5 text-blue-600" />
+                    <div className="inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs">
                       <span>45–60 min</span>
                     </div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs">
-                      <Flame className="w-3.5 h-3.5 text-orange-500" />
+                    <div className="inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs">
                       <span>{currentDay.exercises.length} Exercises</span>
                     </div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs">
-                      {currentDay.workoutLocation?.toLowerCase().includes("home") && !currentDay.workoutLocation?.toLowerCase().includes("gym") ? (
-                        <Home className="w-3.5 h-3.5 text-emerald-600" />
-                      ) : (
-                        <Building2 className="w-3.5 h-3.5 text-emerald-600" />
-                      )}
+                    <div className="inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs">
                       <span>{currentDay.workoutLocation || workoutLocation}</span>
                     </div>
                   </div>
@@ -695,9 +669,8 @@ export default function WorkoutsPage() {
 
                           {/* Coach Tip Snippet */}
                           {(ex.instruction || ex.instructions) && (
-                            <div className="flex items-start gap-2 text-xs text-stone-500 leading-relaxed bg-stone-50/50 p-2.5 rounded-xl border border-stone-100">
-                              <Sparkles className="w-3.5 h-3.5 text-orange-500 mt-0.5 shrink-0" />
-                              <p className="line-clamp-2">{ex.instruction || ex.instructions}</p>
+                            <div className="text-xs text-stone-500 leading-relaxed bg-stone-50/70 p-2.5 rounded-xl border border-stone-100">
+                              <p className="line-clamp-2"><span className="font-bold text-stone-700">Form Cue:</span> {ex.instruction || ex.instructions}</p>
                             </div>
                           )}
 
@@ -721,11 +694,10 @@ export default function WorkoutsPage() {
                                 const seconds = parseInt(ex.rest) || 45;
                                 startRestTimer(seconds);
                               }}
-                              className="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-600 text-[11px] font-bold flex items-center gap-1 transition-colors"
+                              className="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-[11px] font-bold transition-colors"
                               title="Quick Rest Timer"
                             >
-                              <Timer className="w-3 h-3 text-orange-500" />
-                              <span>{ex.rest || "45s"}</span>
+                              <span>Rest {ex.rest || "45s"}</span>
                             </button>
                           </div>
                         </div>

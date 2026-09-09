@@ -12,7 +12,6 @@ import {
   Flame,
   Zap,
   CheckCircle2,
-  Sparkles,
   RefreshCw,
   Clock,
   Heart,
@@ -238,16 +237,13 @@ export default function MealsPage() {
 
           <div className="relative z-10 p-6 sm:p-10 w-full max-w-3xl space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-emerald-500/30">
-                <Utensils className="w-3.5 h-3.5 fill-white" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-emerald-600 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-emerald-500/30">
                 Athlete Nutrition Engine
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
-                <Target className="w-3.5 h-3.5 text-emerald-300" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
                 {profile?.dietaryPreference || "High-Protein Balanced"}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
-                <Flame className="w-3.5 h-3.5 text-amber-300" />
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
                 {targetCalories} kcal Daily Calibrated
               </span>
             </div>
@@ -271,9 +267,9 @@ export default function MealsPage() {
                 {isGenerating ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <Sparkles className="w-4 h-4" />
+                  <RefreshCw className="w-4 h-4" />
                 )}
-                <span>{mealPlan ? "Regenerate AI Menu" : "Generate My Plan"}</span>
+                <span>{mealPlan ? "Regenerate Meal Plan" : "Generate My Plan"}</span>
               </button>
 
               <Link
@@ -290,40 +286,25 @@ export default function MealsPage() {
         {/* ─── 2. MACRO TELEMETRY & BODY COMPOSITION BAR ─── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-5 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
-                Daily Caloric Target
-              </span>
-              <div className="p-2 rounded-xl bg-orange-50 text-orange-600">
-                <Flame className="w-4 h-4" />
-              </div>
-            </div>
+            <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block">
+              Daily Caloric Target
+            </span>
             <p className="text-2xl font-black text-stone-900">{targetCalories} <span className="text-xs font-bold text-stone-400">kcal/day</span></p>
             <p className="text-[11px] text-stone-500 font-medium">Maintenance & Lean Fuel for {userWeight}kg</p>
           </div>
 
           <div className="p-5 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
-                Protein Target (25%)
-              </span>
-              <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
-                <Zap className="w-4 h-4" />
-              </div>
-            </div>
+            <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block">
+              Protein Target (25%)
+            </span>
             <p className="text-2xl font-black text-stone-900">{targetProtein} <span className="text-xs font-bold text-stone-400">grams</span></p>
             <p className="text-[11px] text-emerald-600 font-bold">2.0g per kg body mass (Optimal MPS)</p>
           </div>
 
           <div className="p-5 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
-                Macro Proportions
-              </span>
-              <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
-                <Activity className="w-4 h-4" />
-              </div>
-            </div>
+            <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider block">
+              Macro Proportions
+            </span>
             {/* Visual multi-segment proportional bar */}
             <div className="w-full h-3 bg-stone-100 rounded-full overflow-hidden flex shadow-inner my-2">
               <div className="bg-emerald-500 h-full w-[25%]" title="Protein 25%" />
@@ -345,8 +326,7 @@ export default function MealsPage() {
             {/* Generator Callout Box */}
             <div className="p-8 sm:p-10 rounded-3xl bg-white border border-stone-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="space-y-2 max-w-xl">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-black border border-emerald-200">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-black border border-emerald-200">
                   Ready to Activate Nutrition Engine
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">
@@ -370,7 +350,6 @@ export default function MealsPage() {
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4" />
                     <span>Generate My Meal Plan</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
