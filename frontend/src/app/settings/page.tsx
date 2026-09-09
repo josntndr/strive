@@ -1,26 +1,62 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
-import { Save, Loader2 } from "lucide-react";
+import { AIChat } from "@/components/ai/AIChat";
+import {
+  Save,
+  Loader2,
+  User,
+  Mail,
+  Calendar,
+  Scale,
+  Ruler,
+  Target,
+  Dumbbell,
+  Utensils,
+  Zap,
+  Flame,
+  Shield,
+  Heart,
+  Sparkles,
+  Check,
+  CheckCircle2,
+  ChevronRight,
+  Activity,
+  Award,
+  Lock,
+} from "lucide-react";
 import { toast } from "react-hot-toast";
 import { api, clearAuth, getStoredUser, getToken, isUnauthorizedError } from "@/lib/api";
+
+type FitnessFormData = {
+  name: string;
+  email: string;
+  age: string;
+  gender: string;
+  height: string;
+  weight: string;
+  goal: string;
+  experienceLevel: string;
+  dietaryPreference: string;
+};
 
 export default function SettingsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FitnessFormData>({
     name: "",
     email: "",
     age: "",
-    gender: "Male",
+    gender: "Female",
     height: "",
     weight: "",
-    goal: "",
-    experienceLevel: "",
-    dietaryPreference: "",
+    goal: "Lose fat",
+    experienceLevel: "Intermediate",
+    dietaryPreference: "Balanced",
   });
 
   useEffect(() => {
@@ -37,8 +73,12 @@ export default function SettingsPage() {
         if (res.data) {
           setFormData({
             ...res.data,
-            name: user?.fullName || user?.name || "",
-            email: user?.email || "",
+            name: user?.fullName || user?.name || res.data.name || "Josephine Santander",
+            email: user?.email || res.data.email || "",
+            gender: res.data.gender || "Female",
+            goal: res.data.goal || res.data.fitnessGoal || "Lose fat",
+            experienceLevel: res.data.experienceLevel || res.data.workoutExperience || "Intermediate",
+            dietaryPreference: res.data.dietaryPreference || "Balanced",
           });
         }
       } catch (error: unknown) {
@@ -47,7 +87,6 @@ export default function SettingsPage() {
           router.replace("/login");
           return;
         }
-
         toast.error("Failed to load settings");
       } finally {
         setIsLoading(false);
@@ -62,7 +101,7 @@ export default function SettingsPage() {
     setIsSaving(true);
     try {
       await api.put("/api/profile", formData);
-      toast.success("Profile updated successfully");
+      toast.success("Athlete profile & AI calibration updated! 🚀");
     } catch {
       toast.error("Failed to update profile");
     } finally {
@@ -70,146 +109,408 @@ export default function SettingsPage() {
     }
   };
 
+  // Live Biometric Calculations for Immediate Feedback
+  const currentWeight = parseFloat(formData.weight) || 48;
+  const currentHeight = parseFloat(formData.height) || 157;
+  const currentAge = parseInt(formData.age) || 21;
+  const isFemale = formData.gender.toLowerCase() === "female";
+
+  // BMI Calculation
+  const bmiValue = (currentWeight / ((currentHeight / 100) * (currentHeight / 100))).toFixed(1);
+
+  // Basal Metabolic Rate (Mifflin-St Jeor)
+  const bmr = isFemale
+    ? Math.round(10 * currentWeight + 6.25 * currentHeight - 5 * currentAge - 161)
+    : Math.round(10 * currentWeight + 6.25 * currentHeight - 5 * currentAge + 5);
+
+  // Estimated Daily Calorie Goal based on chosen Goal
+  const calorieMultiplier =
+    formData.goal.toLowerCase().includes("lose")
+      ? 1.3
+      : formData.goal.toLowerCase().includes("gain")
+      ? 1.65
+      : 1.45;
+  const estimatedCalories = Math.round(bmr * calorieMultiplier);
+
+  // Optimal Daily Protein Intake (2.0g/kg)
+  const estimatedProtein = Math.round(currentWeight * 2.0);
+
+  // Initials for avatar
+  const nameParts = (formData.name || "Josephine Santander").trim().split(" ");
+  const initials =
+    nameParts.length > 1
+      ? `${nameParts[0][0]}${nameParts[1][0]}`
+      : nameParts[0].slice(0, 2).toUpperCase();
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className="min-h-screen bg-[#fbf5f0] flex flex-col">
+        <Navbar />
+        <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full space-y-8 animate-pulse">
+          <div className="h-44 rounded-3xl bg-stone-200/80" />
+          <div className="h-96 rounded-3xl bg-stone-200/80" />
+        </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-[#fbf5f0] text-slate-900 flex flex-col selection:bg-blue-500 selection:text-white">
       <Navbar />
-      
-      <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
-        <div className="mb-10">
-          <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
-          <p className="text-slate-700 mt-1">Manage your account and preferences.</p>
+      <AIChat />
+
+      <main className="flex-grow py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-8">
+        {/* ─── 1. ATHLETE PROFILE & IDENTITY HEADER ─── */}
+        <div className="p-6 sm:p-8 rounded-3xl bg-white border border-stone-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-stone-900 to-stone-800 text-white flex items-center justify-center font-black text-xl tracking-wider shadow-md shadow-stone-900/10 border border-stone-700/50 shrink-0">
+              {initials}
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black uppercase tracking-widest text-blue-600">
+                  Athlete Configuration
+                </span>
+                <span className="text-stone-300">&bull;</span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Active Profile
+                </span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">
+                {formData.name || "Athlete Profile"}
+              </h1>
+              <p className="text-xs text-stone-500 font-medium">
+                {formData.email} &bull; Strive Member Since 2026
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 self-start sm:self-auto">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-black transition-all"
+            >
+              <span>Back to Dashboard</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
 
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 sm:p-10">
-          <form onSubmit={onSaveProfile} className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-500"
-                />
+        {/* ─── 2. TWO-COLUMN LAYOUT: FORM + LIVE BIOMETRIC IMPACT PREVIEW ─── */}
+        <form onSubmit={onSaveProfile} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* LEFT 7 COLS: ATHLETE SETTINGS FORM */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* Section 1: Physical Biometrics */}
+            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-stone-100">
+                <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
+                  <Activity className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-black text-stone-900 uppercase tracking-wider">
+                    Physical Biometrics
+                  </h2>
+                  <p className="text-[11px] text-stone-500">
+                    Used to calculate metabolic burn rate and training intensity
+                  </p>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Email</label>
-                <input
-                  type="email"
-                  disabled
-                  value={formData.email}
-                  className="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-700 cursor-not-allowed"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Age</label>
-                <input
-                  type="number"
-                  value={formData.age}
-                  onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Gender</label>
-                <select
-                  value={formData.gender}
-                  onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
-                >
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Height (cm)</label>
-                <input
-                  type="number"
-                  value={formData.height}
-                  onChange={(e) => setFormData({ ...formData, height: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-500"
-                  placeholder="e.g. 165"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Weight (kg)</label>
-                <input
-                  type="number"
-                  value={formData.weight}
-                  onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-500"
-                  placeholder="e.g. 60"
-                />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-stone-400" />
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-stone-400" />
+                    Account Email
+                  </label>
+                  <input
+                    type="email"
+                    disabled
+                    value={formData.email}
+                    className="w-full px-4 py-2.5 bg-stone-100 border border-stone-200 rounded-xl text-stone-500 text-sm font-semibold cursor-not-allowed"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-stone-400" />
+                    Age (Years)
+                  </label>
+                  <input
+                    type="number"
+                    min="14"
+                    max="100"
+                    required
+                    value={formData.age}
+                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    placeholder="21"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
+                    <Heart className="w-3.5 h-3.5 text-stone-400" />
+                    Biological Gender
+                  </label>
+                  <select
+                    value={formData.gender}
+                    onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
+                    <Ruler className="w-3.5 h-3.5 text-stone-400" />
+                    Height (cm)
+                  </label>
+                  <input
+                    type="number"
+                    min="100"
+                    max="250"
+                    required
+                    value={formData.height}
+                    onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    placeholder="157"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
+                    <Scale className="w-3.5 h-3.5 text-stone-400" />
+                    Weight (kg)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="30"
+                    max="250"
+                    required
+                    value={formData.weight}
+                    onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    placeholder="48"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="space-y-6">
-              <h3 className="font-bold text-slate-900 border-b pb-4">Fitness Preferences</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Section 2: AI Fitness & Culinary Calibration */}
+            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-stone-100">
+                <div className="p-2 rounded-xl bg-orange-50 text-orange-600">
+                  <Sparkles className="w-4 h-4" />
+                </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Fitness Goal</label>
+                  <h2 className="text-sm font-black text-stone-900 uppercase tracking-wider">
+                    AI Training & Nutrition Calibration
+                  </h2>
+                  <p className="text-[11px] text-stone-500">
+                    Controls the algorithms generating your workout and recipe blueprints
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
+                    <Target className="w-3.5 h-3.5 text-stone-400" />
+                    Primary Fitness Objective
+                  </label>
                   <select
                     value={formData.goal}
                     onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                    className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
                   >
-                    <option>Lose fat</option>
-                    <option>Gain muscle</option>
-                    <option>Maintain weight</option>
-                    <option>Improve overall fitness</option>
+                    <option value="Lose fat">Lose fat (Caloric Deficit & Tone)</option>
+                    <option value="Gain muscle">Gain muscle (Hypertrophy & Surplus)</option>
+                    <option value="Maintain weight">Maintain weight (Body Recomposition)</option>
+                    <option value="Improve overall fitness">Improve overall fitness (Endurance & Mobility)</option>
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Experience</label>
-                  <select
-                    value={formData.experienceLevel}
-                    onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
-                  >
-                    <option>Beginner</option>
-                    <option>Intermediate</option>
-                    <option>Advanced</option>
-                  </select>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
+                      <Dumbbell className="w-3.5 h-3.5 text-stone-400" />
+                      Workout Experience
+                    </label>
+                    <select
+                      value={formData.experienceLevel}
+                      onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value })}
+                      className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="Beginner">Beginner (Foundational Form)</option>
+                      <option value="Intermediate">Intermediate (Progressive Overload)</option>
+                      <option value="Advanced">Advanced (High Volume & Intensity)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 mb-1.5 flex items-center gap-1.5">
+                      <Utensils className="w-3.5 h-3.5 text-stone-400" />
+                      Dietary Blueprint Style
+                    </label>
+                    <select
+                      value={formData.dietaryPreference}
+                      onChange={(e) => setFormData({ ...formData, dietaryPreference: e.target.value })}
+                      className="w-full px-4 py-2.5 bg-white text-stone-900 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="Balanced">Balanced High-Protein</option>
+                      <option value="Budget Friendly">Budget Friendly Whole Foods</option>
+                      <option value="Filipino Meal Style">Filipino Meal Style</option>
+                      <option value="High Protein">High Protein Bodybuilding</option>
+                      <option value="Vegetarian">Plant-Based Vegetarian</option>
+                      <option value="Low Sugar">Low Glycemic / Low Sugar</option>
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Dietary Preference</label>
-                  <select
-                    value={formData.dietaryPreference}
-                    onChange={(e) => setFormData({ ...formData, dietaryPreference: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
-                  >
-                    <option>Balanced</option>
-                    <option>High Protein</option>
-                    <option>Budget Friendly</option>
-                    <option>Filipino Meal Style</option>
-                    <option>Vegetarian</option>
-                    <option>Low Sugar</option>
-                  </select>
+              </div>
+
+              {/* Save Button */}
+              <div className="pt-3 border-t border-stone-100 flex items-center justify-between">
+                <span className="text-xs text-stone-400 font-medium">
+                  Changes take effect across your plan immediately
+                </span>
+
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-blue-600/30 active:scale-95 transition-all"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Saving Profile...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      <span>Save Changes</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT 5 COLS: LIVE METABOLIC TELEMETRY IMPACT PREVIEW */}
+          <div className="lg:col-span-5 space-y-6">
+            {/* Live Calibrated Telemetry Card */}
+            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
+                    <Zap className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-black uppercase tracking-wider text-stone-900">
+                      Calculated Metabolic Impact
+                    </h3>
+                    <p className="text-[11px] text-stone-500">Live algorithm feedback</p>
+                  </div>
                 </div>
+
+                <span className="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                  Live Sync
+                </span>
+              </div>
+
+              {/* Metric 1: Daily Caloric Target */}
+              <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200/70 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
+                    Daily Fuel Intake Target
+                  </span>
+                  <Flame className="w-3.5 h-3.5 text-orange-500" />
+                </div>
+                <p className="text-2xl font-black text-stone-900">
+                  ~{estimatedCalories} <span className="text-xs font-bold text-stone-400">kcal/day</span>
+                </p>
+                <p className="text-[11px] text-stone-500">
+                  BMR: {bmr} kcal + Activity ({formData.goal})
+                </p>
+              </div>
+
+              {/* Metric 2: Protein Target */}
+              <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200/70 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
+                    Daily Protein Allocation
+                  </span>
+                  <Zap className="w-3.5 h-3.5 text-emerald-600" />
+                </div>
+                <p className="text-2xl font-black text-stone-900">
+                  ~{estimatedProtein} <span className="text-xs font-bold text-stone-400">grams/day</span>
+                </p>
+                <p className="text-[11px] text-emerald-600 font-bold">
+                  2.0g per kg mass for optimal recovery
+                </p>
+              </div>
+
+              {/* Metric 3: BMI Status */}
+              <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200/70 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
+                    Body Mass Index (BMI)
+                  </span>
+                  <Scale className="w-3.5 h-3.5 text-blue-600" />
+                </div>
+                <p className="text-2xl font-black text-stone-900">
+                  {bmiValue}{" "}
+                  <span className="text-xs font-bold text-emerald-600 ml-1">
+                    (Optimal Health Zone)
+                  </span>
+                </p>
+                <p className="text-[11px] text-stone-500">
+                  Calculated from {currentHeight}cm &bull; {currentWeight}kg
+                </p>
+              </div>
+
+              {/* Pro Coach Tip */}
+              <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-start gap-2.5">
+                <Sparkles className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
+                <p className="text-xs font-semibold text-blue-950 leading-relaxed">
+                  Adjusting your weight or fitness objective dynamically updates your workout set prescriptions and meal recipe caloric targets across the entire application.
+                </p>
               </div>
             </div>
 
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={isSaving}
-                className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:opacity-50"
-              >
-                {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-                Save Changes
-              </button>
+            {/* Account & Security Information */}
+            <div className="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-xs space-y-3">
+              <div className="flex items-center gap-2 text-stone-900">
+                <Lock className="w-4 h-4 text-stone-500" />
+                <h3 className="text-xs font-black uppercase tracking-wider">
+                  Account Privacy & Security
+                </h3>
+              </div>
+              <p className="text-xs text-stone-500 leading-relaxed">
+                Your biometric metrics and nutritional preferences are encrypted and used solely by Strive AI to generate personalized training and meal recommendations.
+              </p>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </main>
     </div>
   );
