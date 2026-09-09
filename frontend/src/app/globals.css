@@ -5,7 +5,7 @@
   --text-secondary: #334155;
   --text-muted: #475569;
   --text-light: #f8fafc;
-  --background-light: #fbf5f0;
+  --background-light: #f8fafc;
   --background-card: #ffffff;
   --border-color: #cbd5e1;
   --primary-blue: #ed4f28;
@@ -26,10 +26,8 @@
 }
 
 /*
-  Helxis-inspired theme. The app uses Tailwind's `blue` scale as its single
-  accent throughout, so we remap `blue` to a warm coral and lightly warm the
-  lightest neutrals to cream. This re-skins every page at once. New brand
-  tokens (cream / peach / ink / brand-purple) are added for bespoke sections.
+  Athletic performance design system: crisp luminous neutrals, electric flame coral
+  accents, and high-contrast ink surfaces for professional fitness tech.
 */
 @theme {
   /* Coral accent (replaces blue) */
@@ -44,16 +42,16 @@
   --color-blue-800: #a5341b;
   --color-blue-900: #832e1b;
 
-  /* Warm the lightest neutrals so page backgrounds read as cream */
-  --color-slate-50: #fbf5f0;
-  --color-slate-100: #f3ebe4;
+  /* Modern, crisp light neutrals */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
 
   /* Bespoke brand tokens */
-  --color-cream: #fdeee7;
-  --color-peach: #f9d9b6;
-  --color-ink: #1c1b1a;
-  --color-brand-purple: #7c3aed;
-  --color-brand-amber: #f6a623;
+  --color-cream: #fafafa;
+  --color-peach: #ffedd5;
+  --color-ink: #0b0f19;
+  --color-brand-purple: #6366f1;
+  --color-brand-amber: #f59e0b;
 }
 
 body {
@@ -135,6 +133,16 @@ body {
 
 .glow-accent {
   box-shadow: 0 14px 40px -10px rgba(237, 79, 40, 0.25);
+}
+
+.dot-grid {
+  background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+
+.dot-grid-dark {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
 }
 
 .hover-lift {

@@ -1,129 +1,923 @@
-import { Navbar } from "@/components/Navbar";
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { Navbar } from "@/components/Navbar";
+import { BrandMark } from "@/components/BrandMark";
+import { Reveal } from "@/components/Reveal";
 import {
   ArrowRight,
-  Play,
-  Star,
   Dumbbell,
   Utensils,
   LineChart,
   CalendarCheck,
   Check,
   Activity,
-  Quote,
+  Flame,
+  Zap,
+  Target,
+  ShieldCheck,
+  TrendingUp,
+  Clock,
+  Sparkles,
+  ChevronRight,
+  Sliders,
+  Layers,
+  RotateCcw,
+  CheckCircle2,
+  BarChart3,
+  Scale,
+  Award,
 } from "lucide-react";
-import { BrandMark } from "@/components/BrandMark";
-import { Reveal } from "@/components/Reveal";
-
-const whyChooseUs = [
-  { title: "Personalized Workouts", description: "Plans built around your gear, goals, and level.", icon: Dumbbell },
-  { title: "Smart Meal Plans", description: "Balanced, budget-friendly meals to fuel training.", icon: Utensils },
-  { title: "Progress Tracking", description: "See every gain with clear charts and logs.", icon: LineChart },
-  { title: "Daily Guidance", description: "Stay consistent with reminders and routines.", icon: CalendarCheck },
-];
-
-const testimonials = [
-  { name: "Sam R.", role: "Lost 12 lbs", quote: "The plans actually fit my schedule and equipment. I finally stayed consistent for a full season." },
-  { name: "Mariam K.", role: "First-time lifter", quote: "Clear demos and steps made the gym far less intimidating. I knew exactly what to do each day." },
-  { name: "Devon L.", role: "Marathoner", quote: "Tracking progress in one place kept me motivated. The meal plans were a genuine game changer." },
-];
 
 export default function Home() {
+  // Hero interactive console tab
+  const [heroTab, setHeroTab] = useState<"workout" | "macros" | "analytics">("workout");
+  const [completedSets, setCompletedSets] = useState<number[]>([1, 2]);
+
+  // Interactive quick calculator state
+  const [calcGoal, setCalcGoal] = useState<"hypertrophy" | "fatloss" | "strength">("hypertrophy");
+  const [calcLevel, setCalcLevel] = useState<"beginner" | "intermediate" | "advanced">("intermediate");
+  const [calcDays, setCalcDays] = useState<3 | 4 | 5>(4);
+
+  // Equipment demo state in Bento
+  const [equipmentMode, setEquipmentMode] = useState<"gym" | "dumbbells" | "bodyweight">("gym");
+
+  // How it works active step
+  const [activeStep, setActiveStep] = useState<number>(0);
+
+  const toggleSet = (setNumber: number) => {
+    if (completedSets.includes(setNumber)) {
+      setCompletedSets(completedSets.filter((s) => s !== setNumber));
+    } else {
+      setCompletedSets([...completedSets, setNumber]);
+    }
+  };
+
+  // Dynamic calculator result output
+  const getCalculatorOutput = () => {
+    if (calcGoal === "hypertrophy") {
+      return {
+        splitName: calcDays === 3 ? "3-Day Full Body Hypertrophy" : calcDays === 4 ? "4-Day Upper / Lower Split" : "5-Day Push / Pull / Legs / Upper / Lower",
+        calories: "2,650 kcal",
+        protein: "185g",
+        carbs: "290g",
+        fats: "68g",
+        primaryFocus: "Mechanical tension & progressive volume (8-12 rep brackets)",
+        restInterval: "90-120 seconds between working sets",
+      };
+    } else if (calcGoal === "fatloss") {
+      return {
+        splitName: calcDays === 3 ? "3-Day Full Body Density Split" : calcDays === 4 ? "4-Day Upper / Lower Fat Loss Protocol" : "5-Day Athletic Recomposition Split",
+        calories: "2,150 kcal",
+        protein: "195g",
+        carbs: "180g",
+        fats: "55g",
+        primaryFocus: "Muscle preservation in caloric deficit with high work capacity",
+        restInterval: "60-90 seconds to maintain elevated metabolic rate",
+      };
+    } else {
+      return {
+        splitName: calcDays === 3 ? "3-Day Linear Strength Foundation" : calcDays === 4 ? "4-Day Texas Method / Wave Progression" : "5-Day Powerbuilding & Compound Focus",
+        calories: "2,850 kcal",
+        protein: "190g",
+        carbs: "320g",
+        fats: "75g",
+        primaryFocus: "Peak neurological recruitment & compound barbell velocity (3-6 reps)",
+        restInterval: "2-3 minutes for maximal ATP replenishment",
+      };
+    }
+  };
+
+  const calcOutput = getCalculatorOutput();
+
   return (
-    <div className="flex flex-col min-h-screen bg-cream selection:bg-blue-500 selection:text-white">
+    <div className="flex flex-col min-h-screen bg-slate-50 selection:bg-blue-600 selection:text-white antialiased">
       <Navbar />
 
       <main className="flex-grow">
-        {/* Hero */}
-        <section className="bg-gradient-to-b from-cream via-cream to-white/60 relative overflow-hidden">
-          {/* Subtle background glow circle */}
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
+        {/* ========================================================================= */}
+        {/* 1. HERO SECTION: Modern athletic tech, high-contrast, interactive console  */}
+        {/* ========================================================================= */}
+        <section className="relative overflow-hidden bg-white border-b border-slate-200/80 pt-12 pb-20 lg:pt-20 lg:pb-28">
+          {/* Subtle architectural dot grid background */}
+          <div className="absolute inset-0 dot-grid opacity-60 pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Copy */}
-              <Reveal>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/80 text-blue-800 text-xs font-bold uppercase tracking-wider mb-6 border border-blue-200/50">
-                  <Star className="w-3.5 h-3.5 fill-current text-blue-600" />
-                  Your AI Fitness & Health Companion
-                </div>
-                <h1 className="text-5xl sm:text-6xl font-extrabold leading-[1.05] tracking-tight text-ink">
-                  Never Give Up <Star className="inline w-9 h-9 -mt-3 fill-current text-blue-600 animate-pulse" /> <br className="hidden sm:block" />
-                  On Your <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-amber-600 bg-clip-text text-transparent">Goals</span>
-                </h1>
+          {/* Ambient energetic gradient glows */}
+          <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[720px] h-[400px] bg-gradient-to-tr from-blue-600/10 via-amber-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-1/3 -right-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
-                <p className="mt-6 max-w-md text-lg text-slate-600 leading-relaxed font-medium">
-                  Personalized workout and meal plans, progress tracking, and daily guidance &mdash; your all-in-one companion for a stronger, healthier you.
-                </p>
-
-                <div className="mt-9 flex flex-wrap items-center gap-5">
-                  <Link
-                    href="/register"
-                    className="inline-flex items-center gap-2.5 rounded-full bg-blue-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-blue-500/25 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/30 hover:scale-[1.02] active:scale-95 transition-all group"
-                  >
-                    Get Started Free
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                  <Link href="/#how-it-works" className="inline-flex items-center gap-3 group">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-purple text-white shadow-md shadow-brand-purple/20 group-hover:scale-110 transition-transform">
-                      <Play className="w-5 h-5 fill-current ml-0.5" />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+              
+              {/* Hero Copy (Left 6 cols on LG) */}
+              <div className="lg:col-span-6 text-left">
+                <Reveal>
+                  {/* Eyebrow badge */}
+                  <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-100/90 border border-slate-200/80 text-xs font-bold text-slate-800 mb-6 shadow-xs backdrop-blur-sm">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                     </span>
-                    <span className="text-sm font-bold text-ink group-hover:text-blue-600 transition-colors">See how it works</span>
-                  </Link>
-                </div>
-              </Reveal>
-
-              {/* Visual */}
-              <Reveal delay={140} className="relative flex items-center justify-center">
-                <div className="relative aspect-square w-full max-w-md">
-                  <div className="absolute inset-6 rounded-full bg-gradient-to-tr from-brand-amber to-orange-400 shadow-xl shadow-brand-amber/20" />
-                  <div className="absolute inset-0 rounded-full border-2 border-dashed border-brand-amber/40 animate-[spin_60s_linear_infinite]" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Activity className="w-44 h-44 text-white drop-shadow-md" strokeWidth={1.25} />
+                    <span className="tracking-wide uppercase text-[11px] text-slate-700">Precision Training & Nutrition OS</span>
+                    <span className="h-3 w-px bg-slate-300" />
+                    <span className="text-[10px] font-extrabold text-blue-600 uppercase">Free Forever</span>
                   </div>
 
-                  {/* Floating stat badge */}
-                  <div className="absolute left-0 top-10 rounded-2xl bg-brand-purple px-4 py-2.5 text-white shadow-xl shadow-brand-purple/30 animate-floaty backdrop-blur-sm border border-purple-400/30">
-                    <p className="text-lg font-extrabold leading-none">Instant</p>
-                    <p className="text-[11px] font-medium opacity-90">AI Plan Generation</p>
+                  {/* Headline */}
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.08]">
+                    Precision Training. <br />
+                    Engineered for{" "}
+                    <span className="bg-gradient-to-r from-blue-600 via-orange-500 to-amber-500 bg-clip-text text-transparent">
+                      Real Progress.
+                    </span>
+                  </h1>
+
+                  {/* Subheadline */}
+                  <p className="mt-6 text-lg text-slate-600 leading-relaxed font-normal max-w-xl">
+                    Ditch generic workout routines and cookie-cutter diets. Strive computes periodized lifting splits, adaptive macro targets, and automated progressive overload tailored to your exact gear and schedule.
+                  </p>
+
+                  {/* CTAs */}
+                  <div className="mt-8 flex flex-wrap items-center gap-4">
+                    <Link
+                      href="/register"
+                      className="inline-flex items-center gap-2.5 rounded-xl bg-blue-600 px-7 py-3.5 text-base font-bold text-white shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-600/30 hover:scale-[1.02] active:scale-95 transition-all group"
+                    >
+                      Build Your Free Plan
+                      <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+
+                    <a
+                      href="#interactive-demo"
+                      className="inline-flex items-center gap-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 px-5 py-3.5 text-sm font-bold text-slate-800 border border-slate-200 transition-colors"
+                    >
+                      <Sliders className="w-4 h-4 text-slate-600" />
+                      Interactive Plan Calculator
+                    </a>
                   </div>
 
-                  {/* Floating coach card */}
-                  <div className="absolute bottom-10 right-0 flex items-center gap-3 rounded-2xl bg-white/90 backdrop-blur-md px-4 py-3 shadow-xl border border-slate-100 animate-floaty-slow">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-md shadow-blue-500/30">
-                      <BrandMark className="h-5 w-5 text-white" />
-                    </span>
+                  {/* Real product proof metrics */}
+                  <div className="mt-10 pt-8 border-t border-slate-200/80 grid grid-cols-3 gap-4 max-w-lg">
                     <div>
-                      <p className="text-sm font-bold text-ink leading-none">Verified Plans</p>
-                      <p className="text-[11px] text-slate-500 font-medium mt-0.5">Built by the system</p>
+                      <p className="text-2xl font-black text-slate-900 tracking-tight">100%</p>
+                      <p className="text-xs font-semibold text-slate-500 mt-0.5">Tailored to Your Gear</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black text-slate-900 tracking-tight">Auto</p>
+                      <p className="text-xs font-semibold text-slate-500 mt-0.5">Progressive Overload</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black text-slate-900 tracking-tight">3-Tier</p>
+                      <p className="text-xs font-semibold text-slate-500 mt-0.5">Dynamic Macro Sync</p>
                     </div>
                   </div>
-                </div>
-              </Reveal>
+                </Reveal>
+              </div>
+
+              {/* Hero Visual: Interactive Live Product Console (Right 6 cols on LG) */}
+              <div className="lg:col-span-6">
+                <Reveal delay={120}>
+                  <div className="relative rounded-2xl bg-white border border-slate-200/90 shadow-2xl shadow-slate-300/50 overflow-hidden">
+                    {/* Console Header Bar */}
+                    <div className="bg-slate-900 px-4 py-3 flex items-center justify-between border-b border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+                        <span className="ml-2 text-xs font-mono font-medium text-slate-400">strive://active-session</span>
+                      </div>
+
+                      {/* Live status chip */}
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-bold text-emerald-400">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        Live Protocol
+                      </div>
+                    </div>
+
+                    {/* Console Tab Navigation */}
+                    <div className="bg-slate-100/90 px-3 py-2 border-b border-slate-200 flex gap-1.5">
+                      <button
+                        onClick={() => setHeroTab("workout")}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                          heroTab === "workout"
+                            ? "bg-white text-slate-900 shadow-xs border border-slate-200/80"
+                            : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                        }`}
+                      >
+                        <Dumbbell className="w-3.5 h-3.5 text-blue-600" />
+                        Push Day Protocol
+                      </button>
+
+                      <button
+                        onClick={() => setHeroTab("macros")}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                          heroTab === "macros"
+                            ? "bg-white text-slate-900 shadow-xs border border-slate-200/80"
+                            : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                        }`}
+                      >
+                        <Utensils className="w-3.5 h-3.5 text-emerald-600" />
+                        Macro Targets
+                      </button>
+
+                      <button
+                        onClick={() => setHeroTab("analytics")}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                          heroTab === "analytics"
+                            ? "bg-white text-slate-900 shadow-xs border border-slate-200/80"
+                            : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                        }`}
+                      >
+                        <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
+                        Progression Curve
+                      </button>
+                    </div>
+
+                    {/* Console Interactive Body */}
+                    <div className="p-5 bg-white min-h-[380px]">
+                      {/* TAB 1: WORKOUT PROTOCOL */}
+                      {heroTab === "workout" && (
+                        <div className="space-y-4 animate-in fade-in duration-200">
+                          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                                  Day 1 Split
+                                </span>
+                                <span className="text-xs text-slate-400 font-medium">Chest • Delts • Triceps</span>
+                              </div>
+                              <h3 className="text-base font-extrabold text-slate-900 mt-1">Incline DB Press & Compound Push</h3>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">
+                                ⏱️ 01:15 Rest
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Exercise 1 with Interactive Sets */}
+                          <div className="rounded-xl p-3.5 bg-slate-50/80 border border-slate-200/70">
+                            <div className="flex items-center justify-between mb-2.5">
+                              <div>
+                                <h4 className="text-sm font-bold text-slate-900">1. Incline Dumbbell Bench Press</h4>
+                                <p className="text-[11px] text-slate-500 font-medium">Target: 4 sets × 8-10 reps • RPE 8.5</p>
+                              </div>
+                              <span className="text-xs font-bold text-blue-700 bg-blue-100/60 px-2 py-0.5 rounded">
+                                Overload: +2kg
+                              </span>
+                            </div>
+
+                            {/* Interactive Set Pills */}
+                            <div className="grid grid-cols-4 gap-2">
+                              {[
+                                { set: 1, weight: "32 kg", reps: "10" },
+                                { set: 2, weight: "32 kg", reps: "10" },
+                                { set: 3, weight: "34 kg", reps: "9" },
+                                { set: 4, weight: "34 kg", reps: "8" },
+                              ].map((item) => {
+                                const isDone = completedSets.includes(item.set);
+                                return (
+                                  <button
+                                    key={item.set}
+                                    type="button"
+                                    onClick={() => toggleSet(item.set)}
+                                    className={`p-2 rounded-lg text-center border transition-all ${
+                                      isDone
+                                        ? "bg-emerald-50 border-emerald-300 text-emerald-900"
+                                        : "bg-white border-slate-200 text-slate-700 hover:border-blue-400"
+                                    }`}
+                                  >
+                                    <div className="text-[10px] font-bold uppercase text-slate-400">Set {item.set}</div>
+                                    <div className="text-xs font-black mt-0.5">{item.weight}</div>
+                                    <div className="text-[11px] font-semibold flex items-center justify-center gap-1 mt-0.5">
+                                      {item.reps} reps
+                                      {isDone && <Check className="w-3 h-3 text-emerald-600 stroke-[3]" />}
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            <p className="text-[10px] text-slate-400 mt-2 text-center">
+                              *Click any set above to simulate real-time workout logging
+                            </p>
+                          </div>
+
+                          {/* Exercise 2 */}
+                          <div className="rounded-xl p-3 bg-white border border-slate-200/80 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
+                                02
+                              </div>
+                              <div>
+                                <h4 className="text-xs font-bold text-slate-900">Standing Barbell Overhead Press</h4>
+                                <p className="text-[11px] text-slate-500">3 sets × 8 reps • 50 kg</p>
+                              </div>
+                            </div>
+                            <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded">
+                              Upcoming
+                            </span>
+                          </div>
+
+                          {/* Exercise 3 */}
+                          <div className="rounded-xl p-3 bg-white border border-slate-200/80 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
+                                03
+                              </div>
+                              <div>
+                                <h4 className="text-xs font-bold text-slate-900">Cable Lateral Raises & Tricep Pushdown</h4>
+                                <p className="text-[11px] text-slate-500">3 sets × 12-15 reps • Controlled eccentric</p>
+                              </div>
+                            </div>
+                            <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded">
+                              Superset
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* TAB 2: MACRO TARGETS */}
+                      {heroTab === "macros" && (
+                        <div className="space-y-4 animate-in fade-in duration-200">
+                          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div>
+                              <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                                Daily Caloric Allocation
+                              </span>
+                              <h3 className="text-base font-extrabold text-slate-900 mt-1">2,450 kcal / day Target</h3>
+                            </div>
+                            <span className="text-xs font-bold text-emerald-700 bg-emerald-100/60 px-2.5 py-1 rounded-full">
+                              94% Goal Met
+                            </span>
+                          </div>
+
+                          {/* Macro Bars */}
+                          <div className="space-y-3 pt-1">
+                            <div>
+                              <div className="flex justify-between text-xs font-bold mb-1">
+                                <span className="text-slate-700">Protein (Muscle Synthesis)</span>
+                                <span className="text-blue-700">185g / 185g (100%)</span>
+                              </div>
+                              <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div className="h-full bg-blue-600 rounded-full w-full" />
+                              </div>
+                            </div>
+
+                            <div>
+                              <div className="flex justify-between text-xs font-bold mb-1">
+                                <span className="text-slate-700">Carbohydrates (Glycogen Replenishment)</span>
+                                <span className="text-amber-700">260g / 275g (94%)</span>
+                              </div>
+                              <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div className="h-full bg-amber-500 rounded-full w-[94%]" />
+                              </div>
+                            </div>
+
+                            <div>
+                              <div className="flex justify-between text-xs font-bold mb-1">
+                                <span className="text-slate-700">Healthy Fats (Hormone Support)</span>
+                                <span className="text-emerald-700">62g / 68g (91%)</span>
+                              </div>
+                              <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div className="h-full bg-emerald-500 rounded-full w-[91%]" />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Today's Featured Fueling Card */}
+                          <div className="mt-4 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[10px] font-bold uppercase text-slate-400">Sample Meal Recommendation</span>
+                              <span className="text-[11px] font-extrabold text-blue-600">540 kcal</span>
+                            </div>
+                            <h4 className="text-xs font-bold text-slate-900">Grilled Salmon, Spiced Quinoa & Avocado Bowl</h4>
+                            <div className="flex items-center gap-3 mt-2 text-[11px] text-slate-500 font-semibold">
+                              <span className="text-blue-600 font-bold">48g Protein</span> • 
+                              <span className="text-amber-600 font-bold">45g Carbs</span> • 
+                              <span className="text-emerald-600 font-bold">18g Healthy Fats</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* TAB 3: PROGRESSION ANALYTICS */}
+                      {heroTab === "analytics" && (
+                        <div className="space-y-4 animate-in fade-in duration-200">
+                          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div>
+                              <span className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
+                                Strength Velocity
+                              </span>
+                              <h3 className="text-base font-extrabold text-slate-900 mt-1">+14.2% Estimated 1RM Gain</h3>
+                            </div>
+                            <span className="text-xs font-bold text-emerald-700 bg-emerald-100/60 px-2.5 py-1 rounded-full">
+                              6-Week Cycle
+                            </span>
+                          </div>
+
+                          {/* Visual Progression Curve (SVG Graph) */}
+                          <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                            <div className="flex justify-between items-center text-xs font-bold text-slate-500 mb-2">
+                              <span>Bench / Press Volume</span>
+                              <span className="text-blue-600">Week 1 (80kg) &rarr; Week 6 (92.5kg)</span>
+                            </div>
+                            <div className="h-28 w-full relative flex items-end">
+                              <svg viewBox="0 0 300 100" className="w-full h-full overflow-visible">
+                                <defs>
+                                  <linearGradient id="curveGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#cc3f1d" stopOpacity="0.3" />
+                                    <stop offset="100%" stopColor="#cc3f1d" stopOpacity="0.0" />
+                                  </linearGradient>
+                                </defs>
+                                <path
+                                  d="M 10 80 Q 70 75, 120 55 T 220 30 T 290 12"
+                                  fill="none"
+                                  stroke="#cc3f1d"
+                                  strokeWidth="3"
+                                  strokeLinecap="round"
+                                />
+                                <path
+                                  d="M 10 80 Q 70 75, 120 55 T 220 30 T 290 12 L 290 100 L 10 100 Z"
+                                  fill="url(#curveGrad)"
+                                />
+                                <circle cx="10" cy="80" r="4" fill="#cc3f1d" />
+                                <circle cx="120" cy="55" r="4" fill="#cc3f1d" />
+                                <circle cx="220" cy="30" r="4" fill="#cc3f1d" />
+                                <circle cx="290" cy="12" r="5" fill="#10b981" />
+                              </svg>
+                            </div>
+                            <div className="flex justify-between text-[10px] font-bold text-slate-400 mt-2">
+                              <span>Week 1</span>
+                              <span>Week 2</span>
+                              <span>Week 3</span>
+                              <span>Week 4</span>
+                              <span>Week 5</span>
+                              <span>Week 6 (Peak)</span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                              <p className="text-[10px] font-bold text-slate-400 uppercase">Tonnage Moved</p>
+                              <p className="text-lg font-black text-slate-900 mt-0.5">48,250 kg</p>
+                              <p className="text-[10px] font-semibold text-emerald-600 mt-0.5">&uarr; 8.4% from last week</p>
+                            </div>
+                            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                              <p className="text-[10px] font-bold text-slate-400 uppercase">Consistency Streak</p>
+                              <p className="text-lg font-black text-slate-900 mt-0.5">18 Days Logged</p>
+                              <p className="text-[10px] font-semibold text-blue-600 mt-0.5">100% Target Met</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Console Footer */}
+                    <div className="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2 text-slate-500 font-medium">
+                        <Zap className="w-3.5 h-3.5 text-amber-500" />
+                        <span>Adaptive Algorithm Synced</span>
+                      </div>
+                      <Link
+                        href="/register"
+                        className="font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors"
+                      >
+                        Generate Your Own Plan &rarr;
+                      </Link>
+                    </div>
+                  </div>
+                </Reveal>
+              </div>
+
             </div>
           </div>
         </section>
 
-        {/* Why Choose Us */}
-        <section id="features" className="bg-white py-24">
+        {/* ========================================================================= */}
+        {/* 2. CORE ARCHITECTURE BENTO GRID (Replacing 4 generic cards with high-end bento) */}
+        {/* ========================================================================= */}
+        <section id="features" className="py-24 bg-slate-50 border-b border-slate-200/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">Designed for Results</span>
-              <h2 className="text-4xl font-extrabold tracking-tight text-ink mt-3">Why Choose Us</h2>
-              <p className="mt-3 text-slate-600 max-w-2xl mx-auto font-medium">
-                We provide the tools and guidance. You provide the effort. Together, we build results.
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                Core Architecture
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mt-3">
+                Everything Engineered for Relentless Progress
+              </h2>
+              <p className="mt-3 text-slate-600 text-base font-normal">
+                No random routines, no guesswork. Strive merges exercise physiology with automated tracking to ensure your efforts translate into measurable gains.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {whyChooseUs.map((item, i) => (
-                <Reveal key={item.title} delay={i * 90}>
-                  <div className="group text-center p-6 rounded-3xl bg-slate-50/70 border border-slate-100 hover-lift hover:bg-white hover:border-blue-100 transition-all">
-                    <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300 shadow-sm">
-                      <item.icon className="h-7 w-7" strokeWidth={1.75} />
+            {/* Bento Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+              
+              {/* Bento Card 1: Wide 2-col on MD (Automated Progressive Overload) */}
+              <div className="md:col-span-8 rounded-3xl bg-white p-8 border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                      <TrendingUp className="h-6 w-6 stroke-[2.2]" />
                     </div>
-                    <h3 className="text-base font-bold text-ink tracking-tight">{item.title}</h3>
-                    <p className="mt-2 text-sm text-slate-500 leading-relaxed">{item.description}</p>
+                    <span className="text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                      Algorithmic Overload
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                    Dynamic Progressive Overload
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal max-w-xl">
+                    Never plateau on your key lifts. Strive monitors completed sets, reps, and perceived difficulty to calculate the precise micro-increments (+1.25kg to +2.5kg) you need each week.
+                  </p>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-3 gap-4">
+                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/70">
+                    <p className="text-[11px] font-bold text-slate-500 uppercase">Week 1 Baseline</p>
+                    <p className="text-base font-black text-slate-900 mt-0.5">80 kg × 8 reps</p>
+                    <span className="text-[10px] font-semibold text-slate-400">RPE 8.0</span>
+                  </div>
+                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/70">
+                    <p className="text-[11px] font-bold text-slate-500 uppercase">Week 3 Adapted</p>
+                    <p className="text-base font-black text-slate-900 mt-0.5">85 kg × 8 reps</p>
+                    <span className="text-[10px] font-semibold text-emerald-600 font-bold">+5 kg Overload</span>
+                  </div>
+                  <div className="bg-blue-50/70 p-3.5 rounded-xl border border-blue-100">
+                    <p className="text-[11px] font-bold text-blue-700 uppercase">Week 5 Target</p>
+                    <p className="text-base font-black text-blue-900 mt-0.5">87.5 kg × 8 reps</p>
+                    <span className="text-[10px] font-semibold text-blue-600 font-bold">Auto-Prescribed</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bento Card 2: 4-col (Precision Macro Engine) */}
+              <div className="md:col-span-4 rounded-3xl bg-white p-8 border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                <div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 mb-4">
+                    <Utensils className="h-6 w-6 stroke-[2.2]" />
+                  </div>
+                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                    Calibrated Macro OS
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                    Custom nutrition algorithms compute protein, carbohydrate, and lipid targets matched to your training intensity and body composition.
+                  </p>
+                </div>
+
+                <div className="mt-6 p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100 space-y-2">
+                  <div className="flex justify-between text-xs font-bold text-slate-700">
+                    <span>Protein Target</span>
+                    <span className="text-emerald-700 font-black">2.0g / kg BW</span>
+                  </div>
+                  <div className="h-2 w-full bg-emerald-200/50 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-600 rounded-full w-[85%]" />
+                  </div>
+                  <p className="text-[11px] text-emerald-800 font-medium pt-1">
+                    Synchronized with your heavy training days for maximal protein synthesis.
+                  </p>
+                </div>
+              </div>
+
+              {/* Bento Card 3: 6-col (Equipment Flexibility) */}
+              <div className="md:col-span-6 rounded-3xl bg-white p-8 border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+                    <Dumbbell className="h-6 w-6 stroke-[2.2]" />
+                  </div>
+                  <div className="flex gap-1.5 bg-slate-100 p-1 rounded-xl">
+                    <button
+                      onClick={() => setEquipmentMode("gym")}
+                      className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                        equipmentMode === "gym" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500"
+                      }`}
+                    >
+                      Gym Rack
+                    </button>
+                    <button
+                      onClick={() => setEquipmentMode("dumbbells")}
+                      className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                        equipmentMode === "dumbbells" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500"
+                      }`}
+                    >
+                      Dumbbells
+                    </button>
+                    <button
+                      onClick={() => setEquipmentMode("bodyweight")}
+                      className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                        equipmentMode === "bodyweight" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500"
+                      }`}
+                    >
+                      Bodyweight
+                    </button>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                  Zero Equipment Barrier
+                </h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                  Whether you have access to an elite barbell gym, a set of dumbbells at home, or zero equipment in a hotel room — your plan adapts instantly.
+                </p>
+
+                <div className="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>
+                      {equipmentMode === "gym" && "Commercial Barbell & Cable Setup"}
+                      {equipmentMode === "dumbbells" && "Home Dumbbell & Bench Setup"}
+                      {equipmentMode === "bodyweight" && "Calisthenics & High-Tension Movement"}
+                    </span>
+                    <span className="text-blue-600">Active Preset</span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1 font-medium">
+                    {equipmentMode === "gym" && "Includes Barbell Squats, Cable Crossovers, Romanian Deadlifts, Lat Pulldowns."}
+                    {equipmentMode === "dumbbells" && "Includes DB Goblet Squats, DB Floor Press, Single-Leg RDLs, Hammer Curls."}
+                    {equipmentMode === "bodyweight" && "Includes Deficit Push-ups, Pike Presses, Bulgarian Split Squats, Pull-ups."}
+                  </p>
+                </div>
+              </div>
+
+              {/* Bento Card 4: 6-col (Readiness & Recovery Rhythm) */}
+              <div className="md:col-span-6 rounded-3xl bg-white p-8 border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                <div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 mb-4">
+                    <CalendarCheck className="h-6 w-6 stroke-[2.2]" />
+                  </div>
+                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                    Recovery Rhythm & Readiness
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                    Lifting heavy without planned recovery leads to fatigue. Strive balances training load with scheduled deloads and rest periods so your joints stay healthy.
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-black text-sm">
+                      94%
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-900">Readiness Score</p>
+                      <p className="text-[11px] text-slate-500">Optimal systemic recovery</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200/70 text-xs font-bold text-amber-800">
+                    <Flame className="w-4 h-4 text-amber-600" />
+                    <span>18-Day Streak</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 3. INTERACTIVE PLAN & MACRO CALCULATOR (High-value interactive micro-tool)  */}
+        {/* ========================================================================= */}
+        <section id="interactive-demo" className="py-24 bg-white border-b border-slate-200/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                Interactive Plan Preview
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mt-3">
+                Test-Drive Your Custom Protocol
+              </h2>
+              <p className="mt-3 text-slate-600 text-base font-normal">
+                Choose your primary fitness objective and training frequency to see how Strive calibrates your split and nutrition breakdown in real time.
+              </p>
+            </div>
+
+            <div className="max-w-5xl mx-auto rounded-3xl bg-slate-900 text-white p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+              {/* Subtle ambient lighting inside calculator */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/15 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="grid lg:grid-cols-12 gap-8 relative z-10">
+                {/* Left Controller (5 cols) */}
+                <div className="lg:col-span-5 space-y-6">
+                  <div>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
+                      1. Primary Target
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { id: "hypertrophy", label: "Muscle Size" },
+                        { id: "fatloss", label: "Cut & Lean" },
+                        { id: "strength", label: "Raw Strength" },
+                      ].map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setCalcGoal(item.id as any)}
+                          className={`py-2.5 px-2 rounded-xl text-xs font-bold text-center transition-all ${
+                            calcGoal === item.id
+                              ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                              : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
+                      2. Training Frequency
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[3, 4, 5].map((d) => (
+                        <button
+                          key={d}
+                          type="button"
+                          onClick={() => setCalcDays(d as any)}
+                          className={`py-2.5 px-2 rounded-xl text-xs font-bold text-center transition-all ${
+                            calcDays === d
+                              ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                              : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                          }`}
+                        >
+                          {d} Days / Wk
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
+                      3. Experience Tier
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { id: "beginner", label: "Beginner" },
+                        { id: "intermediate", label: "Intermediate" },
+                        { id: "advanced", label: "Advanced" },
+                      ].map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setCalcLevel(item.id as any)}
+                          className={`py-2 px-2 rounded-xl text-xs font-bold text-center transition-all ${
+                            calcLevel === item.id
+                              ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                              : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700/80">
+                    <div className="flex items-center gap-2 text-xs font-bold text-emerald-400">
+                      <Sparkles className="w-4 h-4" />
+                      <span>Instant Algorithmic Synthesis</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                      All calculations are calibrated against validated sports science models (Mifflin-St Jeor & Schoenfeld Volume Guidelines).
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Output Card (7 cols) */}
+                <div className="lg:col-span-7 bg-slate-800/90 rounded-2xl p-6 sm:p-8 border border-slate-700 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between pb-4 border-b border-slate-700">
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">
+                          Recommended Program Structure
+                        </span>
+                        <h3 className="text-lg sm:text-xl font-black text-white mt-0.5">
+                          {calcOutput.splitName}
+                        </h3>
+                      </div>
+                      <span className="text-xs font-extrabold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full">
+                        {calcDays} Sessions / Wk
+                      </span>
+                    </div>
+
+                    {/* Macro Target Summary Cards */}
+                    <div className="grid grid-cols-4 gap-3 my-6">
+                      <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-700/60 text-center">
+                        <p className="text-[10px] font-bold uppercase text-slate-400">Calories</p>
+                        <p className="text-sm sm:text-base font-black text-white mt-1">{calcOutput.calories}</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-700/60 text-center">
+                        <p className="text-[10px] font-bold uppercase text-blue-400">Protein</p>
+                        <p className="text-sm sm:text-base font-black text-white mt-1">{calcOutput.protein}</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-700/60 text-center">
+                        <p className="text-[10px] font-bold uppercase text-amber-400">Carbs</p>
+                        <p className="text-sm sm:text-base font-black text-white mt-1">{calcOutput.carbs}</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-700/60 text-center">
+                        <p className="text-[10px] font-bold uppercase text-emerald-400">Fats</p>
+                        <p className="text-sm sm:text-base font-black text-white mt-1">{calcOutput.fats}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2.5 text-xs text-slate-300">
+                      <div className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                        <span><strong>Training Methodology:</strong> {calcOutput.primaryFocus}</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                        <span><strong>Rest Cadence:</strong> {calcOutput.restInterval}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p className="text-xs text-slate-400 text-center sm:text-left">
+                      Ready to lock in this routine? Sign up takes under 60 seconds.
+                    </p>
+                    <Link
+                      href="/register"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 px-6 py-3 text-xs font-bold text-white transition-all shadow-md shadow-blue-600/30"
+                    >
+                      Generate Full Plan &rarr;
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 4. HOW IT WORKS (Streamlined 3-step interactive roadmap)                  */}
+        {/* ========================================================================= */}
+        <section id="how-it-works" className="py-24 bg-slate-50 border-b border-slate-200/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                Execution Workflow
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mt-3">
+                How Strive Drives Results
+              </h2>
+              <p className="mt-3 text-slate-600 text-base font-normal">
+                Three streamlined steps that replace spreadsheets, expensive coaching, and trial-and-error.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-8">
+              {[
+                {
+                  step: "01",
+                  title: "Calibrate Metrics & Gear",
+                  description: "Specify your current lifting stats, weekly schedule availability, and exact equipment (full commercial gym, home barbell, or dumbbells only).",
+                  highlight: "Equipment-Aware Mapping",
+                  icon: Sliders,
+                },
+                {
+                  step: "02",
+                  title: "Synthesize Training & Macros",
+                  description: "Our algorithm creates balanced weekly training splits, movement order, target sets/reps, and dynamic daily macronutrient targets.",
+                  highlight: "Periodized Volume",
+                  icon: Layers,
+                },
+                {
+                  step: "03",
+                  title: "Log Sets & Auto-Progress",
+                  description: "Record weight and repetitions in two taps during sessions. Strive automatically calculates progressive overload increases for your next workout.",
+                  highlight: "Zero Guesswork",
+                  icon: TrendingUp,
+                },
+              ].map((item, idx) => (
+                <Reveal key={item.step} delay={idx * 100}>
+                  <div className="h-full rounded-3xl bg-white p-8 border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                      <div className="flex items-center justify-between mb-6">
+                        <span className="text-3xl font-black text-slate-200 group-hover:text-blue-600 transition-colors">
+                          {item.step}
+                        </span>
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                          <item.icon className="w-5 h-5" />
+                        </div>
+                      </div>
+
+                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded">
+                        {item.highlight}
+                      </span>
+                      <h3 className="text-lg font-extrabold text-slate-900 mt-2 tracking-tight">
+                        {item.title}
+                      </h3>
+                      <p className="mt-3 text-sm text-slate-600 leading-relaxed font-normal">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-8 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-bold text-blue-600">
+                      <span>Step {idx + 1} of 3</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </div>
                   </div>
                 </Reveal>
               ))}
@@ -131,95 +925,64 @@ export default function Home() {
           </div>
         </section>
 
-        {/* How it works */}
-        <section id="how-it-works" className="bg-cream py-24 relative">
+        {/* ========================================================================= */}
+        {/* 5. BUILT FOR EVERY TRAINING DISCIPLINE (Authentic replacement for fake reviews) */}
+        {/* ========================================================================= */}
+        <section className="py-24 bg-white border-b border-slate-200/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col lg:flex-row items-center gap-16">
-              <div className="lg:w-1/2">
-                <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-100/60 px-3 py-1 rounded-full border border-blue-200/50">Simple 3-Step Process</span>
-                <h2 className="text-4xl font-extrabold tracking-tight text-ink mt-3 mb-10">How it works</h2>
-                <div className="space-y-8">
-                  {[
-                    { step: "01", title: "Create Your Profile", description: "Tell us about your goals, experience, and preferences." },
-                    { step: "02", title: "Get Your Plans", description: "We generate a custom workout and meal schedule for you." },
-                    { step: "03", title: "Track & Transform", description: "Log your progress daily and watch yourself evolve." },
-                  ].map((s) => (
-                    <div key={s.step} className="flex gap-6 group">
-                      <div className="text-2xl font-extrabold text-blue-600 bg-blue-100/80 w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                        {s.step}
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-ink mb-1 group-hover:text-blue-600 transition-colors">{s.title}</h3>
-                        <p className="text-slate-600 leading-relaxed font-medium">{s.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="lg:w-1/2 w-full">
-                <div className="rounded-3xl bg-white p-8 shadow-xl shadow-slate-200/50 border border-slate-100/80 hover-lift">
-                  <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
-                    <div>
-                      <h4 className="font-bold text-ink text-base">Today&apos;s Progress</h4>
-                      <p className="text-xs text-slate-400">Keep up the streak!</p>
-                    </div>
-                    <span className="text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">75% Done</span>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3.5 p-3 rounded-xl bg-slate-50/80">
-                      <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center">
-                        <Check className="w-4 h-4" />
-                      </div>
-                      <span className="text-sm text-slate-400 line-through font-medium">Morning Workout Completed</span>
-                    </div>
-                    <div className="flex items-center gap-3.5 p-3 rounded-xl bg-slate-50/80">
-                      <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center">
-                        <Check className="w-4 h-4" />
-                      </div>
-                      <span className="text-sm text-slate-400 line-through font-medium">High Protein Lunch Logged</span>
-                    </div>
-                    <div className="flex items-center gap-3.5 p-3 rounded-xl bg-blue-50/50 border border-blue-100">
-                      <div className="w-6 h-6 rounded-full border-2 border-blue-600 flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-blue-600" />
-                      </div>
-                      <span className="text-sm text-slate-900 font-bold">Log Evening Run & Recovery</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                Tailored Disciplines
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mt-3">
+                Engineered for Every Training Style
+              </h2>
+              <p className="mt-3 text-slate-600 text-base font-normal">
+                Whether your primary focus is maximum muscle hypertrophy, pure compound strength, or time-efficient conditioning, Strive tailors the volume and nutrition to match.
+              </p>
             </div>
-          </div>
-        </section>
 
-        {/* Testimonials */}
-        <section className="bg-cream py-24 border-t border-slate-200/40">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-14">
-              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-100/60 px-3 py-1 rounded-full border border-blue-200/50">Real User Stories</span>
-              <h2 className="text-4xl font-extrabold tracking-tight text-ink mt-3">What Our Members Say</h2>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              {testimonials.map((t, i) => (
-                <Reveal key={t.name} delay={i * 110} className="h-full">
-                  <div className="h-full rounded-3xl bg-white p-8 shadow-sm border border-slate-100/80 hover-lift flex flex-col justify-between">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  title: "Hypertrophy & Physique",
+                  description: "High mechanical tension, localized fatigue management, and strategic exercise variety to maximize muscle cross-sectional area.",
+                  splitExample: "4-5 Day Push / Pull / Legs",
+                  accent: "blue",
+                },
+                {
+                  title: "Power & Compound Strength",
+                  description: "Heavy barbell work, nervous system recruitment, and linear progression schemes designed around squats, bench, and deadlifts.",
+                  splitExample: "3-4 Day Wave Progression",
+                  accent: "amber",
+                },
+                {
+                  title: "Fat Loss & Recomposition",
+                  description: "Muscle-sparing high-protein deficits paired with dense, calorie-burning compound circuits to drop fat without sacrificing strength.",
+                  splitExample: "4-Day Upper / Lower Density",
+                  accent: "emerald",
+                },
+                {
+                  title: "Minimalist & Home Training",
+                  description: "Ultra-efficient dumbbell and bodyweight protocols for busy founders and professionals needing results in 35 minutes or less.",
+                  splitExample: "3-Day Full Body High-Intensity",
+                  accent: "indigo",
+                },
+              ].map((style, idx) => (
+                <Reveal key={style.title} delay={idx * 80}>
+                  <div className="h-full rounded-2xl p-6 bg-slate-50 border border-slate-200/80 hover:border-blue-300 hover:bg-white transition-all flex flex-col justify-between">
                     <div>
-                      <Quote className="h-8 w-8 text-blue-600/30" />
-                      <div className="mt-3 flex gap-1">
-                        {Array.from({ length: 5 }).map((_, idx) => (
-                          <Star key={idx} className="h-4 w-4 fill-current text-brand-amber" />
-                        ))}
+                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center font-bold text-xs text-slate-800 mb-4 shadow-xs">
+                        0{idx + 1}
                       </div>
-                      <p className="mt-4 text-sm text-slate-600 leading-relaxed font-medium">{t.quote}</p>
+                      <h3 className="text-base font-extrabold text-slate-900">{style.title}</h3>
+                      <p className="mt-2 text-xs text-slate-600 leading-relaxed font-normal">
+                        {style.description}
+                      </p>
                     </div>
-                    <div className="mt-6 pt-4 border-t border-slate-100 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-sm">
-                        {t.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-ink">{t.name}</p>
-                        <p className="text-xs text-blue-600 font-semibold">{t.role}</p>
-                      </div>
+
+                    <div className="mt-6 pt-3 border-t border-slate-200/60 text-[11px] font-bold text-blue-600">
+                      Structure: {style.splitExample}
                     </div>
                   </div>
                 </Reveal>
@@ -228,43 +991,82 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA banner */}
-        <section className="bg-white py-20">
+        {/* ========================================================================= */}
+        {/* 6. CALL TO ACTION: High-contrast athletic dark banner                    */}
+        {/* ========================================================================= */}
+        <section className="py-20 bg-slate-50">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <Reveal>
-              <div className="rounded-3xl bg-ink px-8 py-16 text-center relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-white relative z-10">Ready to start your transformation?</h2>
-                <p className="mt-4 text-slate-300 max-w-xl mx-auto text-base font-medium relative z-10">Build your first plan in minutes. No equipment list too small, no goal too big.</p>
-                <Link
-                  href="/register"
-                  className="mt-8 inline-flex items-center gap-2 rounded-full bg-blue-600 px-9 py-4 text-base font-bold text-white hover:bg-blue-500 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-blue-500/30 relative z-10 group"
-                >
-                  Get Started Free
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
+              <div className="rounded-3xl bg-slate-900 p-8 sm:p-14 text-center relative overflow-hidden shadow-2xl">
+                {/* Ambient glow inside CTA banner */}
+                <div className="absolute top-0 right-1/4 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="relative z-10 max-w-2xl mx-auto">
+                  <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full inline-block mb-4">
+                    Immediate Access • 100% Free
+                  </span>
+                  <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                    Ready to Stop Guessing and Start Progressing?
+                  </h2>
+                  <p className="mt-4 text-slate-300 text-sm sm:text-base font-normal leading-relaxed">
+                    Build your first periodized workout routine and custom macronutrient plan in under 2 minutes. No subscription, no credit card required.
+                  </p>
+
+                  <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <Link
+                      href="/register"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 px-8 py-3.5 text-sm font-bold text-white transition-all shadow-lg shadow-blue-600/30 hover:scale-[1.02] active:scale-95"
+                    >
+                      Get Started Free
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      href="/login"
+                      className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 px-6 py-3.5 text-sm font-bold text-slate-300 transition-colors border border-slate-700"
+                    >
+                      Sign In to Account
+                    </Link>
+                  </div>
+                </div>
               </div>
             </Reveal>
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="bg-ink text-slate-400 py-12 border-t border-white/10">
+        {/* ========================================================================= */}
+        {/* 7. FOOTER                                                                 */}
+        {/* ========================================================================= */}
+        <footer className="bg-white text-slate-600 py-12 border-t border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-8 pb-8 border-b border-white/10">
-              <Link href="/" className="flex items-center gap-2 group">
-                <BrandMark className="h-6 w-6 text-blue-500 group-hover:scale-110 transition-transform" />
-                <span className="text-xl font-extrabold text-white tracking-tight">Strive</span>
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6 pb-8 border-b border-slate-200">
+              <Link href="/" className="flex items-center gap-2.5 group">
+                <div className="bg-blue-600 p-1.5 rounded-xl text-white shadow-xs">
+                  <BrandMark className="h-5 w-5 text-white" />
+                </div>
+                <span className="text-xl font-black text-slate-900 tracking-tight">Strive</span>
               </Link>
-              <div className="flex gap-8 text-sm font-semibold">
-                <Link href="/#features" className="hover:text-white transition-colors">Features</Link>
-                <Link href="/#how-it-works" className="hover:text-white transition-colors">How It Works</Link>
-                <Link href="/login" className="hover:text-white transition-colors">Login</Link>
+
+              <div className="flex flex-wrap justify-center gap-6 sm:gap-8 text-sm font-bold text-slate-700">
+                <a href="#features" className="hover:text-blue-600 transition-colors">Features</a>
+                <a href="#interactive-demo" className="hover:text-blue-600 transition-colors">Plan Calculator</a>
+                <a href="#how-it-works" className="hover:text-blue-600 transition-colors">How It Works</a>
+                <Link href="/login" className="hover:text-blue-600 transition-colors">Login</Link>
+                <Link href="/register" className="hover:text-blue-600 transition-colors">Register</Link>
+              </div>
+
+              {/* Status Indicator */}
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>All Systems Operational</span>
               </div>
             </div>
-            <div className="pt-8 text-sm text-center md:text-left flex flex-col sm:flex-row justify-between items-center gap-4">
+
+            <div className="pt-8 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-4">
               <p>&copy; 2026 Strive Fitness. All rights reserved.</p>
-              <p className="text-xs text-slate-500 font-medium">Empowering your personal fitness journey.</p>
+              <p className="font-medium text-slate-400">
+                Precision workout & nutrition architecture engineered for human progression.
+              </p>
             </div>
           </div>
         </footer>
