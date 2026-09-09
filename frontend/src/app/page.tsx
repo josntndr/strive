@@ -113,17 +113,6 @@ export default function Home() {
               {/* Hero Copy (Left 6 cols on LG) */}
               <div className="lg:col-span-6 text-left">
                 <Reveal>
-                  {/* Eyebrow badge */}
-                  <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-100/90 border border-slate-200/80 text-xs font-bold text-slate-800 mb-6 shadow-xs backdrop-blur-sm">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                    </span>
-                    <span className="tracking-wide uppercase text-[11px] text-slate-700">Precision Training & Nutrition OS</span>
-                    <span className="h-3 w-px bg-slate-300" />
-                    <span className="text-[10px] font-extrabold text-blue-600 uppercase">Free Forever</span>
-                  </div>
-
                   {/* Headline */}
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.08]">
                     Precision Training. <br />
