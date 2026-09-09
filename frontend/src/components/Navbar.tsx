@@ -12,7 +12,6 @@ import {
   TrendingUp,
   Settings,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { useEffect, useState } from "react";
@@ -102,15 +101,7 @@ export const Navbar = () => {
           <div className="bg-gradient-to-tr from-blue-600 via-blue-500 to-indigo-600 p-2 rounded-2xl text-white shadow-md shadow-blue-500/25 group-hover:scale-105 transition-transform">
             <BrandMark className="h-5.5 w-5.5 text-white" />
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">Strive</span>
-            {isAppRoute && (
-              <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-extrabold uppercase tracking-wider border border-blue-100/80">
-                <Sparkles className="w-3 h-3 text-blue-600" />
-                AI
-              </span>
-            )}
-          </div>
+          <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">Strive</span>
         </Link>
 
         {/* Navigation Links */}
