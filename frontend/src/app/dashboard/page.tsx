@@ -24,6 +24,8 @@ import {
   Play,
   RotateCcw,
   MessageSquare,
+  Sparkles,
+  Zap,
 } from "lucide-react";
 import { api, clearAuth, getCurrentUser, getToken, isUnauthorizedError } from "@/lib/api";
 import { toast } from "react-hot-toast";
@@ -80,7 +82,7 @@ type DashboardData = {
 
 const DAYS_OF_WEEK = [
   { short: "Mon", full: "Monday", isWorkout: true, label: "Full Body" },
-  { short: "Tue", full: "Tuesday", isWorkout: false, label: "Rest & Recovery" },
+  { short: "Tue", full: "Tuesday", isWorkout: false, label: "Rest" },
   { short: "Wed", full: "Wednesday", isWorkout: true, label: "Core & Stability" },
   { short: "Thu", full: "Thursday", isWorkout: false, label: "Active Rest" },
   { short: "Fri", full: "Friday", isWorkout: true, label: "Lower Body" },
@@ -204,20 +206,20 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-slate-50/70 flex flex-col">
         <Navbar />
         <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-          <div className="skeleton h-44 w-full rounded-2xl mb-6" />
+          <div className="skeleton h-44 w-full rounded-3xl mb-6" />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="skeleton h-28 rounded-2xl" />
+              <div key={i} className="skeleton h-28 rounded-3xl" />
             ))}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              <div className="skeleton h-80 rounded-2xl" />
-              <div className="skeleton h-72 rounded-2xl" />
+              <div className="skeleton h-80 rounded-3xl" />
+              <div className="skeleton h-72 rounded-3xl" />
             </div>
             <div className="space-y-6">
-              <div className="skeleton h-56 rounded-2xl" />
-              <div className="skeleton h-56 rounded-2xl" />
+              <div className="skeleton h-56 rounded-3xl" />
+              <div className="skeleton h-56 rounded-3xl" />
             </div>
           </div>
         </main>
@@ -260,27 +262,32 @@ export default function DashboardPage() {
       <AIChat />
 
       <main className="flex-grow py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-        {/* ─── 1. Executive Athlete Header Bar ─── */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-200/80">
-          <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Active Training Cycle • {todayFormatted}
+        {/* ─── 1. Athlete Command Center Banner ─── */}
+        <div className="mb-8 p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200/80">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                Active Training Cycle &bull; {todayFormatted}
+              </span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">
+                <Zap className="w-3.5 h-3.5 text-orange-500" />
+                Week 1
               </span>
             </div>
+
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900">
               Welcome back, {dashboard.userName.split(" ")[0]}
             </h1>
-            <p className="text-slate-600 text-sm font-medium mt-1">
-              Week 1 &mdash; Scheduled focus: <strong className="text-slate-900">{activeWorkoutDay?.focus || "Core & Stability"}</strong>
+            <p className="text-slate-600 text-sm font-medium">
+              Today&apos;s scheduled focus: <strong className="text-slate-900 font-extrabold">{activeWorkoutDay?.focus || "Core & Stability Routine"}</strong>
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/workouts"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+              className="complete-btn inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl text-white text-sm font-black shadow-md shadow-blue-500/25 active:scale-95 transition-all"
             >
               <Play className="w-4 h-4 fill-white" />
               <span>Start Session</span>
@@ -288,7 +295,7 @@ export default function DashboardPage() {
             <button
               type="button"
               onClick={openAIChat}
-              className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-sm font-bold shadow-2xs transition-all"
+              className="inline-flex items-center gap-2 px-5 py-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/90 text-sm font-bold shadow-2xs transition-all active:scale-95"
             >
               <MessageSquare className="w-4 h-4 text-slate-500" />
               <span>Ask Coach</span>
@@ -297,43 +304,45 @@ export default function DashboardPage() {
         </div>
 
         {/* ─── 2. Weekly Training Schedule Timeline Strip ─── */}
-        <div className="mb-8 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
-          <div className="flex items-center justify-between mb-3 px-1">
+        <div className="mb-8 bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
+          <div className="flex items-center justify-between mb-4 px-1">
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-blue-600" />
+              <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600">
+                <Calendar className="w-4 h-4" />
+              </div>
               <span className="text-xs font-black uppercase tracking-wider text-slate-700">
-                Weekly Rhythm
+                Weekly Schedule Timeline
               </span>
             </div>
             <span className="text-xs font-bold text-slate-500">
-              {profile.workoutDaysPerWeek || 4} Sessions Planned This Week
+              {profile.workoutDaysPerWeek || 4} Sessions Scheduled
             </span>
           </div>
 
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-7 gap-2 sm:gap-3">
             {DAYS_OF_WEEK.map((item, idx) => {
               const isToday = idx === currentDayOfWeekIdx;
               return (
                 <div
                   key={item.short}
-                  className={`flex flex-col items-center justify-between py-3 px-1.5 rounded-xl border text-center transition-all ${
+                  className={`flex flex-col items-center justify-between py-3.5 px-2 rounded-2xl border text-center transition-all ${
                     isToday
-                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/20 scale-[1.03]"
-                      : "bg-slate-50/70 border-slate-200/70 text-slate-700 hover:bg-white"
+                      ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white border-blue-600 shadow-md shadow-blue-500/20 scale-[1.03] font-black"
+                      : "bg-slate-50/70 border-slate-200/70 text-slate-700 hover:bg-white hover:border-slate-300 font-bold"
                   }`}
                 >
                   <span className={`text-[11px] font-black uppercase tracking-wider ${isToday ? "text-blue-100" : "text-slate-400"}`}>
                     {item.short}
                   </span>
 
-                  <div className="my-1.5">
+                  <div className="my-2">
                     {item.isWorkout ? (
                       <div
-                        className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                          isToday ? "bg-white text-blue-600 font-black text-xs" : "bg-blue-50 text-blue-600 border border-blue-100"
+                        className={`w-7 h-7 rounded-xl flex items-center justify-center transition-transform ${
+                          isToday ? "bg-white text-blue-600 font-black shadow-xs" : "bg-blue-50 text-blue-600 border border-blue-100"
                         }`}
                       >
-                        <Dumbbell className="w-3.5 h-3.5" />
+                        <Dumbbell className="w-4 h-4" />
                       </div>
                     ) : (
                       <div className={`w-2 h-2 rounded-full ${isToday ? "bg-white/70" : "bg-slate-300"}`} />
@@ -349,76 +358,85 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* ─── 3. High-Density Performance Metric Ribbon ─── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* ─── 3. Elevated Performance Metric Bento Ribbon ─── */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           {/* Metric 1: Streak */}
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-blue-200 transition-all">
+          <div className="stat-card bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:border-orange-300 transition-all group">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Streak</span>
-              <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
-                <Flame className="w-4 h-4" />
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Workout Streak</span>
+              <div className="p-2.5 rounded-2xl bg-orange-50 text-orange-600 border border-orange-100 group-hover:scale-105 transition-transform">
+                <Flame className="w-5 h-5" strokeWidth={2.2} />
               </div>
             </div>
-            <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-black text-slate-900">{dashboard.workoutStreak}</span>
-              <span className="text-xs font-bold text-slate-500">days</span>
+            <div className="mt-3 flex items-baseline gap-1.5">
+              <span className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">{dashboard.workoutStreak}</span>
+              <span className="text-xs font-bold text-slate-500 uppercase">days</span>
             </div>
-            <p className="text-[11px] font-semibold text-slate-500 mt-1">
+            <div className="mt-2 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div
+                className="bg-orange-500 h-full rounded-full transition-all"
+                style={{ width: `${Math.min((dashboard.workoutStreak / 7) * 100, 100)}%` }}
+              />
+            </div>
+            <p className="text-[11px] font-semibold text-slate-500 mt-2">
               {dashboard.workoutStreak > 0 ? "Daily discipline active" : "Day 1 ready to start"}
             </p>
           </div>
 
           {/* Metric 2: Completed Workouts */}
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-emerald-200 transition-all">
+          <div className="stat-card bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:border-emerald-300 transition-all group">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Completed</span>
-              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <CheckCircle2 className="w-4 h-4" />
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Plan Progress</span>
+              <div className="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 group-hover:scale-105 transition-transform">
+                <CheckCircle2 className="w-5 h-5" strokeWidth={2.2} />
               </div>
             </div>
-            <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-black text-slate-900">{dashboard.totalCompletedWorkouts}</span>
-              <span className="text-xs font-bold text-slate-500">of {totalWorkoutDays} in plan</span>
+            <div className="mt-3 flex items-baseline gap-1.5">
+              <span className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">{dashboard.totalCompletedWorkouts}</span>
+              <span className="text-xs font-bold text-slate-500 uppercase">of {totalWorkoutDays} in plan</span>
             </div>
-            <div className="mt-1.5 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+            <div className="mt-2 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
               <div
                 className="bg-emerald-500 h-full rounded-full transition-all"
                 style={{ width: `${(completedWorkoutsCount / totalWorkoutDays) * 100}%` }}
               />
             </div>
+            <p className="text-[11px] font-semibold text-slate-500 mt-2">
+              {completedWorkoutsCount === 0 ? "Day 1 session scheduled" : "Consistent progress"}
+            </p>
           </div>
 
           {/* Metric 3: Weight */}
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-blue-200 transition-all">
+          <div className="stat-card bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:border-blue-300 transition-all group">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Weight</span>
-              <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4" />
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Current Weight</span>
+              <div className="p-2.5 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 group-hover:scale-105 transition-transform">
+                <TrendingUp className="w-5 h-5" strokeWidth={2.2} />
               </div>
             </div>
-            <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-black text-slate-900">{profile.weight || 48}</span>
-              <span className="text-xs font-bold text-slate-500">kg</span>
+            <div className="mt-3 flex items-baseline gap-1.5">
+              <span className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">{profile.weight || 48}</span>
+              <span className="text-xs font-bold text-slate-500 uppercase">kg</span>
             </div>
-            <p className="text-[11px] font-semibold text-slate-500 mt-1">
-              Height: {profile.height || 157} cm &bull; BMI 19.5
+            <p className="text-[11px] font-semibold text-slate-500 mt-3">
+              Height: {profile.height || 157} cm &bull; BMI 19.5 (Optimal)
             </p>
           </div>
 
           {/* Metric 4: Pace */}
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs hover:border-purple-200 transition-all">
+          <div className="stat-card bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:border-purple-300 transition-all group">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Fitness Level</span>
-              <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                <Award className="w-4 h-4" />
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Fitness Level</span>
+              <div className="p-2.5 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 group-hover:scale-105 transition-transform">
+                <Award className="w-5 h-5" strokeWidth={2.2} />
               </div>
             </div>
-            <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-black text-slate-900 capitalize">
+            <div className="mt-3 flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-black text-slate-900 capitalize tracking-tight">
                 {profile.workoutExperience || "Intermediate"}
               </span>
             </div>
-            <p className="text-[11px] font-semibold text-slate-500 mt-1">
+            <p className="text-[11px] font-semibold text-slate-500 mt-3">
               Target ~{profile.workoutDuration || 60}m sessions
             </p>
           </div>
@@ -426,14 +444,14 @@ export default function DashboardPage() {
 
         {/* ─── 4. Main Two-Column Hub ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left / Center (2 cols) */}
+          {/* Left Column (2 cols) */}
           <div className="lg:col-span-2 space-y-8">
             {/* ─── Today's Workout Session Player ─── */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-              <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="dashboard-card rounded-3xl overflow-hidden shadow-xs">
+              <div className="p-6 sm:p-7 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/60">
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[11px] font-black uppercase tracking-wider border border-blue-200/70">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-black uppercase tracking-wider border border-blue-200/70">
                       Day {workoutDayNumber} of {totalWorkoutDays}
                     </span>
                     <span className="text-xs font-bold text-slate-500">
@@ -441,16 +459,16 @@ export default function DashboardPage() {
                     </span>
                   </div>
                   <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-                    {activeWorkoutDay?.focus || "Core & Stability Routine"}
+                    {activeWorkoutDay?.focus ? `${activeWorkoutDay.focus} Routine` : "Core & Stability Routine"}
                   </h2>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <div className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <div className="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/80 text-xs font-bold text-slate-700 flex items-center gap-1.5 shadow-2xs">
                     <Activity className="w-3.5 h-3.5 text-blue-600" />
                     <span>{activeWorkoutDay?.exercises?.length || 6} Movements</span>
                   </div>
-                  <div className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <div className="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/80 text-xs font-bold text-slate-700 flex items-center gap-1.5 shadow-2xs">
                     <Clock className="w-3.5 h-3.5 text-blue-600" />
                     <span>~{profile.workoutDuration || 45}m</span>
                   </div>
@@ -458,34 +476,34 @@ export default function DashboardPage() {
               </div>
 
               {/* Workout Routine Timeline */}
-              <div className="p-6">
+              <div className="p-6 sm:p-8">
                 {activeWorkoutDay?.exercises && activeWorkoutDay.exercises.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider px-1">
                       <span>Movement Sequence</span>
                       <span>Target Work</span>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       {activeWorkoutDay.exercises.map((ex, idx) => (
                         <div
                           key={idx}
-                          className="p-3.5 rounded-xl bg-slate-50/70 hover:bg-white border border-slate-200/60 hover:border-blue-200 hover:shadow-2xs transition-all flex items-center justify-between gap-4"
+                          className="exercise-card p-4 rounded-2xl bg-slate-50/70 hover:bg-white border border-slate-200/70 hover:border-blue-200 flex items-center justify-between gap-4"
                         >
-                          <div className="flex items-center gap-3">
-                            <span className="w-6 h-6 rounded-md bg-white border border-slate-200 text-slate-700 font-mono font-bold text-xs flex items-center justify-center shrink-0">
+                          <div className="flex items-center gap-3.5">
+                            <span className="w-7 h-7 rounded-xl bg-white border border-slate-200/90 text-slate-800 font-mono font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
                               {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
                             </span>
                             <div>
-                              <p className="font-bold text-slate-900 text-sm">{ex.name}</p>
-                              <span className="text-[11px] font-semibold text-slate-500">
+                              <p className="font-extrabold text-slate-900 text-sm">{ex.name}</p>
+                              <span className="text-xs font-semibold text-slate-500">
                                 {ex.targetMuscle || "Core & Stabilizers"}
                               </span>
                             </div>
                           </div>
 
                           <div className="flex items-center gap-3">
-                            <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200/80 text-xs font-bold text-slate-800 font-mono">
+                            <span className="px-3 py-1 rounded-xl bg-white border border-slate-200/90 text-xs font-bold text-slate-800 font-mono shadow-2xs">
                               {ex.sets || 3} sets &times; {ex.reps || "12 reps"}
                             </span>
                           </div>
@@ -496,14 +514,14 @@ export default function DashboardPage() {
                     <div className="pt-4 flex flex-col sm:flex-row items-center gap-3">
                       <Link
                         href="/workouts"
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black shadow-md shadow-blue-500/25 active:scale-95 transition-all"
+                        className="complete-btn w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl text-white text-sm font-black shadow-md shadow-blue-500/25 active:scale-95 transition-all"
                       >
                         <Play className="w-4 h-4 fill-white" />
                         <span>Start Workout Session</span>
                       </Link>
                       <Link
                         href="/workouts"
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold transition-all"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold transition-all"
                       >
                         <span>View Exercise Demos</span>
                       </Link>
@@ -518,7 +536,7 @@ export default function DashboardPage() {
                     </p>
                     <Link
                       href="/workouts/generate"
-                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-black shadow-sm"
+                      className="complete-btn inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl text-white text-xs font-black shadow-sm"
                     >
                       <span>Generate Workout Plan</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -529,10 +547,10 @@ export default function DashboardPage() {
             </div>
 
             {/* ─── Nutrition & Fuel Engine ─── */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
-              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+            <div className="dashboard-card rounded-3xl overflow-hidden shadow-xs">
+              <div className="p-6 sm:p-7 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
+                  <div className="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100">
                     <Utensils className="w-5 h-5" />
                   </div>
                   <div>
@@ -550,38 +568,40 @@ export default function DashboardPage() {
                 </Link>
               </div>
 
-              <div className="p-6 space-y-6">
+              <div className="p-6 sm:p-8 space-y-6">
                 {/* Visual Macro Bar & Targets */}
-                <div className="p-4 rounded-xl bg-slate-50/70 border border-slate-200/60 space-y-3">
+                <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/70 space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-black uppercase tracking-wider text-slate-500">
                       Macro Split ({profile.dietaryPreference || "Budget Friendly"} Diet)
                     </span>
-                    <span className="text-xs font-black text-slate-900">{targetCalories} kcal Target</span>
+                    <span className="text-xs font-black text-slate-900 px-3 py-1 rounded-full bg-white border border-slate-200/80 shadow-2xs">
+                      {targetCalories} kcal Target
+                    </span>
                   </div>
 
                   {/* Multi-segment proportional bar */}
-                  <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden flex">
+                  <div className="w-full h-3.5 bg-slate-200 rounded-full overflow-hidden flex shadow-inner">
                     <div className="bg-emerald-500 h-full w-[25%]" title="Protein 25%" />
                     <div className="bg-amber-500 h-full w-[45%]" title="Carbs 45%" />
                     <div className="bg-purple-500 h-full w-[30%]" title="Healthy Fats 30%" />
                   </div>
 
                   <div className="grid grid-cols-3 gap-3 pt-1">
-                    <div className="p-2.5 rounded-lg bg-white border border-slate-200/80">
-                      <span className="text-[10px] font-black uppercase text-emerald-700">Protein (25%)</span>
-                      <p className="text-base font-black text-slate-900 mt-0.5">{targetProtein}g</p>
-                      <span className="text-[10px] text-slate-400 font-medium">2.0g per kg</span>
+                    <div className="p-3.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+                      <span className="text-[10px] font-black uppercase text-emerald-700 tracking-wider">Protein (25%)</span>
+                      <p className="text-lg font-black text-slate-900 mt-0.5">{targetProtein}g</p>
+                      <span className="text-[10px] text-slate-400 font-semibold">2.0g per kg</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-white border border-slate-200/80">
-                      <span className="text-[10px] font-black uppercase text-amber-700">Carbs (45%)</span>
-                      <p className="text-base font-black text-slate-900 mt-0.5">{targetCarbs}g</p>
-                      <span className="text-[10px] text-slate-400 font-medium">clean fuel</span>
+                    <div className="p-3.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+                      <span className="text-[10px] font-black uppercase text-amber-700 tracking-wider">Carbs (45%)</span>
+                      <p className="text-lg font-black text-slate-900 mt-0.5">{targetCarbs}g</p>
+                      <span className="text-[10px] text-slate-400 font-semibold">clean energy</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-white border border-slate-200/80">
-                      <span className="text-[10px] font-black uppercase text-purple-700">Fats (30%)</span>
-                      <p className="text-base font-black text-slate-900 mt-0.5">{targetFats}g</p>
-                      <span className="text-[10px] text-slate-400 font-medium">vital balance</span>
+                    <div className="p-3.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+                      <span className="text-[10px] font-black uppercase text-purple-700 tracking-wider">Fats (30%)</span>
+                      <p className="text-lg font-black text-slate-900 mt-0.5">{targetFats}g</p>
+                      <span className="text-[10px] text-slate-400 font-semibold">vital balance</span>
                     </div>
                   </div>
                 </div>
@@ -594,19 +614,19 @@ export default function DashboardPage() {
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {activeMealDay.breakfast && (
-                        <div className="p-3.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+                        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
                           <span className="text-[11px] font-black text-emerald-700 uppercase">Breakfast</span>
                           <p className="text-xs font-bold text-slate-800 mt-1 line-clamp-2">{activeMealDay.breakfast}</p>
                         </div>
                       )}
                       {activeMealDay.lunch && (
-                        <div className="p-3.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+                        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
                           <span className="text-[11px] font-black text-emerald-700 uppercase">Lunch</span>
                           <p className="text-xs font-bold text-slate-800 mt-1 line-clamp-2">{activeMealDay.lunch}</p>
                         </div>
                       )}
                       {activeMealDay.dinner && (
-                        <div className="p-3.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
+                        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
                           <span className="text-[11px] font-black text-emerald-700 uppercase">Dinner</span>
                           <p className="text-xs font-bold text-slate-800 mt-1 line-clamp-2">{activeMealDay.dinner}</p>
                         </div>
@@ -614,7 +634,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-emerald-50/50 border border-emerald-100">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-emerald-50/60 border border-emerald-100">
                     <div>
                       <h4 className="text-sm font-extrabold text-slate-900">Custom Meal Recipes</h4>
                       <p className="text-xs text-slate-600 mt-0.5">
@@ -623,8 +643,9 @@ export default function DashboardPage() {
                     </div>
                     <Link
                       href="/meals/generate"
-                      className="whitespace-nowrap inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-sm"
+                      className="emerald-btn whitespace-nowrap inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-white text-xs font-black shadow-md shadow-emerald-500/20 active:scale-95 transition-all"
                     >
+                      <Sparkles className="w-3.5 h-3.5" />
                       <span>Generate Recipes</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
@@ -637,20 +658,20 @@ export default function DashboardPage() {
           {/* Right Column (Sidebar) */}
           <div className="space-y-6">
             {/* ─── Daily Coach Briefing ─── */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-2xs space-y-4">
+            <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
-                    <Target className="w-4 h-4" />
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-orange-50 text-orange-600 border border-orange-100">
+                    <Target className="w-4.5 h-4.5" />
                   </div>
                   <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">Coach Note</h3>
                 </div>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                   Daily Tip
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
                 <p className="text-xs font-semibold text-slate-700 leading-relaxed">
                   Focus on strict pelvic stability and a 3-second eccentric tempo on core movements today. Keep breathing steady through every repetition.
                 </p>
@@ -659,16 +680,16 @@ export default function DashboardPage() {
               {/* Interactive Daily Checklist */}
               <div className="space-y-2">
                 <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Today&apos;s Targets</p>
-                <div className="space-y-1.5 text-xs font-semibold">
+                <div className="space-y-2 text-xs font-semibold">
                   <button
                     type="button"
                     onClick={() => toggleChecklistItem("workout")}
-                    className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
-                      checklist.workout ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                    className={`w-full flex items-center gap-3 p-3 rounded-2xl border text-left transition-all ${
+                      checklist.workout ? "bg-emerald-50 border-emerald-200 text-emerald-800 shadow-2xs" : "bg-white border-slate-200/80 text-slate-700 hover:bg-slate-50"
                     }`}
                   >
-                    <div className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${checklist.workout ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300"}`}>
-                      {checklist.workout && <Check className="w-3 h-3" strokeWidth={3} />}
+                    <div className={`w-5 h-5 rounded-lg border flex items-center justify-center transition-colors ${checklist.workout ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300 bg-white"}`}>
+                      {checklist.workout && <Check className="w-3.5 h-3.5" strokeWidth={3} />}
                     </div>
                     <span className={checklist.workout ? "line-through text-slate-400" : ""}>
                       Day 1 Core Workout
@@ -678,12 +699,12 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => toggleChecklistItem("protein")}
-                    className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
-                      checklist.protein ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                    className={`w-full flex items-center gap-3 p-3 rounded-2xl border text-left transition-all ${
+                      checklist.protein ? "bg-emerald-50 border-emerald-200 text-emerald-800 shadow-2xs" : "bg-white border-slate-200/80 text-slate-700 hover:bg-slate-50"
                     }`}
                   >
-                    <div className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${checklist.protein ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300"}`}>
-                      {checklist.protein && <Check className="w-3 h-3" strokeWidth={3} />}
+                    <div className={`w-5 h-5 rounded-lg border flex items-center justify-center transition-colors ${checklist.protein ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300 bg-white"}`}>
+                      {checklist.protein && <Check className="w-3.5 h-3.5" strokeWidth={3} />}
                     </div>
                     <span className={checklist.protein ? "line-through text-slate-400" : ""}>
                       Hit {targetProtein}g Protein Goal
@@ -693,12 +714,12 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => toggleChecklistItem("water")}
-                    className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
-                      checklist.water ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                    className={`w-full flex items-center gap-3 p-3 rounded-2xl border text-left transition-all ${
+                      checklist.water ? "bg-emerald-50 border-emerald-200 text-emerald-800 shadow-2xs" : "bg-white border-slate-200/80 text-slate-700 hover:bg-slate-50"
                     }`}
                   >
-                    <div className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${checklist.water ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300"}`}>
-                      {checklist.water && <Check className="w-3 h-3" strokeWidth={3} />}
+                    <div className={`w-5 h-5 rounded-lg border flex items-center justify-center transition-colors ${checklist.water ? "bg-emerald-500 border-emerald-500 text-white" : "border-slate-300 bg-white"}`}>
+                      {checklist.water && <Check className="w-3.5 h-3.5" strokeWidth={3} />}
                     </div>
                     <span className={checklist.water ? "line-through text-slate-400" : ""}>
                       Hydrate 2.5L Water
@@ -709,11 +730,11 @@ export default function DashboardPage() {
             </div>
 
             {/* ─── Daily Hydration Module ─── */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-2xs space-y-3">
+            <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs space-y-3.5">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center">
-                    <Droplets className="w-4 h-4" />
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-100">
+                    <Droplets className="w-4.5 h-4.5" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-slate-900">Hydration Log</h3>
@@ -735,7 +756,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={addWater}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-black transition-colors"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-black transition-colors active:scale-95"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>+250ml</span>
@@ -764,7 +785,7 @@ export default function DashboardPage() {
             </div>
 
             {/* ─── Quick Navigation Launcher ─── */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs space-y-3">
+            <div className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs space-y-3">
               <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 px-1">
                 Shortcuts
               </h3>
@@ -778,9 +799,9 @@ export default function DashboardPage() {
                   <Link
                     key={idx}
                     href={action.href}
-                    className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50/70 hover:bg-white border border-slate-200/60 hover:border-slate-300 hover:shadow-2xs transition-all text-xs font-bold text-slate-800 group"
+                    className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-slate-50/70 hover:bg-white border border-slate-200/60 hover:border-slate-300 hover:shadow-2xs transition-all text-xs font-bold text-slate-800 group"
                   >
-                    <div className={`p-1.5 rounded-lg ${action.color} group-hover:scale-105 transition-transform`}>
+                    <div className={`p-2 rounded-xl ${action.color} group-hover:scale-105 transition-transform`}>
                       <action.icon className="w-4 h-4" />
                     </div>
                     <span>{action.label}</span>
