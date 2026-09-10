@@ -11,16 +11,15 @@ export function BrandMark({ className = "" }: BrandMarkProps) {
   return (
     <svg
       viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2.4}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
       className={className}
       aria-hidden="true"
     >
-      <path d="M3.5 15.5 L9.5 9.5 L13 13 L20 5.5" />
-      <path d="M20 10.5 L20 5.5 L15 5.5" />
+      {/* Upper Kinetic Athletic Blade */}
+      <path d="M3.5 4H20.5L14 11H8.5L11.5 7.5H3.5V4Z" />
+      {/* Lower Kinetic Athletic Blade */}
+      <path d="M20.5 20H3.5L10 13H15.5L12.5 16.5H20.5V20Z" />
     </svg>
   );
 }
