@@ -103,7 +103,7 @@ export default function RegisterPage() {
         {/* Top Logo */}
         <div className="relative z-10">
           <Link href="/" className="inline-flex items-center space-x-3 group">
-            <div className="bg-slate-950 p-2.5 rounded-xl text-white group-hover:bg-blue-600 transition-colors shadow-lg shadow-black/20 flex items-center justify-center">
+            <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 p-2.5 rounded-xl text-white group-hover:scale-105 group-hover:shadow-orange-500/40 transition-all shadow-lg shadow-orange-500/20 flex items-center justify-center">
               <BrandMark className="h-6 w-6 text-white" />
             </div>
             <span className="text-2xl font-black text-white tracking-tight">Strive</span>
@@ -142,7 +142,7 @@ export default function RegisterPage() {
             {/* Mobile Brand Header */}
             <div className="lg:hidden mb-4 flex items-center justify-between">
               <Link href="/" className="inline-flex items-center space-x-2">
-                <div className="bg-slate-950 p-1.5 rounded-xl text-white shadow-sm flex items-center justify-center">
+                <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 p-1.5 rounded-xl text-white shadow-sm flex items-center justify-center">
                   <BrandMark className="h-5 w-5 text-white" />
                 </div>
                 <span className="text-xl font-black text-slate-900 tracking-tight">Strive</span>

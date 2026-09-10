@@ -60,7 +60,7 @@ export default function GenerateWorkoutPage() {
       <div className="min-h-screen bg-cream flex flex-col items-center justify-center p-4">
         <div className="max-w-md w-full text-center">
           <div className="relative inline-block mb-8">
-            <div className="bg-slate-950 p-4 rounded-2xl relative z-10 animate-bounce flex items-center justify-center shadow-lg shadow-black/25">
+            <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 p-4 rounded-2xl relative z-10 animate-bounce flex items-center justify-center shadow-lg shadow-orange-500/30">
               <BrandMark className="h-10 w-10 text-white" />
             </div>
             <div className="absolute inset-0 bg-blue-100 rounded-2xl blur-xl animate-pulse -z-0 scale-150" />

@@ -1128,7 +1128,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6 pb-8 border-b border-slate-200">
               <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="bg-slate-950 p-1.5 rounded-xl text-white shadow-xs group-hover:bg-blue-600 transition-colors flex items-center justify-center">
+                <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 p-1.5 rounded-xl text-white shadow-xs group-hover:scale-105 group-hover:shadow-orange-500/35 transition-all flex items-center justify-center">
                   <BrandMark className="h-5 w-5 text-white" />
                 </div>
                 <span className="text-xl font-black text-slate-950 tracking-tight">Strive</span>

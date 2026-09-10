@@ -133,7 +133,7 @@ export default function SetupPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-4">
-            <div className="bg-slate-950 p-2.5 rounded-xl text-white shadow-sm flex items-center justify-center">
+            <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 p-2.5 rounded-xl text-white shadow-md shadow-orange-500/25 flex items-center justify-center">
               <BrandMark className="h-8 w-8 text-white" />
             </div>
           </div>

@@ -73,7 +73,7 @@ export const Navbar = () => {
       <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl border-b border-slate-200/80 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="bg-slate-950 p-2 rounded-xl text-white shadow-sm flex items-center justify-center">
+            <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 p-2 rounded-xl text-white shadow-md shadow-orange-500/20 flex items-center justify-center">
               <BrandMark className="h-5.5 w-5.5 text-white" />
             </div>
             <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-950">Strive</span>
@@ -98,7 +98,7 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href={logoHref} className="flex items-center gap-3 group">
-          <div className="bg-slate-950 p-2 rounded-xl text-white shadow-sm group-hover:bg-blue-600 transition-colors flex items-center justify-center">
+          <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 p-2 rounded-xl text-white shadow-md shadow-orange-500/20 group-hover:scale-105 group-hover:shadow-orange-500/35 transition-all flex items-center justify-center">
             <BrandMark className="h-5.5 w-5.5 text-white" />
           </div>
           <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-950">Strive</span>
