@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Navbar } from "@/components/Navbar";
 import { BrandMark } from "@/components/BrandMark";
 import { Reveal } from "@/components/Reveal";
@@ -503,18 +504,32 @@ export default function Home() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 2. CORE ARCHITECTURE BENTO GRID (Replacing 4 generic cards with high-end bento) */}
+        {/* 2. CORE ARCHITECTURE BENTO GRID (Atmospheric Gym Background & Precision Glyphs) */}
         {/* ========================================================================= */}
-        <section id="features" className="py-24 bg-slate-50 border-b border-slate-200/80">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="features" className="relative py-28 overflow-hidden bg-slate-950 text-white border-y border-slate-800">
+          {/* Cinematic Background Image with Dark Atmospheric Overlay */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <Image
+              src="/images/features_gym_bg.jpg"
+              alt="Athletic Gym Environment"
+              fill
+              sizes="100vw"
+              className="object-cover object-center opacity-25 filter grayscale contrast-125"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-950/85 to-slate-950" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,99,235,0.18),rgba(255,255,255,0))]" />
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-                Core Architecture
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mt-3">
-                Everything Engineered for Relentless Progress
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/25 text-xs font-mono font-bold text-blue-400 uppercase tracking-widest mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                System Architecture
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mt-2">
+                Everything Engineered for <span className="text-blue-500">Relentless Progress</span>
               </h2>
-              <p className="mt-3 text-slate-600 text-base font-normal">
+              <p className="mt-4 text-slate-300 text-base sm:text-lg font-normal leading-relaxed">
                 No random routines, no guesswork. Strive merges exercise physiology with automated tracking to ensure your efforts translate into measurable gains.
               </p>
             </div>
@@ -523,82 +538,131 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
               
               {/* Bento Card 1: Wide 2-col on MD (Automated Progressive Overload) */}
-              <div className="md:col-span-8 rounded-3xl bg-white p-8 border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+              <div className="md:col-span-8 rounded-3xl bg-slate-900/85 backdrop-blur-xl border border-slate-800/90 hover:border-blue-500/40 p-7 sm:p-8 transition-all flex flex-col justify-between group shadow-xl">
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                      <TrendingUp className="h-6 w-6 stroke-[2.2]" />
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-3">
+                      <div className="h-11 w-11 rounded-xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-blue-400 group-hover:border-blue-500/60 transition-colors shadow-inner">
+                        {/* Custom Precision Vector Gauge */}
+                        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[2.2]" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                          <polyline points="16 7 22 7 22 13" />
+                          <line x1="2" y1="21" x2="22" y2="21" className="stroke-slate-600 stroke-[1.5]" />
+                        </svg>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase block">Engine Module 01</span>
+                        <span className="text-xs font-mono font-bold text-slate-200">PROGRESSION_MATRIX</span>
+                      </div>
                     </div>
-                    <span className="text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-                      Algorithmic Overload
+                    <span className="text-[11px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full">
+                      +2.5 KG MICRO-OVERLOAD
                     </span>
                   </div>
-                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+
+                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                     Dynamic Progressive Overload
                   </h3>
-                  <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal max-w-xl">
+                  <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal max-w-xl">
                     Never plateau on your key lifts. Strive monitors completed sets, reps, and perceived difficulty to calculate the precise micro-increments (+1.25kg to +2.5kg) you need each week.
                   </p>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-3 gap-4">
-                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/70">
-                    <p className="text-[11px] font-bold text-slate-500 uppercase">Week 1 Baseline</p>
-                    <p className="text-base font-black text-slate-900 mt-0.5">80 kg × 8 reps</p>
-                    <span className="text-[10px] font-semibold text-slate-400">RPE 8.0</span>
+                <div className="mt-8 pt-6 border-t border-slate-800/80 grid grid-cols-3 gap-3 sm:gap-4">
+                  <div className="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800">
+                    <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">Week 1 Baseline</p>
+                    <p className="text-base sm:text-lg font-black text-white mt-0.5">80 kg × 8 reps</p>
+                    <span className="text-[10px] font-mono text-slate-400">RPE 8.0 Target</span>
                   </div>
-                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/70">
-                    <p className="text-[11px] font-bold text-slate-500 uppercase">Week 3 Adapted</p>
-                    <p className="text-base font-black text-slate-900 mt-0.5">85 kg × 8 reps</p>
-                    <span className="text-[10px] font-semibold text-emerald-600 font-bold">+5 kg Overload</span>
+                  <div className="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800">
+                    <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">Week 3 Adapted</p>
+                    <p className="text-base sm:text-lg font-black text-emerald-400 mt-0.5">85 kg × 8 reps</p>
+                    <span className="text-[10px] font-mono font-bold text-emerald-400">+5 kg Overload</span>
                   </div>
-                  <div className="bg-blue-50/70 p-3.5 rounded-xl border border-blue-100">
-                    <p className="text-[11px] font-bold text-blue-700 uppercase">Week 5 Target</p>
-                    <p className="text-base font-black text-blue-900 mt-0.5">87.5 kg × 8 reps</p>
-                    <span className="text-[10px] font-semibold text-blue-600 font-bold">Auto-Prescribed</span>
+                  <div className="bg-blue-950/30 p-3.5 rounded-xl border border-blue-800/60">
+                    <p className="text-[10px] font-mono font-bold text-blue-400 uppercase">Week 5 Target</p>
+                    <p className="text-base sm:text-lg font-black text-blue-300 mt-0.5">87.5 kg × 8 reps</p>
+                    <span className="text-[10px] font-mono font-bold text-blue-400">Auto-Prescribed</span>
                   </div>
                 </div>
               </div>
 
               {/* Bento Card 2: 4-col (Precision Macro Engine) */}
-              <div className="md:col-span-4 rounded-3xl bg-white p-8 border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+              <div className="md:col-span-4 rounded-3xl bg-slate-900/85 backdrop-blur-xl border border-slate-800/90 hover:border-emerald-500/40 p-7 sm:p-8 transition-all flex flex-col justify-between group shadow-xl">
                 <div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 mb-4">
-                    <Utensils className="h-6 w-6 stroke-[2.2]" />
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-3">
+                      <div className="h-11 w-11 rounded-xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-emerald-400 group-hover:border-emerald-500/60 transition-colors shadow-inner">
+                        {/* Custom Precision Macro Ring Glyph */}
+                        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[2.2]" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="9" className="stroke-slate-700 stroke-[1.8]" />
+                          <path d="M12 3 A 9 9 0 0 1 21 12" className="stroke-blue-400 stroke-[2.5]" />
+                          <path d="M21 12 A 9 9 0 0 1 12 21" className="stroke-amber-400 stroke-[2.5]" />
+                          <path d="M12 21 A 9 9 0 0 1 3 12" className="stroke-emerald-400 stroke-[2.5]" />
+                          <circle cx="12" cy="12" r="2.5" className="fill-emerald-400 stroke-none" />
+                        </svg>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase block">Engine Module 02</span>
+                        <span className="text-xs font-mono font-bold text-slate-200">METABOLIC_SYNC</span>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-mono font-bold text-blue-400 bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full">
+                      3-TIER MACROS
+                    </span>
                   </div>
-                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+
+                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                     Calibrated Macro OS
                   </h3>
-                  <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                  <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal">
                     Custom nutrition algorithms compute protein, carbohydrate, and lipid targets matched to your training intensity and body composition.
                   </p>
                 </div>
 
-                <div className="mt-6 p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100 space-y-2">
-                  <div className="flex justify-between text-xs font-bold text-slate-700">
-                    <span>Protein Target</span>
-                    <span className="text-emerald-700 font-black">2.0g / kg BW</span>
+                <div className="mt-6 p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
+                  <div>
+                    <div className="flex justify-between text-xs font-mono font-bold text-slate-300">
+                      <span>Protein Target</span>
+                      <span className="text-emerald-400 font-mono font-black">2.0g / kg BW</span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden mt-1.5">
+                      <div className="h-full bg-emerald-500 rounded-full w-[85%]" />
+                    </div>
                   </div>
-                  <div className="h-2 w-full bg-emerald-200/50 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-600 rounded-full w-[85%]" />
-                  </div>
-                  <p className="text-[11px] text-emerald-800 font-medium pt-1">
+                  <p className="text-[11px] text-slate-400 font-medium">
                     Synchronized with your heavy training days for maximal protein synthesis.
                   </p>
                 </div>
               </div>
 
               {/* Bento Card 3: 6-col (Equipment Flexibility) */}
-              <div className="md:col-span-6 rounded-3xl bg-white p-8 border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
-                    <Dumbbell className="h-6 w-6 stroke-[2.2]" />
+              <div className="md:col-span-6 rounded-3xl bg-slate-900/85 backdrop-blur-xl border border-slate-800/90 hover:border-amber-500/40 p-7 sm:p-8 transition-all group shadow-xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-amber-400 group-hover:border-amber-500/60 transition-colors shadow-inner">
+                      {/* Custom Hardware Selector Glyph */}
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[2.2]" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="6" cy="12" r="3" className="stroke-amber-400 stroke-[2]" />
+                        <circle cx="18" cy="12" r="3" className="stroke-amber-400 stroke-[2]" />
+                        <line x1="9" y1="12" x2="15" y2="12" className="stroke-slate-500 stroke-[2.5]" />
+                        <line x1="6" y1="6" x2="6" y2="9" className="stroke-amber-400 stroke-[2]" />
+                        <line x1="6" y1="15" x2="6" y2="18" className="stroke-amber-400 stroke-[2]" />
+                        <line x1="18" y1="6" x2="18" y2="9" className="stroke-amber-400 stroke-[2]" />
+                        <line x1="18" y1="15" x2="18" y2="18" className="stroke-amber-400 stroke-[2]" />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase block">Engine Module 03</span>
+                      <span className="text-xs font-mono font-bold text-slate-200">HARDWARE_AGNOSTIC</span>
+                    </div>
                   </div>
-                  <div className="flex gap-1.5 bg-slate-100 p-1 rounded-xl">
+
+                  <div className="flex gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 self-start sm:self-auto">
                     <button
                       onClick={() => setEquipmentMode("gym")}
                       className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
-                        equipmentMode === "gym" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500"
+                        equipmentMode === "gym" ? "bg-slate-800 text-white shadow-xs" : "text-slate-400 hover:text-slate-200"
                       }`}
                     >
                       Gym Rack
@@ -606,7 +670,7 @@ export default function Home() {
                     <button
                       onClick={() => setEquipmentMode("dumbbells")}
                       className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
-                        equipmentMode === "dumbbells" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500"
+                        equipmentMode === "dumbbells" ? "bg-slate-800 text-white shadow-xs" : "text-slate-400 hover:text-slate-200"
                       }`}
                     >
                       Dumbbells
@@ -614,7 +678,7 @@ export default function Home() {
                     <button
                       onClick={() => setEquipmentMode("bodyweight")}
                       className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
-                        equipmentMode === "bodyweight" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500"
+                        equipmentMode === "bodyweight" ? "bg-slate-800 text-white shadow-xs" : "text-slate-400 hover:text-slate-200"
                       }`}
                     >
                       Bodyweight
@@ -622,23 +686,23 @@ export default function Home() {
                   </div>
                 </div>
 
-                <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                   Zero Equipment Barrier
                 </h3>
-                <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal">
                   Whether you have access to an elite barbell gym, a set of dumbbells at home, or zero equipment in a hotel room — your plan adapts instantly.
                 </p>
 
-                <div className="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                <div className="mt-6 p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-slate-300">
                     <span>
                       {equipmentMode === "gym" && "Commercial Barbell & Cable Setup"}
                       {equipmentMode === "dumbbells" && "Home Dumbbell & Bench Setup"}
                       {equipmentMode === "bodyweight" && "Calisthenics & High-Tension Movement"}
                     </span>
-                    <span className="text-blue-600">Active Preset</span>
+                    <span className="text-blue-400 font-bold">Active Preset</span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1 font-medium">
+                  <p className="text-xs text-slate-400 mt-1 font-medium">
                     {equipmentMode === "gym" && "Includes Barbell Squats, Cable Crossovers, Romanian Deadlifts, Lat Pulldowns."}
                     {equipmentMode === "dumbbells" && "Includes DB Goblet Squats, DB Floor Press, Single-Leg RDLs, Hammer Curls."}
                     {equipmentMode === "bodyweight" && "Includes Deficit Push-ups, Pike Presses, Bulgarian Split Squats, Pull-ups."}
@@ -647,32 +711,47 @@ export default function Home() {
               </div>
 
               {/* Bento Card 4: 6-col (Readiness & Recovery Rhythm) */}
-              <div className="md:col-span-6 rounded-3xl bg-white p-8 border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+              <div className="md:col-span-6 rounded-3xl bg-slate-900/85 backdrop-blur-xl border border-slate-800/90 hover:border-rose-500/40 p-7 sm:p-8 transition-all flex flex-col justify-between group shadow-xl">
                 <div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 mb-4">
-                    <CalendarCheck className="h-6 w-6 stroke-[2.2]" />
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-3">
+                      <div className="h-11 w-11 rounded-xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-rose-400 group-hover:border-rose-500/60 transition-colors shadow-inner">
+                        {/* Custom ECG / HRV Pulse Waveform */}
+                        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current stroke-[2.2]" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M3 12h3.5l2-6 3.5 14 2.5-10 1.5 4 2-2H21" />
+                        </svg>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase block">Engine Module 04</span>
+                        <span className="text-xs font-mono font-bold text-slate-200">CNS_AUTONOMIC</span>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-mono font-bold text-rose-400 bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-full">
+                      HRV RECOVERY SYNC
+                    </span>
                   </div>
-                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+
+                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                     Recovery Rhythm & Readiness
                   </h3>
-                  <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                  <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal">
                     Lifting heavy without planned recovery leads to fatigue. Strive balances training load with scheduled deloads and rest periods so your joints stay healthy.
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-black text-sm">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-black text-sm font-mono">
                       94%
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-slate-900">Readiness Score</p>
-                      <p className="text-[11px] text-slate-500">Optimal systemic recovery</p>
+                      <p className="text-xs font-bold text-white">Readiness Score</p>
+                      <p className="text-[11px] text-slate-400">Optimal systemic recovery index</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200/70 text-xs font-bold text-amber-800">
-                    <Flame className="w-4 h-4 text-amber-600" />
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-mono font-bold text-amber-400">
+                    <Flame className="w-4 h-4 text-amber-400" />
                     <span>18-Day Streak</span>
                   </div>
                 </div>
