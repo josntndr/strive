@@ -133,9 +133,7 @@ export default function SetupPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 p-2.5 rounded-xl text-white shadow-md shadow-orange-500/25 flex items-center justify-center">
-              <BrandMark className="h-8 w-8 text-white" />
-            </div>
+            <BrandMark className="h-12 w-12 drop-shadow-md" priority />
           </div>
           <h1 className="text-3xl font-bold text-slate-900">Complete Your Profile</h1>
           <p className="mt-2 text-slate-600 text-lg">Help us customize your fitness journey.</p>
