@@ -28,6 +28,8 @@ import {
   BarChart3,
   Scale,
   Award,
+  Heart,
+  Timer,
 } from "lucide-react";
 
 export default function Home() {
@@ -97,7 +99,7 @@ export default function Home() {
 
       <main className="flex-grow">
         {/* ========================================================================= */}
-        {/* 1. HERO SECTION: Modern athletic tech, high-contrast, interactive console  */}
+        {/* 1. HERO SECTION: Professional athletic tech, human editorial design       */}
         {/* ========================================================================= */}
         <section className="relative overflow-hidden bg-white border-b border-slate-200/80 pt-12 pb-20 lg:pt-20 lg:pb-28">
           {/* Subtle architectural dot grid background */}
@@ -113,25 +115,29 @@ export default function Home() {
               {/* Hero Copy (Left 6 cols on LG) */}
               <div className="lg:col-span-6 text-left">
                 <Reveal>
-                  {/* Headline */}
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.08]">
-                    Precision Training. <br />
-                    Engineered for{" "}
-                    <span className="bg-gradient-to-r from-blue-600 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-                      Real Progress.
-                    </span>
-                  </h1>
+                  {/* Headline: Clean, authoritative, non-AI solid typography */}
+                  <div className="space-y-3">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-slate-100 border border-slate-200 text-xs font-mono font-bold text-slate-700 uppercase tracking-widest">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                      Athletic Training Architecture
+                    </div>
+
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-[-0.035em] text-slate-950 leading-[1.06]">
+                      Precision Training. <br />
+                      Engineered for <span className="text-blue-600">Results.</span>
+                    </h1>
+                  </div>
 
                   {/* Subheadline */}
                   <p className="mt-6 text-lg text-slate-600 leading-relaxed font-normal max-w-xl">
-                    Ditch generic workout routines and cookie-cutter diets. Strive computes periodized lifting splits, adaptive macro targets, and automated progressive overload tailored to your exact gear and schedule.
+                    Ditch generic workout templates and guesswork diets. Strive computes periodized lifting splits, adaptive macro targets, and automated progressive overload tailored to your exact gear and schedule.
                   </p>
 
                   {/* CTAs */}
                   <div className="mt-8 flex flex-wrap items-center gap-4">
                     <Link
                       href="/register"
-                      className="inline-flex items-center gap-2.5 rounded-xl bg-blue-600 px-7 py-3.5 text-base font-bold text-white shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-600/30 hover:scale-[1.02] active:scale-95 transition-all group"
+                      className="inline-flex items-center gap-2.5 rounded-xl bg-slate-950 px-7 py-3.5 text-base font-bold text-white shadow-xl shadow-slate-950/15 hover:bg-slate-900 active:scale-95 transition-all group"
                     >
                       Build Your Free Plan
                       <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
@@ -139,205 +145,218 @@ export default function Home() {
 
                     <a
                       href="#interactive-demo"
-                      className="inline-flex items-center gap-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 px-5 py-3.5 text-sm font-bold text-slate-800 border border-slate-200 transition-colors"
+                      className="inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-50 px-5 py-3.5 text-sm font-bold text-slate-800 border border-slate-300 shadow-xs transition-colors"
                     >
                       <Sliders className="w-4 h-4 text-slate-600" />
                       Interactive Plan Calculator
                     </a>
                   </div>
 
-                  {/* Real product proof metrics */}
-                  <div className="mt-10 pt-8 border-t border-slate-200/80 grid grid-cols-3 gap-4 max-w-lg">
-                    <div>
-                      <p className="text-2xl font-black text-slate-900 tracking-tight">100%</p>
-                      <p className="text-xs font-semibold text-slate-500 mt-0.5">Tailored to Your Gear</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black text-slate-900 tracking-tight">Auto</p>
-                      <p className="text-xs font-semibold text-slate-500 mt-0.5">Progressive Overload</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black text-slate-900 tracking-tight">3-Tier</p>
-                      <p className="text-xs font-semibold text-slate-500 mt-0.5">Dynamic Macro Sync</p>
+                  {/* High-end athletic telemetry spec strip */}
+                  <div className="mt-10 rounded-2xl bg-slate-50/80 border border-slate-200/90 p-4 max-w-lg">
+                    <div className="grid grid-cols-3 divide-x divide-slate-200 text-center">
+                      <div className="px-2">
+                        <p className="text-xs font-mono font-bold uppercase text-slate-400">Hardware</p>
+                        <p className="text-lg font-black text-slate-950 mt-0.5">100% Adaptive</p>
+                        <p className="text-[11px] text-slate-500 font-medium">Home & Commercial</p>
+                      </div>
+                      <div className="px-2">
+                        <p className="text-xs font-mono font-bold uppercase text-slate-400">Overload</p>
+                        <p className="text-lg font-black text-blue-600 mt-0.5">+2.5 kg</p>
+                        <p className="text-[11px] text-slate-500 font-medium">Calculated Micro-Load</p>
+                      </div>
+                      <div className="px-2">
+                        <p className="text-xs font-mono font-bold uppercase text-slate-400">Nutrition</p>
+                        <p className="text-lg font-black text-slate-950 mt-0.5">3-Tier</p>
+                        <p className="text-[11px] text-slate-500 font-medium">Dynamic Macro Sync</p>
+                      </div>
                     </div>
                   </div>
                 </Reveal>
               </div>
 
-              {/* Hero Visual: Interactive Live Product Console (Right 6 cols on LG) */}
+              {/* Hero Visual: Pro-Grade Live Session Telemetry Dashboard (Right 6 cols on LG) */}
               <div className="lg:col-span-6">
                 <Reveal delay={120}>
-                  <div className="relative rounded-2xl bg-white border border-slate-200/90 shadow-2xl shadow-slate-300/50 overflow-hidden">
-                    {/* Console Header Bar */}
-                    <div className="bg-slate-900 px-4 py-3 flex items-center justify-between border-b border-slate-800">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-                        <span className="ml-2 text-xs font-mono font-medium text-slate-400">strive://active-session</span>
+                  <div className="rounded-2xl bg-white border border-slate-200/90 shadow-xl shadow-slate-200/50 overflow-hidden">
+                    {/* Live Workout Session Header Bar */}
+                    <div className="bg-slate-950 px-5 py-3.5 flex items-center justify-between border-b border-slate-800">
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-2.5 w-2.5 relative">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500" />
+                        </span>
+                        <div>
+                          <p className="text-xs font-black uppercase tracking-wider text-white flex items-center gap-2">
+                            Active Session
+                            <span className="font-mono text-[11px] font-normal text-slate-400">• 00:32:15</span>
+                          </p>
+                        </div>
                       </div>
 
-                      {/* Live status chip */}
-                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-bold text-emerald-400">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        Live Protocol
+                      <div className="flex items-center gap-3 text-xs font-mono font-semibold text-slate-300">
+                        <span className="flex items-center gap-1 text-rose-400">
+                          <Heart className="w-3.5 h-3.5 fill-current" /> 138 BPM
+                        </span>
+                        <span className="h-3 w-px bg-slate-800" />
+                        <span className="text-amber-400">
+                          ⚡ 3,420 kg
+                        </span>
                       </div>
                     </div>
 
-                    {/* Console Tab Navigation */}
-                    <div className="bg-slate-100/90 px-3 py-2 border-b border-slate-200 flex gap-1.5">
+                    {/* Segmented Control Tabs */}
+                    <div className="bg-slate-50 px-4 py-2.5 border-b border-slate-200 flex gap-2">
                       <button
                         onClick={() => setHeroTab("workout")}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                        className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-center transition-all ${
                           heroTab === "workout"
-                            ? "bg-white text-slate-900 shadow-xs border border-slate-200/80"
-                            : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                            ? "bg-white text-slate-950 shadow-xs border border-slate-200 font-extrabold"
+                            : "text-slate-600 hover:text-slate-900"
                         }`}
                       >
-                        <Dumbbell className="w-3.5 h-3.5 text-blue-600" />
-                        Push Day Protocol
+                        Active Workout
                       </button>
 
                       <button
                         onClick={() => setHeroTab("macros")}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                        className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-center transition-all ${
                           heroTab === "macros"
-                            ? "bg-white text-slate-900 shadow-xs border border-slate-200/80"
-                            : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                            ? "bg-white text-slate-950 shadow-xs border border-slate-200 font-extrabold"
+                            : "text-slate-600 hover:text-slate-900"
                         }`}
                       >
-                        <Utensils className="w-3.5 h-3.5 text-emerald-600" />
-                        Macro Targets
+                        Macro Fueling
                       </button>
 
                       <button
                         onClick={() => setHeroTab("analytics")}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                        className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-center transition-all ${
                           heroTab === "analytics"
-                            ? "bg-white text-slate-900 shadow-xs border border-slate-200/80"
-                            : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                            ? "bg-white text-slate-950 shadow-xs border border-slate-200 font-extrabold"
+                            : "text-slate-600 hover:text-slate-900"
                         }`}
                       >
-                        <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
-                        Progression Curve
+                        Volume Curve
                       </button>
                     </div>
 
-                    {/* Console Interactive Body */}
+                    {/* Dashboard Body */}
                     <div className="p-5 bg-white min-h-[380px]">
-                      {/* TAB 1: WORKOUT PROTOCOL */}
+                      {/* TAB 1: WORKOUT PROTOCOL (Tabular Pro Logger) */}
                       {heroTab === "workout" && (
                         <div className="space-y-4 animate-in fade-in duration-200">
-                          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                          {/* Exercise Header */}
+                          <div className="flex items-start justify-between pb-3 border-b border-slate-100">
                             <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-                                  Day 1 Split
+                              <h3 className="text-base font-black text-slate-950">Incline Dumbbell Bench Press</h3>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
+                                  Chest • Deltoids
                                 </span>
-                                <span className="text-xs text-slate-400 font-medium">Chest • Delts • Triceps</span>
+                                <span className="text-xs text-slate-500 font-medium">Target: 4 sets × 8-10 reps • RPE 8.5</span>
                               </div>
-                              <h3 className="text-base font-extrabold text-slate-900 mt-1">Incline DB Press & Compound Push</h3>
                             </div>
-                            <div className="text-right">
-                              <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">
-                                ⏱️ 01:15 Rest
+
+                            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-mono text-xs font-bold">
+                              <Timer className="w-3.5 h-3.5 text-blue-600" />
+                              <span>01:15</span>
+                            </div>
+                          </div>
+
+                          {/* Authentic Pro Tabular Set Logger */}
+                          <div className="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+                            <table className="w-full text-left text-xs">
+                              <thead className="bg-slate-50 border-b border-slate-200 text-[10px] font-mono uppercase text-slate-400">
+                                <tr>
+                                  <th className="py-2 px-3">Set</th>
+                                  <th className="py-2 px-3">Previous</th>
+                                  <th className="py-2 px-3">Load</th>
+                                  <th className="py-2 px-3">Reps</th>
+                                  <th className="py-2 px-3 text-right">Status</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100 font-medium">
+                                {[
+                                  { set: 1, prev: "32 kg × 10", weight: "32.5 kg", reps: "10", overload: false },
+                                  { set: 2, prev: "32 kg × 10", weight: "32.5 kg", reps: "10", overload: false },
+                                  { set: 3, prev: "34 kg × 8", weight: "35.0 kg", reps: "9", overload: true },
+                                  { set: 4, prev: "34 kg × 8", weight: "35.0 kg", reps: "8", overload: true },
+                                ].map((item) => {
+                                  const isDone = completedSets.includes(item.set);
+                                  return (
+                                    <tr
+                                      key={item.set}
+                                      className={`transition-colors ${isDone ? "bg-emerald-50/50" : "hover:bg-slate-50/80"}`}
+                                    >
+                                      <td className="py-2.5 px-3 font-mono font-bold text-slate-700">0{item.set}</td>
+                                      <td className="py-2.5 px-3 text-slate-400 font-mono text-[11px]">{item.prev}</td>
+                                      <td className="py-2.5 px-3 font-bold text-slate-900">{item.weight}</td>
+                                      <td className="py-2.5 px-3 font-semibold text-slate-700">{item.reps}</td>
+                                      <td className="py-2.5 px-3 text-right">
+                                        <button
+                                          type="button"
+                                          onClick={() => toggleSet(item.set)}
+                                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
+                                            isDone
+                                              ? "bg-emerald-600 text-white shadow-xs"
+                                              : "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200"
+                                          }`}
+                                        >
+                                          {isDone ? (
+                                            <>
+                                              <Check className="w-3 h-3 stroke-[3]" /> Logged
+                                            </>
+                                          ) : (
+                                            "Log Set"
+                                          )}
+                                        </button>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+
+                          {/* Exercise Queue (Next in Session) */}
+                          <div className="pt-1 space-y-2">
+                            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Next in Session</p>
+                            <div className="flex items-center justify-between p-2.5 rounded-lg border border-slate-200 bg-slate-50/50">
+                              <div>
+                                <p className="text-xs font-bold text-slate-900">Standing Barbell Overhead Press</p>
+                                <p className="text-[11px] text-slate-500">3 sets × 8 reps • 52.5 kg</p>
+                              </div>
+                              <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
+                                In Queue
                               </span>
                             </div>
-                          </div>
 
-                          {/* Exercise 1 with Interactive Sets */}
-                          <div className="rounded-xl p-3.5 bg-slate-50/80 border border-slate-200/70">
-                            <div className="flex items-center justify-between mb-2.5">
+                            <div className="flex items-center justify-between p-2.5 rounded-lg border border-slate-200 bg-slate-50/50">
                               <div>
-                                <h4 className="text-sm font-bold text-slate-900">1. Incline Dumbbell Bench Press</h4>
-                                <p className="text-[11px] text-slate-500 font-medium">Target: 4 sets × 8-10 reps • RPE 8.5</p>
+                                <p className="text-xs font-bold text-slate-900">Cable Lateral Raises & Tricep Pushdowns</p>
+                                <p className="text-[11px] text-slate-500">3 sets × 15 reps • Superset</p>
                               </div>
-                              <span className="text-xs font-bold text-blue-700 bg-blue-100/60 px-2 py-0.5 rounded">
-                                Overload: +2kg
+                              <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
+                                In Queue
                               </span>
                             </div>
-
-                            {/* Interactive Set Pills */}
-                            <div className="grid grid-cols-4 gap-2">
-                              {[
-                                { set: 1, weight: "32 kg", reps: "10" },
-                                { set: 2, weight: "32 kg", reps: "10" },
-                                { set: 3, weight: "34 kg", reps: "9" },
-                                { set: 4, weight: "34 kg", reps: "8" },
-                              ].map((item) => {
-                                const isDone = completedSets.includes(item.set);
-                                return (
-                                  <button
-                                    key={item.set}
-                                    type="button"
-                                    onClick={() => toggleSet(item.set)}
-                                    className={`p-2 rounded-lg text-center border transition-all ${
-                                      isDone
-                                        ? "bg-emerald-50 border-emerald-300 text-emerald-900"
-                                        : "bg-white border-slate-200 text-slate-700 hover:border-blue-400"
-                                    }`}
-                                  >
-                                    <div className="text-[10px] font-bold uppercase text-slate-400">Set {item.set}</div>
-                                    <div className="text-xs font-black mt-0.5">{item.weight}</div>
-                                    <div className="text-[11px] font-semibold flex items-center justify-center gap-1 mt-0.5">
-                                      {item.reps} reps
-                                      {isDone && <Check className="w-3 h-3 text-emerald-600 stroke-[3]" />}
-                                    </div>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                            <p className="text-[10px] text-slate-400 mt-2 text-center">
-                              *Click any set above to simulate real-time workout logging
-                            </p>
-                          </div>
-
-                          {/* Exercise 2 */}
-                          <div className="rounded-xl p-3 bg-white border border-slate-200/80 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
-                                02
-                              </div>
-                              <div>
-                                <h4 className="text-xs font-bold text-slate-900">Standing Barbell Overhead Press</h4>
-                                <p className="text-[11px] text-slate-500">3 sets × 8 reps • 50 kg</p>
-                              </div>
-                            </div>
-                            <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded">
-                              Upcoming
-                            </span>
-                          </div>
-
-                          {/* Exercise 3 */}
-                          <div className="rounded-xl p-3 bg-white border border-slate-200/80 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
-                                03
-                              </div>
-                              <div>
-                                <h4 className="text-xs font-bold text-slate-900">Cable Lateral Raises & Tricep Pushdown</h4>
-                                <p className="text-[11px] text-slate-500">3 sets × 12-15 reps • Controlled eccentric</p>
-                              </div>
-                            </div>
-                            <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded">
-                              Superset
-                            </span>
                           </div>
                         </div>
                       )}
 
-                      {/* TAB 2: MACRO TARGETS */}
+                      {/* TAB 2: MACRO FUELING */}
                       {heroTab === "macros" && (
                         <div className="space-y-4 animate-in fade-in duration-200">
                           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                             <div>
-                              <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
-                                Daily Caloric Allocation
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                                Daily Nutrition Budget
                               </span>
-                              <h3 className="text-base font-extrabold text-slate-900 mt-1">2,450 kcal / day Target</h3>
+                              <h3 className="text-base font-black text-slate-950 mt-1">2,450 kcal / day Target</h3>
                             </div>
-                            <span className="text-xs font-bold text-emerald-700 bg-emerald-100/60 px-2.5 py-1 rounded-full">
-                              94% Goal Met
+                            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md">
+                              94% Completed
                             </span>
                           </div>
 
@@ -345,10 +364,10 @@ export default function Home() {
                           <div className="space-y-3 pt-1">
                             <div>
                               <div className="flex justify-between text-xs font-bold mb-1">
-                                <span className="text-slate-700">Protein (Muscle Synthesis)</span>
-                                <span className="text-blue-700">185g / 185g (100%)</span>
+                                <span className="text-slate-700">Protein (Muscle Protein Synthesis)</span>
+                                <span className="text-blue-700 font-mono">185g / 185g (100%)</span>
                               </div>
-                              <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                                 <div className="h-full bg-blue-600 rounded-full w-full" />
                               </div>
                             </div>
@@ -356,66 +375,66 @@ export default function Home() {
                             <div>
                               <div className="flex justify-between text-xs font-bold mb-1">
                                 <span className="text-slate-700">Carbohydrates (Glycogen Replenishment)</span>
-                                <span className="text-amber-700">260g / 275g (94%)</span>
+                                <span className="text-amber-700 font-mono">260g / 275g (95%)</span>
                               </div>
-                              <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div className="h-full bg-amber-500 rounded-full w-[94%]" />
+                              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div className="h-full bg-amber-500 rounded-full w-[95%]" />
                               </div>
                             </div>
 
                             <div>
                               <div className="flex justify-between text-xs font-bold mb-1">
-                                <span className="text-slate-700">Healthy Fats (Hormone Support)</span>
-                                <span className="text-emerald-700">62g / 68g (91%)</span>
+                                <span className="text-slate-700">Healthy Fats (Endocrine & Joint Support)</span>
+                                <span className="text-emerald-700 font-mono">62g / 68g (91%)</span>
                               </div>
-                              <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                                 <div className="h-full bg-emerald-500 rounded-full w-[91%]" />
                               </div>
                             </div>
                           </div>
 
-                          {/* Today's Featured Fueling Card */}
+                          {/* Meal Breakdown Card */}
                           <div className="mt-4 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
                             <div className="flex items-center justify-between mb-1">
-                              <span className="text-[10px] font-bold uppercase text-slate-400">Sample Meal Recommendation</span>
-                              <span className="text-[11px] font-extrabold text-blue-600">540 kcal</span>
+                              <span className="text-[10px] font-mono font-bold uppercase text-slate-400">Post-Workout Fuel</span>
+                              <span className="text-xs font-black text-slate-900">540 kcal</span>
                             </div>
                             <h4 className="text-xs font-bold text-slate-900">Grilled Salmon, Spiced Quinoa & Avocado Bowl</h4>
-                            <div className="flex items-center gap-3 mt-2 text-[11px] text-slate-500 font-semibold">
-                              <span className="text-blue-600 font-bold">48g Protein</span> • 
-                              <span className="text-amber-600 font-bold">45g Carbs</span> • 
-                              <span className="text-emerald-600 font-bold">18g Healthy Fats</span>
+                            <div className="flex items-center gap-3 mt-2 text-[11px] text-slate-600 font-medium">
+                              <span className="font-bold text-blue-700">48g Protein</span> • 
+                              <span className="font-bold text-amber-700">45g Carbs</span> • 
+                              <span className="font-bold text-emerald-700">18g Fats</span>
                             </div>
                           </div>
                         </div>
                       )}
 
-                      {/* TAB 3: PROGRESSION ANALYTICS */}
+                      {/* TAB 3: VOLUME CURVE */}
                       {heroTab === "analytics" && (
                         <div className="space-y-4 animate-in fade-in duration-200">
                           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                             <div>
-                              <span className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
-                                Strength Velocity
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
+                                Progression Analytics
                               </span>
-                              <h3 className="text-base font-extrabold text-slate-900 mt-1">+14.2% Estimated 1RM Gain</h3>
+                              <h3 className="text-base font-black text-slate-950 mt-1">+14.2% Estimated 1RM Gain</h3>
                             </div>
-                            <span className="text-xs font-bold text-emerald-700 bg-emerald-100/60 px-2.5 py-1 rounded-full">
-                              6-Week Cycle
+                            <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md">
+                              6-Week Microcycle
                             </span>
                           </div>
 
-                          {/* Visual Progression Curve (SVG Graph) */}
+                          {/* SVG Curve */}
                           <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
                             <div className="flex justify-between items-center text-xs font-bold text-slate-500 mb-2">
-                              <span>Bench / Press Volume</span>
-                              <span className="text-blue-600">Week 1 (80kg) &rarr; Week 6 (92.5kg)</span>
+                              <span>Compound Lift Tonnage</span>
+                              <span className="text-blue-600 font-mono">Week 1 (80kg) &rarr; Week 6 (92.5kg)</span>
                             </div>
                             <div className="h-28 w-full relative flex items-end">
                               <svg viewBox="0 0 300 100" className="w-full h-full overflow-visible">
                                 <defs>
                                   <linearGradient id="curveGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#cc3f1d" stopOpacity="0.3" />
+                                    <stop offset="0%" stopColor="#cc3f1d" stopOpacity="0.25" />
                                     <stop offset="100%" stopColor="#cc3f1d" stopOpacity="0.0" />
                                   </linearGradient>
                                 </defs>
@@ -423,39 +442,39 @@ export default function Home() {
                                   d="M 10 80 Q 70 75, 120 55 T 220 30 T 290 12"
                                   fill="none"
                                   stroke="#cc3f1d"
-                                  strokeWidth="3"
+                                  strokeWidth="2.5"
                                   strokeLinecap="round"
                                 />
                                 <path
                                   d="M 10 80 Q 70 75, 120 55 T 220 30 T 290 12 L 290 100 L 10 100 Z"
                                   fill="url(#curveGrad)"
                                 />
-                                <circle cx="10" cy="80" r="4" fill="#cc3f1d" />
-                                <circle cx="120" cy="55" r="4" fill="#cc3f1d" />
-                                <circle cx="220" cy="30" r="4" fill="#cc3f1d" />
-                                <circle cx="290" cy="12" r="5" fill="#10b981" />
+                                <circle cx="10" cy="80" r="3.5" fill="#cc3f1d" />
+                                <circle cx="120" cy="55" r="3.5" fill="#cc3f1d" />
+                                <circle cx="220" cy="30" r="3.5" fill="#cc3f1d" />
+                                <circle cx="290" cy="12" r="4.5" fill="#10b981" />
                               </svg>
                             </div>
-                            <div className="flex justify-between text-[10px] font-bold text-slate-400 mt-2">
-                              <span>Week 1</span>
-                              <span>Week 2</span>
-                              <span>Week 3</span>
-                              <span>Week 4</span>
-                              <span>Week 5</span>
-                              <span>Week 6 (Peak)</span>
+                            <div className="flex justify-between text-[10px] font-mono text-slate-400 mt-2">
+                              <span>W1</span>
+                              <span>W2</span>
+                              <span>W3</span>
+                              <span>W4</span>
+                              <span>W5</span>
+                              <span>W6 (Peak)</span>
                             </div>
                           </div>
 
                           <div className="grid grid-cols-2 gap-3">
                             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                              <p className="text-[10px] font-bold text-slate-400 uppercase">Tonnage Moved</p>
-                              <p className="text-lg font-black text-slate-900 mt-0.5">48,250 kg</p>
-                              <p className="text-[10px] font-semibold text-emerald-600 mt-0.5">&uarr; 8.4% from last week</p>
+                              <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">Weekly Load</p>
+                              <p className="text-lg font-black text-slate-950 mt-0.5">48,250 kg</p>
+                              <p className="text-[10px] font-semibold text-emerald-600 mt-0.5">&uarr; 8.4% vs last cycle</p>
                             </div>
                             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                              <p className="text-[10px] font-bold text-slate-400 uppercase">Consistency Streak</p>
-                              <p className="text-lg font-black text-slate-900 mt-0.5">18 Days Logged</p>
-                              <p className="text-[10px] font-semibold text-blue-600 mt-0.5">100% Target Met</p>
+                              <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">Consistency Index</p>
+                              <p className="text-lg font-black text-slate-950 mt-0.5">18 Days Active</p>
+                              <p className="text-[10px] font-semibold text-blue-600 mt-0.5">100% Prescription Met</p>
                             </div>
                           </div>
                         </div>
@@ -463,16 +482,16 @@ export default function Home() {
                     </div>
 
                     {/* Console Footer */}
-                    <div className="bg-slate-50 px-4 py-3 border-t border-slate-200 flex items-center justify-between text-xs">
+                    <div className="bg-slate-50 px-5 py-3 border-t border-slate-200 flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2 text-slate-500 font-medium">
-                        <Zap className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Adaptive Algorithm Synced</span>
+                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                        <span>Cloud Auto-Save • Apple Health Ready</span>
                       </div>
                       <Link
                         href="/register"
-                        className="font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors"
+                        className="font-bold text-slate-900 hover:text-blue-600 transition-colors"
                       >
-                        Generate Your Own Plan &rarr;
+                        Explore Full Engine &rarr;
                       </Link>
                     </div>
                   </div>

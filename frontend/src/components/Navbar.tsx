@@ -163,42 +163,32 @@ export const Navbar = () => {
           </div>
         )}
 
-        {/* Right User Actions */}
+        {/* Right Actions: On landing page, always show public Login / Sign up. Only show account on app routes. */}
         <div className="hidden lg:flex items-center gap-4">
-          {user ? (
-            <>
-              {!isAppRoute && (
-                <Link
-                  href="/dashboard"
-                  className="text-sm font-extrabold text-white bg-blue-600 px-5 py-2.5 rounded-full hover:bg-blue-700 shadow-md shadow-blue-500/25 active:scale-95 transition-all"
-                >
-                  Dashboard
-                </Link>
-              )}
-              <div className="flex items-center gap-3.5 pl-4 border-l border-slate-200">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black flex items-center justify-center text-sm shadow-sm ring-2 ring-white">
-                    {(user.fullName || user.name || "U").charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-xs sm:text-sm text-slate-900 font-extrabold max-w-[140px] truncate leading-tight">
-                      {user.fullName || user.name}
-                    </span>
-                    <span className="text-[11px] text-slate-400 font-semibold capitalize leading-none mt-0.5">
-                      {user.role || "Member"}
-                    </span>
-                  </div>
+          {isAppRoute && user ? (
+            <div className="flex items-center gap-3.5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black flex items-center justify-center text-sm shadow-sm ring-2 ring-white">
+                  {(user.fullName || user.name || "U").charAt(0).toUpperCase()}
                 </div>
-                <button
-                  onClick={() => signOut()}
-                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all focus:outline-none"
-                  title="Sign Out"
-                  aria-label="Sign out"
-                >
-                  <LogOut className="h-4.5 w-4.5" />
-                </button>
+                <div className="flex flex-col text-left">
+                  <span className="text-xs sm:text-sm text-slate-900 font-extrabold max-w-[140px] truncate leading-tight">
+                    {user.fullName || user.name}
+                  </span>
+                  <span className="text-[11px] text-slate-400 font-semibold capitalize leading-none mt-0.5">
+                    {user.role || "Member"}
+                  </span>
+                </div>
               </div>
-            </>
+              <button
+                onClick={() => signOut()}
+                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all focus:outline-none"
+                title="Sign Out"
+                aria-label="Sign out"
+              >
+                <LogOut className="h-4.5 w-4.5" />
+              </button>
+            </div>
           ) : (
             <div className="flex items-center gap-3">
               <Link
@@ -282,17 +272,8 @@ export const Navbar = () => {
             ))
           )}
 
-          {user ? (
+          {isAppRoute && user ? (
             <div className="pt-3 border-t border-slate-100 space-y-2">
-              {!isAppRoute && (
-                <Link
-                  href="/dashboard"
-                  className="block text-base font-extrabold text-white bg-blue-600 px-4 py-3 rounded-full text-center shadow-md hover:bg-blue-700 transition-all"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-              )}
               <button
                 onClick={() => signOut()}
                 className="flex items-center w-full text-base font-bold text-rose-600 hover:bg-rose-50 p-3 rounded-2xl gap-2.5 transition-colors"
