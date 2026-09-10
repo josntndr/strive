@@ -7,7 +7,8 @@ import { Loader2, ArrowRight, ShieldCheck, FileText, Eye, EyeOff, User, Mail, Lo
 import { BrandMark } from "@/components/BrandMark";
 import { toast } from "react-hot-toast";
 import { Modal } from "@/components/Modal";
-import { getToken, postJson, saveAuth } from "@/lib/api";
+import { getStoredUser, postJson, saveAuth } from "@/lib/api";
+import type { AuthUser } from "@/lib/api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -24,11 +25,11 @@ export default function RegisterPage() {
     confirmPassword: "",
   });
 
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+
   useEffect(() => {
-    if (getToken()) {
-      router.replace("/dashboard");
-    }
-  }, [router]);
+    setCurrentUser(getStoredUser());
+  }, []);
 
   const isFormValid = 
     formData.name.trim() !== "" &&
@@ -164,6 +165,20 @@ export default function RegisterPage() {
                 Create Account
               </button>
             </div>
+
+            {currentUser && (
+              <div className="mb-5 p-3 bg-orange-50 border border-orange-200/80 rounded-xl flex items-center justify-between text-xs">
+                <span className="text-slate-700 font-semibold truncate max-w-[210px]">
+                  Logged in as <strong>{currentUser.fullName || currentUser.email}</strong>
+                </span>
+                <Link
+                  href="/dashboard"
+                  className="font-extrabold text-orange-600 hover:text-orange-700 underline shrink-0 ml-2"
+                >
+                  Dashboard &rarr;
+                </Link>
+              </div>
+            )}
 
             <div className="mb-4">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[11px] font-bold uppercase tracking-wider mb-1.5 border border-blue-100/80">
