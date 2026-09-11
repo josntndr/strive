@@ -243,7 +243,7 @@ export default function RegisterPage() {
                 </div>
                 <div>
                   <label htmlFor="confirmPassword" className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Confirm
+                    Confirm Password
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
@@ -331,7 +331,7 @@ export default function RegisterPage() {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <span className="flex items-center gap-2">
-                      Create My Free Account
+                      Create Account
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                     </span>
                   )}
