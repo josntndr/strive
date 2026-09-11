@@ -126,19 +126,19 @@ export const Navbar = () => {
           <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-950">Strive</span>
         </Link>
 
-        {/* Center Navigation - Clean typography without AI icon clutter */}
+        {/* Center Navigation - Clean text color change without highlight box */}
         {isAppRoute ? (
-          <nav aria-label="Main application navigation" className="hidden lg:flex items-center gap-1">
+          <nav aria-label="Main application navigation" className="hidden lg:flex items-center gap-7">
             {appNavLinks.map((link) => {
               const active = isActiveLink(link.href);
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3.5 py-1.5 rounded-lg text-sm transition-all duration-150 ${
+                  className={`text-sm transition-colors duration-150 ${
                     active
-                      ? "bg-slate-100 text-slate-950 font-semibold shadow-2xs"
-                      : "text-slate-600 hover:text-slate-950 hover:bg-slate-50 font-medium"
+                      ? "text-[#ed4f28] font-bold"
+                      : "text-slate-600 hover:text-slate-950 font-medium"
                   }`}
                 >
                   {link.label}
@@ -148,10 +148,10 @@ export const Navbar = () => {
             {user?.role === "admin" && (
               <Link
                 href="/admin/dashboard"
-                className={`px-3.5 py-1.5 rounded-lg text-sm transition-all duration-150 ${
+                className={`text-sm transition-colors duration-150 ${
                   pathname.startsWith("/admin")
-                    ? "bg-amber-50 text-amber-800 font-semibold shadow-2xs"
-                    : "text-amber-700 hover:text-amber-950 hover:bg-amber-50/60 font-medium"
+                    ? "text-amber-600 font-bold"
+                    : "text-slate-600 hover:text-slate-950 font-medium"
                 }`}
               >
                 Admin
@@ -312,10 +312,10 @@ export const Navbar = () => {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`block text-sm py-2 px-3 rounded-lg font-medium transition-colors ${
+                    className={`block text-sm py-2 px-1 font-medium transition-colors ${
                       active
-                        ? "bg-slate-100 text-slate-950 font-semibold"
-                        : "text-slate-600 hover:text-slate-950 hover:bg-slate-50"
+                        ? "text-[#ed4f28] font-bold"
+                        : "text-slate-600 hover:text-slate-950"
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -327,10 +327,10 @@ export const Navbar = () => {
               {user?.role === "admin" && (
                 <Link
                   href="/admin/dashboard"
-                  className={`block text-sm py-2 px-3 rounded-lg font-medium transition-colors ${
+                  className={`block text-sm py-2 px-1 font-medium transition-colors ${
                     pathname.startsWith("/admin")
-                      ? "bg-amber-50 text-amber-800 font-semibold"
-                      : "text-amber-700 hover:bg-amber-50"
+                      ? "text-amber-600 font-bold"
+                      : "text-slate-600 hover:text-slate-950"
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
