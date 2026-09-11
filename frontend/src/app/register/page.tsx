@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2, ArrowRight, ShieldCheck, FileText, Eye, EyeOff, User, Mail, Lock, Sparkles, Flame, Apple, Target } from "lucide-react";
+import { Loader2, ArrowRight, ShieldCheck, FileText, Eye, EyeOff, User, Mail, Lock, Sparkles } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { toast } from "react-hot-toast";
 import { Modal } from "@/components/Modal";
@@ -126,7 +126,7 @@ export default function RegisterPage() {
       </div>
 
       {/* 2nd Panel: Clean Warm Form Container (No Grid Lines, No Scrollbar) */}
-      <div className="relative flex flex-col justify-between py-6 sm:py-8 px-6 sm:px-12 lg:px-16 bg-gradient-to-br from-cream via-slate-50 to-orange-50/30 h-full max-h-screen overflow-hidden">
+      <div className="relative flex flex-col justify-center items-center py-8 px-6 sm:px-12 lg:px-16 bg-gradient-to-br from-cream via-slate-50 to-orange-50/30 h-full max-h-screen overflow-hidden">
         {/* Ambient Glowing Orbs */}
         <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-10 left-10 w-48 h-48 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
@@ -338,46 +338,7 @@ export default function RegisterPage() {
                 </button>
               </div>
             </form>
-
-            {/* Feature Highlights Footer inside card */}
-            <div className="mt-4 pt-2">
-              <div className="relative mb-2.5 flex items-center justify-center">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-100"></div>
-                </div>
-                <span className="relative bg-white/95 px-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  What awaits inside
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="p-1.5 rounded-xl bg-slate-50/80 hover:bg-white border border-slate-200/60 hover:border-orange-200/80 hover:shadow-xs transition-all flex flex-col items-center gap-1 group">
-                  <div className="w-6 h-6 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-600 group-hover:scale-110 transition-transform">
-                    <Flame className="w-3 h-3 fill-orange-500/25" />
-                  </div>
-                  <span className="text-[10px] font-bold text-slate-700">Workouts</span>
-                </div>
-                <div className="p-1.5 rounded-xl bg-slate-50/80 hover:bg-white border border-slate-200/60 hover:border-emerald-200/80 hover:shadow-xs transition-all flex flex-col items-center gap-1 group">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
-                    <Apple className="w-3 h-3 fill-emerald-500/25" />
-                  </div>
-                  <span className="text-[10px] font-bold text-slate-700">Meals</span>
-                </div>
-                <div className="p-1.5 rounded-xl bg-slate-50/80 hover:bg-white border border-slate-200/60 hover:border-blue-200/80 hover:shadow-xs transition-all flex flex-col items-center gap-1 group">
-                  <div className="w-6 h-6 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
-                    <Target className="w-3 h-3 fill-blue-500/25" />
-                  </div>
-                  <span className="text-[10px] font-bold text-slate-700">Tracking</span>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
-
-        {/* Security & Trust Footer */}
-        <div className="text-center text-[11px] text-slate-400 font-medium relative z-10 flex items-center justify-center gap-3">
-          <span>🔒 256-Bit SSL Security</span>
-          <span>•</span>
-          <span>⚡ Instant Setup</span>
         </div>
       </div>
 
