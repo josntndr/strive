@@ -140,43 +140,82 @@ const overlayRecent = (name, fromBlob) => {
   return [...merged.values()];
 };
 
+let seedDataCache = null;
+const getSeedCollection = (name) => {
+  if (!seedDataCache) {
+    try {
+      seedDataCache = require("../../data/db.json");
+    } catch {
+      try {
+        const fsSync = require("fs");
+        seedDataCache = JSON.parse(fsSync.readFileSync(dataFile, "utf8"));
+      } catch {
+        seedDataCache = DEFAULT_DB;
+      }
+    }
+  }
+  const items = seedDataCache?.[name];
+  return Array.isArray(items) ? JSON.parse(JSON.stringify(items)) : [];
+};
+
 const readCollectionFromBlob = async (name) => {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
-  // head(pathname) is read-after-write consistent (unlike list), so the data
-  // the very next request reads always reflects the previous write.
-  let meta;
+  if (!token) return getSeedCollection(name);
+
   try {
-    meta = await getBlob().head(blobPathFor(name), { token });
-  } catch (error) {
-    if (error?.name === "BlobNotFoundError" || /not\s*found/i.test(error?.message || "")) {
-      return [];
+    let meta;
+    try {
+      meta = await getBlob().head(blobPathFor(name), { token });
+    } catch (error) {
+      if (error?.name === "BlobNotFoundError" || /not\s*found/i.test(error?.message || "")) {
+        return getSeedCollection(name);
+      }
+      throw error;
     }
-    throw error;
+
+    const targetUrl = meta?.downloadUrl || meta?.url;
+    if (!targetUrl) return getSeedCollection(name);
+
+    const res = await fetch(`${targetUrl}${targetUrl.includes("?") ? "&" : "?"}ts=${Date.now()}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+
+    if (res.status === 404) return getSeedCollection(name);
+    if (!res.ok) {
+      // If blob store is blocked (403) or inaccessible, fall back to seed data
+      console.warn(`[Blob fallback] HTTP ${res.status} reading ${name}, using seed data`);
+      return getSeedCollection(name);
+    }
+
+    const text = await res.text();
+    if (!text) return getSeedCollection(name);
+    const parsed = JSON.parse(text);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : getSeedCollection(name);
+  } catch (err) {
+    console.warn(`[Blob fallback] Error reading ${name} (${err.message}), using seed data`);
+    return getSeedCollection(name);
   }
-  // Cache-bust + no-store so we never get a stale CDN copy.
-  const res = await fetch(`${meta.url}?ts=${Date.now()}`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
-  if (res.status === 404) return [];
-  if (!res.ok) throw new Error(`Blob read failed for ${name}: ${res.status}`);
-  const text = await res.text();
-  if (!text) return [];
-  const parsed = JSON.parse(text);
-  return Array.isArray(parsed) ? parsed : [];
 };
 
 const writeCollectionToBlob = async (name, items) => {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
-  await getBlob().put(blobPathFor(name), JSON.stringify(items || []), {
-    access: "private",
-    token,
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    contentType: "application/json",
-    cacheControlMaxAge: 0, // never CDN-cache the DB, so reads are always fresh
-  });
-  rememberWrite(name, items); // serve our own fresh write until the blob catches up
+  rememberWrite(name, items); // always serve our own fresh write in-memory
+
+  if (token) {
+    try {
+      await getBlob().put(blobPathFor(name), JSON.stringify(items || []), {
+        access: "private",
+        token,
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        contentType: "application/json",
+        cacheControlMaxAge: 0,
+      });
+    } catch (putErr) {
+      console.warn(`[Blob write warning] Put failed for ${name} (${putErr.message}), retained in-memory cache`);
+    }
+  }
 };
 
 const readDatabase = async () => {
