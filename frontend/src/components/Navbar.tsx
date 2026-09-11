@@ -111,7 +111,8 @@ export const Navbar = () => {
   const isAppRoute =
     pathname !== "/" && !pathname.startsWith("/login") && !pathname.startsWith("/register");
 
-  const logoHref = isAppRoute ? "/dashboard" : "/";
+  // Logo always directs to the landing page
+  const logoHref = "/";
 
   // Check if session is authenticated (always true on app routes or if token/user exists)
   const isAuthenticated = isAppRoute || Boolean(user || (mounted && getToken()));
