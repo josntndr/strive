@@ -20,8 +20,29 @@ export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ??
   (process.env.NODE_ENV === "production" ? "" : "http://localhost:5000");
 
+export const getLocalCache = <T>(key: string): T | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+};
+
+export const setLocalCache = <T>(key: string, data: T): void => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch {
+    // ignore
+  }
+};
+
 export const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 3500, // Fast 3.5s timeout prevents hanging requests
 });
 
 type JsonResponse<T> = {
@@ -42,14 +63,34 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Resilient response interceptor: provides offline/demo fallback when backend is unreachable or 404
+// Resilient response interceptor: caches successful responses and provides instant cache/offline fallback
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const url = response.config?.url || "";
+    if (response.data) {
+      if (url.includes("/api/dashboard")) setLocalCache("strive_cached_dashboard", response.data);
+      if (url.includes("/api/workouts")) setLocalCache("strive_cached_workouts", response.data);
+      if (url.includes("/api/meals")) setLocalCache("strive_cached_meals", response.data);
+      if (url.includes("/api/progress")) setLocalCache("strive_cached_progress", response.data);
+      if (url.includes("/api/profile")) setLocalCache("strive_cached_profile", response.data);
+    }
+    return response;
+  },
   (error) => {
     const url = error.config?.url || "";
 
-    // Fallback for dashboard when backend API is not available on static hosting
+    // Fallback for dashboard when backend API is not available on static hosting or slow
     if (url.includes("/api/dashboard")) {
+      const cached = getLocalCache("strive_cached_dashboard");
+      if (cached) {
+        return Promise.resolve({
+          data: cached,
+          status: 200,
+          statusText: "OK",
+          headers: {},
+          config: error.config,
+        });
+      }
       const storedUser = getStoredUser();
       const mockDashboard = {
         userName: storedUser?.fullName || storedUser?.name || "Athlete",
@@ -117,6 +158,16 @@ api.interceptors.response.use(
 
     // Fallback for /api/profile
     if (url.includes("/api/profile")) {
+      const cached = getLocalCache("strive_cached_profile");
+      if (cached) {
+        return Promise.resolve({
+          data: cached,
+          status: 200,
+          statusText: "OK",
+          headers: {},
+          config: error.config,
+        });
+      }
       const mockProfile = {
         age: 26,
         gender: "Male",
@@ -155,6 +206,16 @@ api.interceptors.response.use(
 
     // Fallback for /api/workouts
     if (url.includes("/api/workouts")) {
+      const cached = getLocalCache("strive_cached_workouts");
+      if (cached) {
+        return Promise.resolve({
+          data: cached,
+          status: 200,
+          statusText: "OK",
+          headers: {},
+          config: error.config,
+        });
+      }
       const mockWorkoutPlan = {
         _id: "plan_demo_workouts",
         planName: "4-Day Athletic Split",
@@ -208,6 +269,16 @@ api.interceptors.response.use(
 
     // Fallback for /api/meals
     if (url.includes("/api/meals")) {
+      const cached = getLocalCache("strive_cached_meals");
+      if (cached) {
+        return Promise.resolve({
+          data: cached,
+          status: 200,
+          statusText: "OK",
+          headers: {},
+          config: error.config,
+        });
+      }
       const mockMealPlan = {
         _id: "meal_demo_plan",
         isActive: true,
@@ -247,6 +318,16 @@ api.interceptors.response.use(
 
     // Fallback for /api/progress
     if (url.includes("/api/progress")) {
+      const cached = getLocalCache("strive_cached_progress");
+      if (cached) {
+        return Promise.resolve({
+          data: cached,
+          status: 200,
+          statusText: "OK",
+          headers: {},
+          config: error.config,
+        });
+      }
       const mockProgress = [
         { _id: "prog_1", date: new Date(Date.now() - 14 * 86400000).toISOString(), weight: 81.2, waist: 84, feeling: "strong", notes: "Starting baseline" },
         { _id: "prog_2", date: new Date(Date.now() - 7 * 86400000).toISOString(), weight: 79.5, waist: 82.5, feeling: "energized", notes: "Strength improving on compound lifts" },

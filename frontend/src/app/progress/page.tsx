@@ -19,7 +19,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { api, clearAuth, getApiErrorMessage, getToken, isUnauthorizedError } from "@/lib/api";
+import { api, clearAuth, getApiErrorMessage, getLocalCache, getToken, isUnauthorizedError, setLocalCache } from "@/lib/api";
 
 type ProgressRecord = {
   id: string;
@@ -38,10 +38,18 @@ type FitnessProfile = {
 
 export default function ProgressPage() {
   const router = useRouter();
-  const [records, setRecords] = useState<ProgressRecord[]>([]);
-  const [profile, setProfile] = useState<FitnessProfile | null>(null);
-  const [streak, setStreak] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [records, setRecords] = useState<ProgressRecord[]>(() =>
+    getLocalCache<ProgressRecord[]>("strive_cached_progress") || []
+  );
+  const [profile, setProfile] = useState<FitnessProfile | null>(() => {
+    const dash = getLocalCache<{ profile?: FitnessProfile }>("strive_cached_dashboard");
+    return dash?.profile || null;
+  });
+  const [streak, setStreak] = useState(() => {
+    const dash = getLocalCache<{ workoutStreak?: number }>("strive_cached_dashboard");
+    return dash?.workoutStreak || 0;
+  });
+  const [isLoading, setIsLoading] = useState(() => !getLocalCache("strive_cached_progress"));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFeeling, setSelectedFeeling] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -66,6 +74,7 @@ export default function ProgressPage() {
 
       if (progressRes.status === "fulfilled") {
         setRecords(progressRes.value.data);
+        setLocalCache("strive_cached_progress", progressRes.value.data);
       }
 
       if (dashRes.status === "fulfilled" && dashRes.value.data) {
@@ -85,7 +94,9 @@ export default function ProgressPage() {
         router.replace("/login");
         return;
       }
-      toast.error(getApiErrorMessage(error, "Failed to load progress records"));
+      if (!getLocalCache("strive_cached_progress")) {
+        toast.error(getApiErrorMessage(error, "Failed to load progress records"));
+      }
     } finally {
       setIsLoading(false);
     }

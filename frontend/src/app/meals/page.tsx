@@ -30,7 +30,7 @@ import {
   Droplets,
   Loader2,
 } from "lucide-react";
-import { api, clearAuth, getToken, isUnauthorizedError } from "@/lib/api";
+import { api, clearAuth, getLocalCache, getToken, isUnauthorizedError, setLocalCache } from "@/lib/api";
 import { toast } from "react-hot-toast";
 
 type Meal = {
@@ -89,9 +89,18 @@ function getMealTypeStyles(type: string) {
 
 export default function MealsPage() {
   const router = useRouter();
-  const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
-  const [profile, setProfile] = useState<FitnessProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [mealPlan, setMealPlan] = useState<MealPlan | null>(() => {
+    const cached = getLocalCache<MealPlan[]>("strive_cached_meals");
+    if (cached && Array.isArray(cached) && cached.length > 0) {
+      return cached.find((p) => p.isActive) || cached[0] || null;
+    }
+    return null;
+  });
+  const [profile, setProfile] = useState<FitnessProfile | null>(() => {
+    const dash = getLocalCache<{ profile?: FitnessProfile }>("strive_cached_dashboard");
+    return dash?.profile || null;
+  });
+  const [isLoading, setIsLoading] = useState(() => !getLocalCache("strive_cached_meals"));
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedDayIdx, setSelectedDayIdx] = useState(0);
 
@@ -114,6 +123,7 @@ export default function MealsPage() {
 
         if (mealsRes.status === "fulfilled") {
           const plans = mealsRes.value.data as MealPlan[];
+          setLocalCache("strive_cached_meals", plans);
           const active = plans.find((p) => p.isActive) || plans[0] || null;
           if (isActive) setMealPlan(active);
         }
@@ -127,7 +137,9 @@ export default function MealsPage() {
           router.replace("/login");
           return;
         }
-        toast.error("Failed to load nutrition data");
+        if (!getLocalCache("strive_cached_meals")) {
+          toast.error("Failed to load nutrition data");
+        }
       } finally {
         if (isActive) setIsLoading(false);
       }

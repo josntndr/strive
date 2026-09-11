@@ -12,7 +12,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { api, clearAuth, getStoredUser, getToken, isUnauthorizedError } from "@/lib/api";
+import { api, clearAuth, getLocalCache, getStoredUser, getToken, isUnauthorizedError, setLocalCache } from "@/lib/api";
 
 type FitnessFormData = {
   name: string;
@@ -28,18 +28,35 @@ type FitnessFormData = {
 
 export default function SettingsPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => !getLocalCache("strive_cached_profile"));
   const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState<FitnessFormData>({
-    name: "",
-    email: "",
-    age: "",
-    gender: "Female",
-    height: "",
-    weight: "",
-    goal: "Lose fat",
-    experienceLevel: "Intermediate",
-    dietaryPreference: "Balanced",
+  const [formData, setFormData] = useState<FitnessFormData>(() => {
+    const cached = getLocalCache<Record<string, unknown>>("strive_cached_profile");
+    const user = getStoredUser();
+    if (cached) {
+      return {
+        name: user?.fullName || user?.name || String(cached.name || "Santanderjosephine24"),
+        email: user?.email || String(cached.email || ""),
+        age: String(cached.age || "26"),
+        gender: String(cached.gender || "Female"),
+        height: String(cached.height || "165"),
+        weight: String(cached.weight || "54"),
+        goal: String(cached.goal || cached.fitnessGoal || "Lose fat"),
+        experienceLevel: String(cached.experienceLevel || cached.workoutExperience || "Intermediate"),
+        dietaryPreference: String(cached.dietaryPreference || "Balanced"),
+      };
+    }
+    return {
+      name: user?.fullName || user?.name || "Santanderjosephine24",
+      email: user?.email || "",
+      age: "",
+      gender: "Female",
+      height: "",
+      weight: "",
+      goal: "Lose fat",
+      experienceLevel: "Intermediate",
+      dietaryPreference: "Balanced",
+    };
   });
 
   useEffect(() => {
@@ -54,9 +71,10 @@ export default function SettingsPage() {
         const res = await api.get("/api/profile");
         const user = getStoredUser();
         if (res.data) {
+          setLocalCache("strive_cached_profile", res.data);
           setFormData({
             ...res.data,
-            name: user?.fullName || user?.name || res.data.name || "Josephine Santander",
+            name: user?.fullName || user?.name || res.data.name || "Santanderjosephine24",
             email: user?.email || res.data.email || "",
             gender: res.data.gender || "Female",
             goal: res.data.goal || res.data.fitnessGoal || "Lose fat",
@@ -70,7 +88,9 @@ export default function SettingsPage() {
           router.replace("/login");
           return;
         }
-        toast.error("Failed to load settings");
+        if (!getLocalCache("strive_cached_profile")) {
+          toast.error("Failed to load settings");
+        }
       } finally {
         setIsLoading(false);
       }

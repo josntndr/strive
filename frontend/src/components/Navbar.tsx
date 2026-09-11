@@ -147,6 +147,7 @@ export const Navbar = () => {
                 <Link
                   key={link.href}
                   href={link.href}
+                  prefetch={true}
                   className={`text-sm transition-colors duration-150 ${
                     active
                       ? "text-[#ed4f28] font-bold"
@@ -160,6 +161,7 @@ export const Navbar = () => {
             {user?.role === "admin" && (
               <Link
                 href="/admin/dashboard"
+                prefetch={true}
                 className={`text-sm transition-colors duration-150 ${
                   pathname.startsWith("/admin")
                     ? "text-amber-600 font-bold"

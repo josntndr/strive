@@ -30,7 +30,7 @@ import {
   Activity,
   CheckCheck,
 } from "lucide-react";
-import { api, clearAuth, getToken, isUnauthorizedError } from "@/lib/api";
+import { api, clearAuth, getLocalCache, getToken, isUnauthorizedError, setLocalCache } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import { resolveWorkoutVideo } from "@/lib/workoutDemoMap";
 import { normalizeExerciseName } from "@/lib/normalizeExerciseName";
@@ -157,8 +157,15 @@ function WorkoutSkeleton() {
 
 export default function WorkoutsPage() {
   const router = useRouter();
-  const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(() => {
+    const cached = getLocalCache<WorkoutPlan[]>("strive_cached_workouts");
+    if (cached && Array.isArray(cached) && cached.length > 0) {
+      const active = cached.find((plan) => plan.isActive) || cached[0];
+      return enhanceWorkoutPlan(active);
+    }
+    return null;
+  });
+  const [isLoading, setIsLoading] = useState(() => !getLocalCache("strive_cached_workouts"));
   const [selectedExercise, setSelectedExercise] = useState<{ exercise: Exercise; day: string } | null>(null);
   const [equipment, setEquipment] = useState<EquipmentKey>("none");
   const [demoAltName, setDemoAltName] = useState<string | null>(null);
@@ -183,6 +190,7 @@ export default function WorkoutsPage() {
       try {
         const res = await api.get("/api/workouts");
         const plans = res.data as WorkoutPlan[];
+        setLocalCache("strive_cached_workouts", plans);
         const activePlan = plans.find((plan) => plan.isActive) || plans[0] || null;
         setWorkoutPlan(enhanceWorkoutPlan(activePlan));
       } catch (error: unknown) {
@@ -192,7 +200,9 @@ export default function WorkoutsPage() {
           return;
         }
 
-        toast.error("Failed to load workouts");
+        if (!getLocalCache("strive_cached_workouts")) {
+          toast.error("Failed to load workouts");
+        }
       } finally {
         setIsLoading(false);
       }
