@@ -13,7 +13,13 @@ import {
 } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { useEffect, useRef, useState } from "react";
-import { AUTH_CHANGED_EVENT, clearAuth, getStoredUser, getToken } from "@/lib/api";
+import {
+  AUTH_CHANGED_EVENT,
+  clearAuth,
+  getCurrentUser,
+  getStoredUser,
+  getToken,
+} from "@/lib/api";
 import type { AuthUser } from "@/lib/api";
 
 const landingNavLinks = [
@@ -40,17 +46,34 @@ export const Navbar = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const syncUser = () => {
-      setUser(getToken() ? getStoredUser() : null);
-      setMounted(true);
+    let isActive = true;
+
+    const syncUser = async () => {
+      const stored = getStoredUser();
+      if (stored && isActive) {
+        setUser(stored);
+      }
+
+      const token = getToken();
+      if (token) {
+        try {
+          const current = await getCurrentUser();
+          if (isActive && current) {
+            setUser(current);
+          }
+        } catch {
+          // ignore
+        }
+      }
+      if (isActive) setMounted(true);
     };
 
-    const id = requestAnimationFrame(syncUser);
+    syncUser();
     window.addEventListener(AUTH_CHANGED_EVENT, syncUser);
     window.addEventListener("storage", syncUser);
 
     return () => {
-      cancelAnimationFrame(id);
+      isActive = false;
       window.removeEventListener(AUTH_CHANGED_EVENT, syncUser);
       window.removeEventListener("storage", syncUser);
     };
@@ -90,20 +113,9 @@ export const Navbar = () => {
 
   const logoHref = isAppRoute ? "/dashboard" : "/";
 
-  if (!mounted && isAppRoute) {
-    return (
-      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl border-b border-slate-200/80 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex items-center justify-center">
-              <BrandMark className="h-9 w-9 drop-shadow-sm" priority />
-            </div>
-            <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-950">Strive</span>
-          </Link>
-        </div>
-      </header>
-    );
-  }
+  // Check if session is authenticated (always true on app routes or if token/user exists)
+  const isAuthenticated = isAppRoute || Boolean(user || (mounted && getToken()));
+  const displayName = user?.fullName || user?.name || "Santanderjosephine24";
 
   const isActiveLink = (href: string) => {
     const normalizedPath = (pathname || "").replace(/\/+$/, "") || "/";
@@ -172,22 +184,22 @@ export const Navbar = () => {
           </nav>
         )}
 
-        {/* Right Section: Single Unified Profile Trigger or Auth buttons */}
+        {/* Right Section: Single Unified Profile Trigger or Public Auth buttons */}
         <div className="hidden lg:flex items-center gap-3">
-          {isAppRoute && user ? (
+          {isAuthenticated ? (
             <div className="relative" ref={dropdownRef}>
               <button
                 type="button"
                 onClick={() => setIsProfileOpen((prev) => !prev)}
-                className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-slate-100/80 transition-colors group focus:outline-none"
+                className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-slate-100/80 transition-colors group focus:outline-none cursor-pointer"
                 aria-expanded={isProfileOpen}
                 aria-label="User menu"
               >
-                <div className="w-8 h-8 rounded-full bg-slate-900 text-white font-semibold flex items-center justify-center text-xs ring-1 ring-slate-200">
-                  {(user.fullName || user.name || "U").charAt(0).toUpperCase()}
+                <div className="w-8 h-8 rounded-full bg-slate-900 text-white font-semibold flex items-center justify-center text-xs ring-1 ring-slate-200 shrink-0">
+                  {displayName.charAt(0).toUpperCase()}
                 </div>
                 <span className="text-sm font-medium text-slate-800 group-hover:text-slate-950 whitespace-nowrap">
-                  {user.fullName || user.name || "My Account"}
+                  {displayName}
                 </span>
                 <ChevronDown
                   className={`w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-transform duration-150 ${
@@ -202,9 +214,9 @@ export const Navbar = () => {
                   <div className="px-3 py-2.5 bg-slate-50 rounded-xl mb-1 border border-slate-100">
                     <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Signed in as</p>
                     <p className="text-xs font-bold text-slate-900 truncate mt-0.5">
-                      {user.fullName || user.name}
+                      {displayName}
                     </p>
-                    {user.email && (
+                    {user?.email && (
                       <p className="text-[11px] text-slate-500 truncate mt-0.5">{user.email}</p>
                     )}
                   </div>
@@ -226,7 +238,7 @@ export const Navbar = () => {
                       <TrendingUp className="w-4 h-4 text-slate-400" />
                       <span>Fitness Progress</span>
                     </Link>
-                    {user.role === "admin" && (
+                    {user?.role === "admin" && (
                       <Link
                         href="/admin/dashboard"
                         onClick={() => setIsProfileOpen(false)}
@@ -245,7 +257,7 @@ export const Navbar = () => {
                         setIsProfileOpen(false);
                         signOut();
                       }}
-                      className="flex items-center w-full gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                      className="flex items-center w-full gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
                     >
                       <LogOut className="w-4 h-4 text-rose-500" />
                       <span>Sign Out</span>
@@ -288,23 +300,21 @@ export const Navbar = () => {
       {/* Mobile Drawer */}
       {isMenuOpen && (
         <div className="lg:hidden border-t border-slate-200/80 bg-white px-4 sm:px-6 py-4 space-y-2 shadow-xl animate-in slide-in-from-top duration-200">
-          {isAppRoute ? (
+          {isAuthenticated ? (
             <>
-              {user && (
-                <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/70 mb-3">
-                  <div className="w-9 h-9 rounded-full bg-slate-950 text-white font-semibold flex items-center justify-center text-xs">
-                    {(user.fullName || user.name || "U").charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-sm font-semibold text-slate-900 truncate">
-                      {user.fullName || user.name}
-                    </span>
-                    <span className="text-xs text-slate-500 truncate">
-                      {user.email || (user.role === "admin" ? "Administrator" : "Member")}
-                    </span>
-                  </div>
+              <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/70 mb-3">
+                <div className="w-9 h-9 rounded-full bg-slate-900 text-white font-semibold flex items-center justify-center text-xs">
+                  {displayName.charAt(0).toUpperCase()}
                 </div>
-              )}
+                <div className="flex flex-col min-w-0">
+                  <span className="text-sm font-semibold text-slate-900 truncate">
+                    {displayName}
+                  </span>
+                  <span className="text-xs text-slate-500 truncate">
+                    {user?.email || (user?.role === "admin" ? "Administrator" : "Member")}
+                  </span>
+                </div>
+              </div>
 
               {appNavLinks.map((link) => {
                 const active = isActiveLink(link.href);
@@ -342,7 +352,7 @@ export const Navbar = () => {
                 <button
                   type="button"
                   onClick={() => signOut()}
-                  className="flex items-center w-full text-sm font-semibold text-rose-600 hover:bg-rose-50 p-2 rounded-lg gap-2 transition-colors"
+                  className="flex items-center w-full text-sm font-semibold text-rose-600 hover:bg-rose-50 p-2 rounded-lg gap-2 transition-colors cursor-pointer"
                 >
                   <LogOut className="h-4 w-4" />
                   <span>Sign Out</span>

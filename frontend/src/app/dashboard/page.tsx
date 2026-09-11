@@ -31,7 +31,7 @@ import {
   BarChart3,
   Scale,
 } from "lucide-react";
-import { api, clearAuth, getCurrentUser, getToken, isUnauthorizedError } from "@/lib/api";
+import { api, clearAuth, getCurrentUser, getStoredUser, getToken, isUnauthorizedError, saveAuth } from "@/lib/api";
 import { toast } from "react-hot-toast";
 
 type FitnessProfile = {
@@ -122,7 +122,21 @@ export default function DashboardPage() {
           router.replace("/profile-setup");
           return;
         }
-        if (isActive) setDashboard(res.data);
+        if (isActive) {
+          setDashboard(res.data);
+          if (res.data?.userName) {
+            const current = getStoredUser();
+            if (!current?.fullName || current.fullName !== res.data.userName) {
+              saveAuth(getToken() || "", {
+                id: current?.id || "user",
+                fullName: res.data.userName,
+                name: res.data.userName,
+                email: current?.email || "",
+                role: current?.role || "user",
+              });
+            }
+          }
+        }
       } catch (error: unknown) {
         if (isUnauthorizedError(error)) {
           clearAuth();

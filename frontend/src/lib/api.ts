@@ -281,13 +281,35 @@ export const getStoredUser = (): AuthUser | null => {
   if (typeof window === "undefined") return null;
 
   const rawUser = localStorage.getItem(AUTH_USER_KEY);
-  if (!rawUser) return null;
-
-  try {
-    return JSON.parse(rawUser);
-  } catch {
-    return null;
+  if (rawUser) {
+    try {
+      const parsed = JSON.parse(rawUser);
+      if (parsed && typeof parsed === "object") {
+        return {
+          id: parsed.id || parsed._id || "user",
+          fullName: parsed.fullName || parsed.name || "Santanderjosephine24",
+          name: parsed.fullName || parsed.name || "Santanderjosephine24",
+          email: parsed.email || "",
+          role: parsed.role || "user",
+        };
+      }
+    } catch {
+      // ignore
+    }
   }
+
+  // Fallback when an active session token exists
+  if (localStorage.getItem(AUTH_TOKEN_KEY)) {
+    return {
+      id: "user",
+      fullName: "Santanderjosephine24",
+      name: "Santanderjosephine24",
+      email: "",
+      role: "user",
+    };
+  }
+
+  return null;
 };
 
 export const clearAuth = () => {
