@@ -114,8 +114,9 @@ export const Navbar = () => {
   // Logo always directs to the landing page
   const logoHref = "/";
 
-  // Check if session is authenticated (always true on app routes or if token/user exists)
-  const isAuthenticated = isAppRoute || Boolean(user || (mounted && getToken()));
+  // Account profile is ONLY displayed on authenticated application routes.
+  // On the landing page or auth pages, NEVER show the account dropdown; only show Login & Sign Up buttons.
+  const showAccountProfile = isAppRoute;
   const displayName = user?.fullName || user?.name || "Santanderjosephine24";
 
   const isActiveLink = (href: string) => {
@@ -187,9 +188,9 @@ export const Navbar = () => {
           </nav>
         )}
 
-        {/* Right Section: Single Unified Profile Trigger or Public Auth buttons */}
+        {/* Right Section: Single Unified Profile Trigger on App Routes, or Login & Sign Up on Landing Page */}
         <div className="hidden lg:flex items-center gap-3">
-          {isAuthenticated ? (
+          {showAccountProfile ? (
             <div className="relative" ref={dropdownRef}>
               <button
                 type="button"
@@ -273,15 +274,15 @@ export const Navbar = () => {
             <div className="flex items-center gap-2">
               <Link
                 href="/login"
-                className="text-sm font-medium text-slate-700 hover:text-slate-950 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+                className="text-sm font-medium text-slate-700 hover:text-slate-950 px-3.5 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
               >
-                Sign In
+                Login
               </Link>
               <Link
                 href="/register"
                 className="text-sm font-semibold text-white bg-slate-950 hover:bg-slate-800 px-4 py-1.5 rounded-lg shadow-xs active:scale-95 transition-all"
               >
-                Create Account
+                Sign Up
               </Link>
             </div>
           )}
@@ -303,7 +304,7 @@ export const Navbar = () => {
       {/* Mobile Drawer */}
       {isMenuOpen && (
         <div className="lg:hidden border-t border-slate-200/80 bg-white px-4 sm:px-6 py-4 space-y-2 shadow-xl animate-in slide-in-from-top duration-200">
-          {isAuthenticated ? (
+          {showAccountProfile ? (
             <>
               <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/70 mb-3">
                 <div className="w-9 h-9 rounded-full bg-slate-900 text-white font-semibold flex items-center justify-center text-xs">
@@ -380,14 +381,14 @@ export const Navbar = () => {
                   className="block text-center text-sm font-medium text-slate-700 py-2.5 px-4 rounded-lg border border-slate-200 hover:bg-slate-50"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Sign In
+                  Login
                 </Link>
                 <Link
                   href="/register"
                   className="block text-center text-sm font-semibold text-white bg-slate-950 py-2.5 px-4 rounded-lg hover:bg-slate-800"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Create Account
+                  Sign Up
                 </Link>
               </div>
             </>

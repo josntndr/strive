@@ -36,43 +36,8 @@ import {
   ShieldCheck,
   UserCheck,
 } from "lucide-react";
-import {
-  AUTH_CHANGED_EVENT,
-  getStoredUser,
-  getToken,
-  type AuthUser,
-} from "@/lib/api";
-
 export default function Home() {
   const router = useRouter();
-
-  // Session & User Authentication Awareness
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const syncAuth = () => {
-      const stored = getStoredUser();
-      const token = getToken();
-      if (stored || token) {
-        setUser(stored);
-        setIsAuthenticated(true);
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
-      }
-    };
-
-    syncAuth();
-    window.addEventListener(AUTH_CHANGED_EVENT, syncAuth);
-    window.addEventListener("storage", syncAuth);
-    return () => {
-      window.removeEventListener(AUTH_CHANGED_EVENT, syncAuth);
-      window.removeEventListener("storage", syncAuth);
-    };
-  }, []);
-
-  const displayName = user?.fullName || user?.name || "Josephine";
 
   // Hero interactive console state
   const [heroTab, setHeroTab] = useState<"workout" | "macros" | "analytics">("workout");
@@ -237,11 +202,7 @@ export default function Home() {
         })
       );
     }
-    if (isAuthenticated) {
-      router.push("/workouts/generate");
-    } else {
-      router.push("/register");
-    }
+    router.push("/register");
   };
 
   return (
@@ -266,22 +227,13 @@ export default function Home() {
               <div className="lg:col-span-6 text-left">
                 <Reveal>
                   <div className="space-y-3">
-                    {/* Dynamic Auth / Brand Badge */}
-                    {isAuthenticated ? (
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-xs font-semibold text-orange-900 shadow-xs">
-                        <span className="w-2 h-2 rounded-full bg-[#ed4f28] animate-pulse" />
-                        <span>Welcome back, {displayName}</span>
-                        <span className="text-orange-400">•</span>
-                        <span className="text-orange-700 font-bold">Active Protocol Synced</span>
-                      </div>
-                    ) : (
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/90 text-xs font-bold text-slate-700 uppercase tracking-wider shadow-xs">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#ed4f28]" />
-                        <span>Athletic Training Architecture</span>
-                        <span className="text-slate-400">•</span>
-                        <span className="text-[#ed4f28] font-bold">Auto-Overload</span>
-                      </div>
-                    )}
+                    {/* Clean Brand Badge */}
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/90 text-xs font-bold text-slate-700 uppercase tracking-wider shadow-xs">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ed4f28]" />
+                      <span>Athletic Training Architecture</span>
+                      <span className="text-slate-400">•</span>
+                      <span className="text-[#ed4f28] font-bold">Auto-Overload</span>
+                    </div>
 
                     {/* Headline: Clean, authoritative, non-AI solid typography */}
                     <h1 className="text-4xl sm:text-5xl lg:text-[3.75rem] font-black tracking-[-0.035em] text-slate-950 leading-[1.05]">
@@ -300,46 +252,23 @@ export default function Home() {
                     tailored to your exact gear and schedule.
                   </p>
 
-                  {/* Dynamic Context-Aware CTAs */}
+                  {/* CTAs */}
                   <div className="mt-8 flex flex-wrap items-center gap-4">
-                    {isAuthenticated ? (
-                      <>
-                        <Link
-                          href="/dashboard"
-                          className="inline-flex items-center gap-2.5 rounded-xl bg-slate-950 px-6 py-3.5 text-sm sm:text-base font-bold text-white shadow-xl shadow-slate-950/15 hover:bg-slate-800 active:scale-95 transition-all group"
-                        >
-                          <Activity className="w-4 h-4 text-[#ed4f28]" />
-                          Open Your Dashboard
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </Link>
+                    <Link
+                      href="/register"
+                      className="inline-flex items-center gap-2.5 rounded-xl bg-slate-950 px-6 py-3.5 text-sm sm:text-base font-bold text-white shadow-xl shadow-slate-950/15 hover:bg-slate-800 active:scale-95 transition-all group"
+                    >
+                      Build Your Free Plan
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
 
-                        <Link
-                          href="/workouts"
-                          className="inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-50 px-5 py-3.5 text-sm font-bold text-slate-800 border border-slate-300 shadow-xs transition-colors"
-                        >
-                          <Dumbbell className="w-4 h-4 text-[#ed4f28]" />
-                          Active Workout Plan
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <Link
-                          href="/register"
-                          className="inline-flex items-center gap-2.5 rounded-xl bg-slate-950 px-6 py-3.5 text-sm sm:text-base font-bold text-white shadow-xl shadow-slate-950/15 hover:bg-slate-800 active:scale-95 transition-all group"
-                        >
-                          Build Your Free Plan
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-
-                        <a
-                          href="#interactive-demo"
-                          className="inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-50 px-5 py-3.5 text-sm font-bold text-slate-800 border border-slate-300 shadow-xs transition-colors"
-                        >
-                          <Sliders className="w-4 h-4 text-slate-600" />
-                          Interactive Plan Calculator
-                        </a>
-                      </>
-                    )}
+                    <a
+                      href="#interactive-demo"
+                      className="inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-50 px-5 py-3.5 text-sm font-bold text-slate-800 border border-slate-300 shadow-xs transition-colors"
+                    >
+                      <Sliders className="w-4 h-4 text-slate-600" />
+                      Interactive Plan Calculator
+                    </a>
                   </div>
 
                   {/* Telemetry spec strip */}
@@ -790,10 +719,10 @@ export default function Home() {
                         <span>Cloud Auto-Save • Offline Resilient</span>
                       </div>
                       <Link
-                        href={isAuthenticated ? "/dashboard" : "/register"}
+                        href="/register"
                         className="font-bold text-slate-900 hover:text-[#ed4f28] transition-colors inline-flex items-center gap-1"
                       >
-                        {isAuthenticated ? "Open Dashboard" : "Explore Full Engine"} →
+                        Explore Full Engine →
                       </Link>
                     </div>
                   </div>
@@ -1338,16 +1267,14 @@ export default function Home() {
 
                   <div className="mt-6 pt-5 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p className="text-xs text-slate-400 text-center sm:text-left">
-                      {isAuthenticated
-                        ? `Ready to generate this for ${displayName}? Takes 1 tap.`
-                        : "Ready to lock in this routine? Sign up takes under 60 seconds."}
+                      Ready to lock in this routine? Sign up takes under 60 seconds.
                     </p>
                     <button
                       type="button"
                       onClick={handleApplyPlan}
                       className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-orange-600 px-6 py-3 text-xs font-bold text-white transition-all shadow-md shadow-[#ed4f28]/30 active:scale-95 cursor-pointer"
                     >
-                      {isAuthenticated ? "Generate Active Plan →" : "Generate Full Plan →"}
+                      Generate Full Plan →
                     </button>
                   </div>
                 </div>
@@ -1571,53 +1498,29 @@ export default function Home() {
 
                 <div className="relative z-10 max-w-2xl mx-auto">
                   <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full inline-block mb-4">
-                    {isAuthenticated ? "Active Session Available" : "Immediate Access • 100% Free"}
+                    Immediate Access • 100% Free
                   </span>
                   <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-                    {isAuthenticated
-                      ? `Ready to Advance Your Progress, ${displayName}?`
-                      : "Ready to Stop Guessing and Start Progressing?"}
+                    Ready to Stop Guessing and Start Progressing?
                   </h2>
                   <p className="mt-4 text-slate-300 text-sm sm:text-base font-normal leading-relaxed">
-                    {isAuthenticated
-                      ? "Your personalized workout split, dynamic progressive overload, and macro calculations are ready in your dashboard."
-                      : "Build your first periodized workout routine and custom macronutrient plan in under 2 minutes. No subscription, no credit card required."}
+                    Build your first periodized workout routine and custom macronutrient plan in under 2 minutes. No subscription, no credit card required.
                   </p>
 
                   <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    {isAuthenticated ? (
-                      <>
-                        <Link
-                          href="/dashboard"
-                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-orange-600 px-8 py-3.5 text-sm font-bold text-white transition-all shadow-lg shadow-[#ed4f28]/30 hover:scale-[1.02] active:scale-95"
-                        >
-                          Continue to Dashboard
-                          <ArrowRight className="w-4 h-4" />
-                        </Link>
-                        <Link
-                          href="/progress"
-                          className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-slate-900 hover:bg-slate-800 px-6 py-3.5 text-sm font-bold text-slate-300 transition-colors border border-slate-800"
-                        >
-                          View Fitness Progress
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <Link
-                          href="/register"
-                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-orange-600 px-8 py-3.5 text-sm font-bold text-white transition-all shadow-lg shadow-[#ed4f28]/30 hover:scale-[1.02] active:scale-95"
-                        >
-                          Get Started Free
-                          <ArrowRight className="w-4 h-4" />
-                        </Link>
-                        <Link
-                          href="/login"
-                          className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-slate-900 hover:bg-slate-800 px-6 py-3.5 text-sm font-bold text-slate-300 transition-colors border border-slate-800"
-                        >
-                          Sign In to Account
-                        </Link>
-                      </>
-                    )}
+                    <Link
+                      href="/register"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-orange-600 px-8 py-3.5 text-sm font-bold text-white transition-all shadow-lg shadow-[#ed4f28]/30 hover:scale-[1.02] active:scale-95"
+                    >
+                      Sign Up
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      href="/login"
+                      className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-slate-900 hover:bg-slate-800 px-6 py-3.5 text-sm font-bold text-slate-300 transition-colors border border-slate-800"
+                    >
+                      Login
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -1648,20 +1551,12 @@ export default function Home() {
                 <a href="#how-it-works" className="hover:text-[#ed4f28] transition-colors">
                   How It Works
                 </a>
-                {isAuthenticated ? (
-                  <Link href="/dashboard" className="hover:text-[#ed4f28] transition-colors">
-                    Dashboard
-                  </Link>
-                ) : (
-                  <>
-                    <Link href="/login" className="hover:text-[#ed4f28] transition-colors">
-                      Login
-                    </Link>
-                    <Link href="/register" className="hover:text-[#ed4f28] transition-colors">
-                      Register
-                    </Link>
-                  </>
-                )}
+                <Link href="/login" className="hover:text-[#ed4f28] transition-colors">
+                  Login
+                </Link>
+                <Link href="/register" className="hover:text-[#ed4f28] transition-colors">
+                  Sign Up
+                </Link>
               </div>
 
               {/* Status Indicator */}
