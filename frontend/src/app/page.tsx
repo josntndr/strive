@@ -227,18 +227,10 @@ export default function Home() {
               <div className="lg:col-span-6 text-left">
                 <Reveal>
                   <div className="space-y-3">
-                    {/* Clean Brand Badge */}
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/90 text-xs font-bold text-slate-700 uppercase tracking-wider shadow-xs">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#ed4f28]" />
-                      <span>Athletic Training Architecture</span>
-                      <span className="text-slate-400">•</span>
-                      <span className="text-[#ed4f28] font-bold">Auto-Overload</span>
-                    </div>
-
-                    {/* Headline: Clean, authoritative, non-AI solid typography */}
-                    <h1 className="text-4xl sm:text-5xl lg:text-[3.75rem] font-black tracking-[-0.035em] text-slate-950 leading-[1.05]">
+                    {/* Headline: Clean, authoritative, authentic typography */}
+                    <h1 className="text-4xl sm:text-5xl lg:text-[3.85rem] font-black tracking-[-0.035em] text-slate-950 leading-[1.08]">
                       Precision Training. <br />
-                      Engineered for{" "}
+                      Built for{" "}
                       <span className="bg-gradient-to-r from-[#ed4f28] via-orange-500 to-amber-500 bg-clip-text text-transparent">
                         Results.
                       </span>
@@ -247,9 +239,7 @@ export default function Home() {
 
                   {/* Subheadline */}
                   <p className="mt-5 text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-xl">
-                    Ditch generic workout templates and guesswork diets. Strive computes periodized
-                    lifting splits, adaptive macro targets, and automated progressive overload
-                    tailored to your exact gear and schedule.
+                    Stop guessing your weights and nutrition. Strive builds personalized lifting routines, calculates exact macro targets, and automates your progressive overload.
                   </p>
 
                   {/* CTAs */}
@@ -276,24 +266,24 @@ export default function Home() {
                     <div className="grid grid-cols-3 divide-x divide-slate-200 text-center">
                       <div className="px-2">
                         <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                          Hardware
+                          Equipment
                         </p>
-                        <p className="text-base font-black text-slate-950 mt-0.5">100% Adaptive</p>
-                        <p className="text-[11px] text-slate-500 font-medium">Home & Gym</p>
+                        <p className="text-base font-black text-slate-950 mt-0.5">Gym & Home</p>
+                        <p className="text-[11px] text-slate-500 font-medium">Any setup</p>
                       </div>
                       <div className="px-2">
                         <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                          Overload
+                          Progression
                         </p>
                         <p className="text-base font-black text-[#ed4f28] mt-0.5">+2.5 kg</p>
-                        <p className="text-[11px] text-slate-500 font-medium">Auto Micro-Load</p>
+                        <p className="text-[11px] text-slate-500 font-medium">Overload guidance</p>
                       </div>
                       <div className="px-2">
                         <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                           Nutrition
                         </p>
-                        <p className="text-base font-black text-slate-950 mt-0.5">3-Tier</p>
-                        <p className="text-[11px] text-slate-500 font-medium">Dynamic Macro Sync</p>
+                        <p className="text-base font-black text-slate-950 mt-0.5">Custom</p>
+                        <p className="text-[11px] text-slate-500 font-medium">Protein & calories</p>
                       </div>
                     </div>
                   </div>
@@ -343,7 +333,7 @@ export default function Home() {
                             : "text-slate-600 hover:text-slate-950 hover:bg-slate-200/50"
                         }`}
                       >
-                        Active Workout
+                        Workout
                       </button>
 
                       <button
@@ -355,7 +345,7 @@ export default function Home() {
                             : "text-slate-600 hover:text-slate-950 hover:bg-slate-200/50"
                         }`}
                       >
-                        Macro Fueling
+                        Nutrition
                       </button>
 
                       <button
@@ -367,7 +357,7 @@ export default function Home() {
                             : "text-slate-600 hover:text-slate-950 hover:bg-slate-200/50"
                         }`}
                       >
-                        Volume Curve
+                        Progress
                       </button>
                     </div>
 
@@ -524,11 +514,10 @@ export default function Home() {
                           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                             <div>
                               <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
-                                Daily Nutrition Protocol
+                                Nutrition Targets
                               </span>
                               <h3 className="text-base font-black text-slate-950 mt-1">
                                 {macroDayType === "training" ? "2,650 kcal" : "2,150 kcal"} / day
-                                Budget
                               </h3>
                             </div>
 
@@ -563,7 +552,7 @@ export default function Home() {
                           <div className="space-y-3 pt-1">
                             <div>
                               <div className="flex justify-between text-xs font-bold mb-1">
-                                <span className="text-slate-700">Protein (Muscle Synthesis)</span>
+                                <span className="text-slate-700">Protein</span>
                                 <span className="text-[#ed4f28] font-mono">
                                   {macroDayType === "training" ? "185g / 185g (100%)" : "190g / 190g (100%)"}
                                 </span>
@@ -575,7 +564,7 @@ export default function Home() {
 
                             <div>
                               <div className="flex justify-between text-xs font-bold mb-1">
-                                <span className="text-slate-700">Carbohydrates (Glycogen Replenishment)</span>
+                                <span className="text-slate-700">Carbohydrates</span>
                                 <span className="text-amber-700 font-mono">
                                   {macroDayType === "training" ? "290g / 290g (100%)" : "180g / 180g (100%)"}
                                 </span>
@@ -591,7 +580,7 @@ export default function Home() {
 
                             <div>
                               <div className="flex justify-between text-xs font-bold mb-1">
-                                <span className="text-slate-700">Healthy Fats (Endocrine & Joint Support)</span>
+                                <span className="text-slate-700">Healthy Fats</span>
                                 <span className="text-emerald-700 font-mono">
                                   {macroDayType === "training" ? "68g / 68g (100%)" : "55g / 55g (100%)"}
                                 </span>
@@ -608,7 +597,7 @@ export default function Home() {
                               <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
                                 {macroDayType === "training" ? "Post-Workout Refuel" : "Recovery Meal"}
                               </span>
-                              <span className="text-xs font-black text-slate-900">
+                              <span className="text-xs font-black text-slate-950">
                                 {macroDayType === "training" ? "620 kcal" : "480 kcal"}
                               </span>
                             </div>
@@ -628,27 +617,27 @@ export default function Home() {
                         </div>
                       )}
 
-                      {/* TAB 3: VOLUME CURVE (Visual Progression SVG) */}
+                      {/* TAB 3: PROGRESS (Visual Progression SVG) */}
                       {heroTab === "analytics" && (
                         <div className="space-y-4 animate-in fade-in duration-200">
                           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                             <div>
                               <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
-                                Progression Analytics
+                                Strength Progress
                               </span>
                               <h3 className="text-base font-black text-slate-950 mt-1">
                                 +14.2% Estimated 1RM Gain
                               </h3>
                             </div>
                             <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
-                              6-Week Microcycle
+                              6-Week Trend
                             </span>
                           </div>
 
                           {/* SVG Volume Curve with Gradient Fill */}
                           <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
                             <div className="flex justify-between items-center text-xs font-bold text-slate-500 mb-2">
-                              <span>Compound Lift Tonnage</span>
+                              <span>Bench Press Est. 1RM</span>
                               <span className="text-[#ed4f28] font-mono">
                                 Week 1 (80kg) → Week 6 (92.5kg)
                               </span>
@@ -691,7 +680,7 @@ export default function Home() {
                           <div className="grid grid-cols-2 gap-3">
                             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
                               <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
-                                Weekly Load
+                                Weekly Volume
                               </p>
                               <p className="text-lg font-black text-slate-950 mt-0.5">48,250 kg</p>
                               <p className="text-[10px] font-semibold text-emerald-600 mt-0.5">
@@ -700,11 +689,11 @@ export default function Home() {
                             </div>
                             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
                               <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
-                                Consistency Index
+                                Consistency
                               </p>
                               <p className="text-lg font-black text-slate-950 mt-0.5">18 Days Active</p>
                               <p className="text-[10px] font-semibold text-[#ed4f28] mt-0.5">
-                                100% Prescription Met
+                                All workouts completed
                               </p>
                             </div>
                           </div>
@@ -716,13 +705,13 @@ export default function Home() {
                     <div className="bg-slate-50 px-5 py-3 border-t border-slate-200 flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2 text-slate-500 font-medium">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span>Cloud Auto-Save • Offline Resilient</span>
+                        <span>Auto-saves in real time</span>
                       </div>
                       <Link
                         href="/register"
                         className="font-bold text-slate-900 hover:text-[#ed4f28] transition-colors inline-flex items-center gap-1"
                       >
-                        Explore Full Engine →
+                        Start tracking free →
                       </Link>
                     </div>
                   </div>
@@ -743,17 +732,11 @@ export default function Home() {
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/25 text-xs font-mono font-bold text-orange-400 uppercase tracking-widest mb-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ed4f28] animate-pulse" />
-                System Architecture
-              </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mt-2">
-                Everything Engineered for{" "}
-                <span className="text-[#ed4f28]">Relentless Progress</span>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
+                Everything you need for <span className="text-[#ed4f28]">consistent gains</span>
               </h2>
               <p className="mt-4 text-slate-300 text-base sm:text-lg font-normal leading-relaxed">
-                No random routines, no guesswork. Strive merges exercise physiology with automated
-                tracking to ensure your efforts translate into measurable gains.
+                Smart workout tracking, progressive weight increases, and tailored daily nutrition designed to turn your effort into real strength.
               </p>
             </div>
 
@@ -768,17 +751,17 @@ export default function Home() {
                         <TrendingUp className="w-5 h-5" />
                       </div>
                       <div>
-                        <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase block">
-                          Engine Module 01
+                        <span className="text-xs font-semibold text-slate-300 block">
+                          Smart Progression
                         </span>
-                        <span className="text-xs font-mono font-bold text-slate-200">
-                          PROGRESSION_MATRIX
+                        <span className="text-[11px] text-slate-500">
+                          Automated weight targets
                         </span>
                       </div>
                     </div>
 
-                    <span className="text-[11px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full">
-                      +2.5 KG MICRO-OVERLOAD
+                    <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-lg">
+                      +2.5 kg weekly overload
                     </span>
                   </div>
 
@@ -786,17 +769,15 @@ export default function Home() {
                     Dynamic Progressive Overload
                   </h3>
                   <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal max-w-xl">
-                    Never plateau on your key lifts. Strive monitors completed sets, reps, and
-                    perceived difficulty to calculate the precise micro-increments (+1.25kg to +2.5kg)
-                    you need each week.
+                    Never plateau on your key lifts. Strive monitors completed sets and reps to calculate the exact weight increases (+1.25kg to +2.5kg) you need each week.
                   </p>
                 </div>
 
                 {/* Interactive Week Timeline Selector */}
                 <div className="mt-8 pt-6 border-t border-slate-800/80">
-                  <div className="flex items-center justify-between text-xs text-slate-400 mb-2.5 font-mono">
-                    <span>TIMELINE SIMULATION</span>
-                    <span className="text-orange-400 font-bold">Select Week to Preview</span>
+                  <div className="flex items-center justify-between text-xs text-slate-400 mb-2.5">
+                    <span className="font-semibold text-slate-300">Sample 5-Week Progression</span>
+                    <span className="text-orange-400 font-medium">Click a week to preview:</span>
                   </div>
 
                   <div className="grid grid-cols-3 gap-3 sm:gap-4">
@@ -809,11 +790,11 @@ export default function Home() {
                           : "bg-slate-950/70 border-slate-800 hover:border-slate-700"
                       }`}
                     >
-                      <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
+                      <p className="text-[11px] font-semibold text-slate-400">
                         Week 1 Baseline
                       </p>
                       <p className="text-base sm:text-lg font-black text-white mt-0.5">80 kg × 8</p>
-                      <span className="text-[10px] font-mono text-slate-400">RPE 8.0 Target</span>
+                      <span className="text-[11px] text-slate-400">Target Reps Met</span>
                     </button>
 
                     <button
@@ -825,13 +806,13 @@ export default function Home() {
                           : "bg-slate-950/70 border-slate-800 hover:border-slate-700"
                       }`}
                     >
-                      <p className="text-[10px] font-mono font-bold text-slate-400 uppercase">
-                        Week 3 Adapted
+                      <p className="text-[11px] font-semibold text-slate-400">
+                        Week 3 Overload
                       </p>
                       <p className="text-base sm:text-lg font-black text-emerald-400 mt-0.5">
                         85 kg × 8
                       </p>
-                      <span className="text-[10px] font-mono font-bold text-emerald-400">
+                      <span className="text-[11px] font-semibold text-emerald-400">
                         +5 kg Overload
                       </span>
                     </button>
@@ -845,21 +826,21 @@ export default function Home() {
                           : "bg-slate-950/70 border-slate-800 hover:border-slate-700"
                       }`}
                     >
-                      <p className="text-[10px] font-mono font-bold text-orange-400 uppercase">
+                      <p className="text-[11px] font-semibold text-orange-400">
                         Week 5 Target
                       </p>
                       <p className="text-base sm:text-lg font-black text-orange-300 mt-0.5">
                         87.5 kg × 8
                       </p>
-                      <span className="text-[10px] font-mono font-bold text-orange-400">
-                        Auto-Prescribed
+                      <span className="text-[11px] font-semibold text-orange-400">
+                        New PR Target
                       </span>
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* Bento Card 2: 4-col (Calibrated Macro OS) */}
+              {/* Bento Card 2: 4-col (Custom Daily Nutrition) */}
               <div className="md:col-span-4 rounded-3xl bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 hover:border-emerald-500/40 p-7 sm:p-8 transition-all flex flex-col justify-between group shadow-xl">
                 <div>
                   <div className="flex items-center justify-between mb-5">
@@ -868,26 +849,25 @@ export default function Home() {
                         <Utensils className="w-5 h-5" />
                       </div>
                       <div>
-                        <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase block">
-                          Engine Module 02
+                        <span className="text-xs font-semibold text-slate-300 block">
+                          Daily Fueling
                         </span>
-                        <span className="text-xs font-mono font-bold text-slate-200">
-                          METABOLIC_SYNC
+                        <span className="text-[11px] text-slate-500">
+                          Targeted nutrition
                         </span>
                       </div>
                     </div>
 
-                    <span className="text-[11px] font-mono font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30 px-3 py-1 rounded-full">
-                      3-TIER MACROS
+                    <span className="text-xs font-semibold text-orange-400 bg-orange-500/10 border border-orange-500/30 px-3 py-1 rounded-lg">
+                      Tailored Macros
                     </span>
                   </div>
 
                   <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                    Calibrated Macro OS
+                    Custom Daily Nutrition
                   </h3>
                   <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal">
-                    Custom nutrition algorithms compute protein, carbohydrate, and lipid targets
-                    matched to your training intensity and body composition.
+                    Get protein, carbohydrate, and fat targets calculated specifically for your body weight, activity level, and physique goals.
                   </p>
                 </div>
 
@@ -919,10 +899,10 @@ export default function Home() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs font-mono font-bold text-slate-300">
+                    <div className="flex justify-between text-xs font-semibold text-slate-300">
                       <span>Protein Target</span>
-                      <span className="text-emerald-400 font-mono font-black">
-                        {macroMode === "hypertrophy" ? "2.0g / kg BW" : "2.4g / kg BW"}
+                      <span className="text-emerald-400 font-bold">
+                        {macroMode === "hypertrophy" ? "2.0g / kg body weight" : "2.4g / kg body weight"}
                       </span>
                     </div>
                     <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden mt-1.5">
@@ -935,13 +915,13 @@ export default function Home() {
                   </div>
                   <p className="text-[11px] text-slate-400 font-medium">
                     {macroMode === "hypertrophy"
-                      ? "Calibrated for positive nitrogen balance and lean tissue growth."
-                      : "Preserves lean muscle mass in an active caloric deficit."}
+                      ? "Calibrated for muscle growth and optimal recovery."
+                      : "Preserves lean muscle mass during a calorie deficit."}
                   </p>
                 </div>
               </div>
 
-              {/* Bento Card 3: 6-col (Zero Equipment Barrier) */}
+              {/* Bento Card 3: 6-col (Train With Any Equipment) */}
               <div className="md:col-span-6 rounded-3xl bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 hover:border-amber-500/40 p-7 sm:p-8 transition-all group shadow-xl">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
                   <div className="flex items-center gap-3">
@@ -949,11 +929,11 @@ export default function Home() {
                       <Dumbbell className="w-5 h-5" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase block">
-                        Engine Module 03
+                      <span className="text-xs font-semibold text-slate-300 block">
+                        Equipment Flexibility
                       </span>
-                      <span className="text-xs font-mono font-bold text-slate-200">
-                        HARDWARE_AGNOSTIC
+                      <span className="text-[11px] text-slate-500">
+                        Gym or home setup
                       </span>
                     </div>
                   </div>
@@ -996,21 +976,20 @@ export default function Home() {
                 </div>
 
                 <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  Zero Equipment Barrier
+                  Train With Any Equipment
                 </h3>
                 <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal">
-                  Whether you have access to an elite barbell gym, a set of dumbbells at home, or
-                  zero equipment in a hotel room — your plan adapts instantly.
+                  Whether you train at a fully equipped gym, have a pair of dumbbells at home, or rely on bodyweight exercises while traveling.
                 </p>
 
                 <div className="mt-6 p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-                  <div className="flex items-center justify-between text-xs font-mono font-bold text-slate-300">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-300">
                     <span>
-                      {equipmentMode === "gym" && "Commercial Barbell & Cable Setup"}
-                      {equipmentMode === "dumbbells" && "Home Dumbbell & Bench Setup"}
-                      {equipmentMode === "bodyweight" && "Calisthenics & High-Tension Movement"}
+                      {equipmentMode === "gym" && "Commercial Gym Setup"}
+                      {equipmentMode === "dumbbells" && "Home Dumbbell Setup"}
+                      {equipmentMode === "bodyweight" && "Bodyweight & Calisthenics"}
                     </span>
-                    <span className="text-[#ed4f28] font-bold">Active Preset</span>
+                    <span className="text-[#ed4f28]">Active Selection</span>
                   </div>
                   <p className="text-xs text-slate-400 mt-1 font-medium">
                     {equipmentMode === "gym" &&
@@ -1032,40 +1011,39 @@ export default function Home() {
                         <Heart className="w-5 h-5" />
                       </div>
                       <div>
-                        <span className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase block">
-                          Engine Module 04
+                        <span className="text-xs font-semibold text-slate-300 block">
+                          Rest & Consistency
                         </span>
-                        <span className="text-xs font-mono font-bold text-slate-200">
-                          CNS_AUTONOMIC
+                        <span className="text-[11px] text-slate-500">
+                          Built-in deloads
                         </span>
                       </div>
                     </div>
-                    <span className="text-[11px] font-mono font-bold text-rose-400 bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-full">
-                      HRV RECOVERY SYNC
+                    <span className="text-xs font-semibold text-rose-400 bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-lg">
+                      Recovery Tracking
                     </span>
                   </div>
 
                   <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                    Recovery Rhythm & Readiness
+                    Structured Rest & Recovery
                   </h3>
                   <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal">
-                    Lifting heavy without planned recovery leads to fatigue. Strive balances
-                    training load with scheduled deloads and rest periods so your joints stay healthy.
+                    Lifting heavy without planned recovery leads to fatigue and stalled lifts. Strive balances training intensity with rest days to protect your joints and keep energy high.
                   </p>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-black text-sm font-mono">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-black text-sm">
                       94%
                     </div>
                     <div>
                       <p className="text-xs font-bold text-white">Readiness Score</p>
-                      <p className="text-[11px] text-slate-400">Optimal systemic recovery index</p>
+                      <p className="text-[11px] text-slate-400">Ready for high-intensity session</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-mono font-bold text-amber-400">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-400">
                     <Flame className="w-4 h-4 text-amber-400" />
                     <span>18-Day Streak</span>
                   </div>
@@ -1081,15 +1059,11 @@ export default function Home() {
         <section id="interactive-demo" className="py-24 bg-white border-b border-slate-200/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#ed4f28] bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
-                Interactive Plan Preview
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mt-3">
-                Test-Drive Your Custom Protocol
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950">
+                Preview your workout routine & macros
               </h2>
-              <p className="mt-3 text-slate-600 text-base font-normal">
-                Choose your primary fitness objective and training frequency to see how Strive
-                calibrates your split and nutrition breakdown in real time.
+              <p className="mt-4 text-slate-600 text-base font-normal">
+                Choose your fitness goal and weekly schedule to see how Strive structures your weekly training split and daily macronutrient targets.
               </p>
             </div>
 
@@ -1103,7 +1077,7 @@ export default function Home() {
                 <div className="lg:col-span-5 space-y-6">
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
-                      1. Primary Target
+                      1. Primary Goal
                     </label>
                     <div className="grid grid-cols-3 gap-2">
                       {[
@@ -1129,7 +1103,7 @@ export default function Home() {
 
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
-                      2. Training Frequency
+                      2. Days Per Week
                     </label>
                     <div className="grid grid-cols-3 gap-2">
                       {[3, 4, 5].map((d) => (
@@ -1151,7 +1125,7 @@ export default function Home() {
 
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
-                      3. Experience Tier
+                      3. Experience Level
                     </label>
                     <div className="grid grid-cols-3 gap-2">
                       {[
@@ -1176,13 +1150,12 @@ export default function Home() {
                   </div>
 
                   <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
-                    <div className="flex items-center gap-2 text-xs font-bold text-emerald-400">
+                    <div className="flex items-center gap-2 text-xs font-bold text-orange-400">
                       <Sparkles className="w-4 h-4" />
-                      <span>Instant Algorithmic Synthesis</span>
+                      <span>Evidence-Based Estimates</span>
                     </div>
                     <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
-                      All calculations are calibrated against validated sports science models
-                      (Mifflin-St Jeor & Schoenfeld Volume Guidelines).
+                      Calorie and macronutrient estimates are calculated from standard sports nutrition formulas (Mifflin-St Jeor) and proven volume guidelines.
                     </p>
                   </div>
                 </div>
@@ -1193,7 +1166,7 @@ export default function Home() {
                     <div className="flex items-center justify-between pb-4 border-b border-slate-800">
                       <div>
                         <span className="text-[10px] font-bold uppercase tracking-wider text-orange-400">
-                          Recommended Program Structure
+                          Recommended Split
                         </span>
                         <h3 className="text-lg sm:text-xl font-black text-white mt-0.5">
                           {calcOutput.splitName}
@@ -1207,7 +1180,7 @@ export default function Home() {
                     {/* Weekly Schedule Timeline Preview */}
                     <div className="mt-4">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-                        Weekly Microcycle Roadmap
+                        Weekly Schedule
                       </p>
                       <div className="flex flex-wrap gap-1.5">
                         {calcOutput.schedule.map((dayItem, idx) => (
@@ -1253,13 +1226,13 @@ export default function Home() {
                       <div className="flex items-start gap-2">
                         <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                         <span>
-                          <strong>Training Methodology:</strong> {calcOutput.primaryFocus}
+                          <strong>Training Focus:</strong> {calcOutput.primaryFocus}
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
                         <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                         <span>
-                          <strong>Rest Cadence:</strong> {calcOutput.restInterval}
+                          <strong>Rest Recommendation:</strong> {calcOutput.restInterval}
                         </span>
                       </div>
                     </div>
@@ -1274,7 +1247,7 @@ export default function Home() {
                       onClick={handleApplyPlan}
                       className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-orange-600 px-6 py-3 text-xs font-bold text-white transition-all shadow-md shadow-[#ed4f28]/30 active:scale-95 cursor-pointer"
                     >
-                      Generate Full Plan →
+                      Get Started With This Plan →
                     </button>
                   </div>
                 </div>
@@ -1289,15 +1262,11 @@ export default function Home() {
         <section id="how-it-works" className="py-24 bg-slate-50 border-b border-slate-200/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#ed4f28] bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
-                Execution Workflow
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mt-3">
-                How Strive Drives Results
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950">
+                How Strive works
               </h2>
-              <p className="mt-3 text-slate-600 text-base font-normal">
-                Three streamlined steps that replace spreadsheets, expensive coaching, and
-                trial-and-error. Click any step to inspect the protocol in action.
+              <p className="mt-4 text-slate-600 text-base font-normal">
+                No complicated spreadsheets or guesswork. Three simple steps to build your routine, hit your numbers, and see steady progress.
               </p>
             </div>
 
@@ -1306,29 +1275,29 @@ export default function Home() {
               {[
                 {
                   step: "01",
-                  title: "Calibrate Metrics & Gear",
+                  title: "Tell us your goals & gear",
                   description:
-                    "Specify your current lifting stats, weekly schedule availability, and exact equipment (full commercial gym, home barbell, or dumbbells only).",
-                  highlight: "Equipment-Aware Mapping",
-                  previewLabel: "Adaptive Hardware Presets",
+                    "Choose your primary goal, weekly schedule, and equipment — whether you train at a full gym, have a home barbell, or only dumbbells.",
+                  highlight: "Tailored Setup",
+                  previewLabel: "Commercial gym or home gear",
                   icon: Sliders,
                 },
                 {
                   step: "02",
-                  title: "Synthesize Training & Macros",
+                  title: "Get your weekly split & macros",
                   description:
-                    "Our algorithm creates balanced weekly training splits, movement order, target sets/reps, and dynamic daily macronutrient targets.",
-                  highlight: "Periodized Volume",
-                  previewLabel: "Daily Nutrient Matching",
+                    "Receive a balanced training schedule with targeted exercises, sets, and reps, plus daily calorie and protein targets to fuel recovery.",
+                  highlight: "Clear Routine",
+                  previewLabel: "Target sets & daily nutrition",
                   icon: Layers,
                 },
                 {
                   step: "03",
-                  title: "Log Sets & Auto-Progress",
+                  title: "Log workouts and build strength",
                   description:
-                    "Record weight and repetitions in two taps during sessions. Strive automatically calculates progressive overload increases for your next workout.",
-                  highlight: "Zero Guesswork",
-                  previewLabel: "Automated +2.5kg Micro-Loads",
+                    "Record your weights and reps in seconds during each session. Strive suggests weight increases so you keep progressing week after week.",
+                  highlight: "Progressive Overload",
+                  previewLabel: "Gradual weekly progression",
                   icon: TrendingUp,
                 },
               ].map((item, idx) => {
@@ -1363,10 +1332,10 @@ export default function Home() {
                           </div>
                         </div>
 
-                        <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#ed4f28] bg-orange-50 px-2.5 py-0.5 rounded border border-orange-100">
+                        <span className="text-xs font-bold text-[#ed4f28]">
                           {item.highlight}
                         </span>
-                        <h3 className="text-xl font-extrabold text-slate-900 mt-2.5 tracking-tight">
+                        <h3 className="text-xl font-extrabold text-slate-900 mt-2 tracking-tight">
                           {item.title}
                         </h3>
                         <p className="mt-3 text-sm text-slate-600 leading-relaxed font-normal">
@@ -1397,11 +1366,11 @@ export default function Home() {
                     0{activeStep + 1}
                   </div>
                   <div>
-                    <p className="text-xs font-bold uppercase text-slate-400">Selected Step Preview</p>
+                    <p className="text-xs font-bold uppercase text-slate-400">Step Detail</p>
                     <p className="text-sm font-bold text-slate-900">
-                      {activeStep === 0 && "Equipment Profiler: Instant conversion between Barbell, Dumbbell, and Bodyweight protocols"}
-                      {activeStep === 1 && "Algorithmic Periodization: Volume matches muscle recovery cycles and dynamic macro nutrition"}
-                      {activeStep === 2 && "Micro-Progression: +1.25kg to +2.5kg calculated directly from previous RPE feedback"}
+                      {activeStep === 0 && "Equipment options: Seamlessly switch between barbell, dumbbell, or bodyweight workouts."}
+                      {activeStep === 1 && "Smart scheduling: Workout days and rest intervals matched to your experience level and nutrition."}
+                      {activeStep === 2 && "Progressive overload: Clear suggestions for adding weight or reps as you get stronger."}
                     </p>
                   </div>
                 </div>
@@ -1411,7 +1380,7 @@ export default function Home() {
                   onClick={() => setActiveStep((prev) => (prev + 1) % 3)}
                   className="text-xs font-bold text-[#ed4f28] hover:text-orange-700 transition-colors inline-flex items-center gap-1 self-start sm:self-auto cursor-pointer"
                 >
-                  Next Step Showcase →
+                  Next step →
                 </button>
               </div>
             </div>
@@ -1424,15 +1393,11 @@ export default function Home() {
         <section className="py-24 bg-white border-b border-slate-200/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#ed4f28] bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
-                Tailored Disciplines
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mt-3">
-                Engineered for Every Training Style
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950">
+                Built for every training style
               </h2>
-              <p className="mt-3 text-slate-600 text-base font-normal">
-                Whether your primary focus is maximum muscle hypertrophy, pure compound strength,
-                or time-efficient conditioning, Strive tailors the volume and nutrition to match.
+              <p className="mt-4 text-slate-600 text-base font-normal">
+                Whether you want to build muscle, increase raw strength, or stay lean and conditioned, Strive shapes your training and nutrition to match your lifestyle.
               </p>
             </div>
 
@@ -1497,14 +1462,11 @@ export default function Home() {
                 <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 max-w-2xl mx-auto">
-                  <span className="text-xs font-bold uppercase tracking-widest text-[#ed4f28] bg-orange-500/10 border border-orange-500/30 px-3 py-1 rounded-full inline-block mb-4">
-                    Immediate Access • 100% Free
-                  </span>
                   <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-                    Ready to Stop Guessing and Start Progressing?
+                    Ready to start training?
                   </h2>
-                  <p className="mt-4 text-slate-300 text-sm sm:text-base font-normal leading-relaxed">
-                    Build your first periodized workout routine and custom macronutrient plan in under 2 minutes. No subscription, no credit card required.
+                  <p className="mt-4 text-slate-300 text-base font-normal leading-relaxed">
+                    Create your workout routine and custom nutrition targets in under two minutes. Free to use, no credit card required.
                   </p>
 
                   <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1559,17 +1521,17 @@ export default function Home() {
                 </Link>
               </div>
 
-              {/* Status Indicator */}
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>All Systems Operational</span>
+              {/* App Status / Tagline */}
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+                <span className="w-2 h-2 rounded-full bg-[#ed4f28]" />
+                <span>Train with purpose</span>
               </div>
             </div>
 
             <div className="pt-8 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-4">
               <p>&copy; 2026 Strive Fitness. All rights reserved.</p>
               <p className="font-medium text-slate-400">
-                Precision workout & nutrition architecture engineered for human progression.
+                Smart workout logging and nutrition planning built for real results.
               </p>
             </div>
           </div>
