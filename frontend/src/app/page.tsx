@@ -722,97 +722,93 @@ export default function Home() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 2. CORE ARCHITECTURE BENTO GRID (Deep Obsidian & Warm Atmospheric Glyphs) */}
         {/* ========================================================================= */}
-        <section id="features" className="relative py-24 overflow-hidden bg-slate-950 text-white border-y border-slate-800">
-          {/* Subtle Ambient Radial Lighting */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-[radial-gradient(ellipse_60%_60%_at_50%_-10%,rgba(237,79,40,0.15),transparent)]" />
-          </div>
-
+        {/* 2. CORE FEATURES (Editorial, clean athletic cards with clear human value) */}
+        {/* ========================================================================= */}
+        <section id="features" className="relative py-24 bg-slate-50/80 border-b border-slate-200/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-950">
                 Everything you need for <span className="text-[#ed4f28]">consistent gains</span>
               </h2>
-              <p className="mt-4 text-slate-300 text-base sm:text-lg font-normal leading-relaxed">
+              <p className="mt-4 text-slate-600 text-base sm:text-lg font-normal leading-relaxed">
                 Smart workout tracking, progressive weight increases, and tailored daily nutrition designed to turn your effort into real strength.
               </p>
             </div>
 
-            {/* Bento Grid */}
+            {/* Feature Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-              {/* Bento Card 1: 8-col on MD (Interactive Dynamic Progressive Overload) */}
-              <div className="md:col-span-8 rounded-3xl bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 hover:border-orange-500/40 p-7 sm:p-8 transition-all flex flex-col justify-between group shadow-xl">
+              {/* Card 1: 8-col - Progressive Overload */}
+              <div className="md:col-span-8 rounded-3xl bg-white border border-slate-200/90 hover:border-orange-300 p-7 sm:p-8 transition-all flex flex-col justify-between group shadow-xs hover:shadow-md">
                 <div>
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-[#ed4f28] group-hover:border-orange-500/60 transition-colors shadow-inner">
+                      <div className="h-10 w-10 rounded-xl bg-orange-50 border border-orange-100/80 flex items-center justify-center text-[#ed4f28] shadow-2xs">
                         <TrendingUp className="w-5 h-5" />
                       </div>
                       <div>
-                        <span className="text-xs font-semibold text-slate-300 block">
-                          Smart Progression
+                        <span className="text-sm font-bold text-slate-900 block">
+                          Progressive Overload
                         </span>
-                        <span className="text-[11px] text-slate-500">
-                          Automated weight targets
+                        <span className="text-xs text-slate-500">
+                          Automated weight suggestions
                         </span>
                       </div>
                     </div>
 
-                    <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-lg">
-                      +2.5 kg weekly overload
+                    <span className="text-xs font-bold text-[#ed4f28] bg-orange-50 border border-orange-200/60 px-3 py-1 rounded-full">
+                      +2.5 kg weekly targets
                     </span>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                    Dynamic Progressive Overload
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+                    Never plateau on your key lifts
                   </h3>
-                  <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal max-w-xl">
-                    Never plateau on your key lifts. Strive monitors completed sets and reps to calculate the exact weight increases (+1.25kg to +2.5kg) you need each week.
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal max-w-xl">
+                    Strive tracks completed sets and reps to calculate gradual weight increases (+1.25kg to +2.5kg) each week so you keep building strength safely.
                   </p>
                 </div>
 
                 {/* Interactive Week Timeline Selector */}
-                <div className="mt-8 pt-6 border-t border-slate-800/80">
-                  <div className="flex items-center justify-between text-xs text-slate-400 mb-2.5">
-                    <span className="font-semibold text-slate-300">Sample 5-Week Progression</span>
-                    <span className="text-orange-400 font-medium">Click a week to preview:</span>
+                <div className="mt-8 pt-6 border-t border-slate-100">
+                  <div className="flex items-center justify-between text-xs text-slate-500 mb-3">
+                    <span className="font-bold text-slate-800">Sample 5-Week Progression:</span>
+                    <span className="text-[#ed4f28] font-medium">Click week to inspect:</span>
                   </div>
 
                   <div className="grid grid-cols-3 gap-3 sm:gap-4">
                     <button
                       type="button"
                       onClick={() => setBentoWeek(1)}
-                      className={`p-3.5 rounded-xl text-left border transition-all cursor-pointer ${
+                      className={`p-4 rounded-2xl text-left border transition-all cursor-pointer ${
                         bentoWeek === 1
-                          ? "bg-slate-800 border-orange-500/80 shadow-md"
-                          : "bg-slate-950/70 border-slate-800 hover:border-slate-700"
+                          ? "bg-orange-50/50 border-[#ed4f28] shadow-xs"
+                          : "bg-slate-50 border-slate-200/80 hover:border-slate-300"
                       }`}
                     >
-                      <p className="text-[11px] font-semibold text-slate-400">
-                        Week 1 Baseline
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        Week 1
                       </p>
-                      <p className="text-base sm:text-lg font-black text-white mt-0.5">80 kg × 8</p>
-                      <span className="text-[11px] text-slate-400">Target Reps Met</span>
+                      <p className="text-base sm:text-lg font-black text-slate-950 mt-1">80 kg × 8</p>
+                      <span className="text-xs text-slate-500 font-medium">Baseline Set</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setBentoWeek(3)}
-                      className={`p-3.5 rounded-xl text-left border transition-all cursor-pointer ${
+                      className={`p-4 rounded-2xl text-left border transition-all cursor-pointer ${
                         bentoWeek === 3
-                          ? "bg-slate-800 border-emerald-500/80 shadow-md"
-                          : "bg-slate-950/70 border-slate-800 hover:border-slate-700"
+                          ? "bg-orange-50/50 border-[#ed4f28] shadow-xs"
+                          : "bg-slate-50 border-slate-200/80 hover:border-slate-300"
                       }`}
                     >
-                      <p className="text-[11px] font-semibold text-slate-400">
-                        Week 3 Overload
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        Week 3
                       </p>
-                      <p className="text-base sm:text-lg font-black text-emerald-400 mt-0.5">
+                      <p className="text-base sm:text-lg font-black text-[#ed4f28] mt-1">
                         85 kg × 8
                       </p>
-                      <span className="text-[11px] font-semibold text-emerald-400">
+                      <span className="text-xs font-bold text-emerald-600">
                         +5 kg Overload
                       </span>
                     </button>
@@ -820,19 +816,19 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => setBentoWeek(5)}
-                      className={`p-3.5 rounded-xl text-left border transition-all cursor-pointer ${
+                      className={`p-4 rounded-2xl text-left border transition-all cursor-pointer ${
                         bentoWeek === 5
-                          ? "bg-orange-950/40 border-orange-500 shadow-md"
-                          : "bg-slate-950/70 border-slate-800 hover:border-slate-700"
+                          ? "bg-orange-50/50 border-[#ed4f28] shadow-xs"
+                          : "bg-slate-50 border-slate-200/80 hover:border-slate-300"
                       }`}
                     >
-                      <p className="text-[11px] font-semibold text-orange-400">
-                        Week 5 Target
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        Week 5
                       </p>
-                      <p className="text-base sm:text-lg font-black text-orange-300 mt-0.5">
+                      <p className="text-base sm:text-lg font-black text-slate-950 mt-1">
                         87.5 kg × 8
                       </p>
-                      <span className="text-[11px] font-semibold text-orange-400">
+                      <span className="text-xs font-bold text-[#ed4f28]">
                         New PR Target
                       </span>
                     </button>
@@ -840,47 +836,47 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Bento Card 2: 4-col (Custom Daily Nutrition) */}
-              <div className="md:col-span-4 rounded-3xl bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 hover:border-emerald-500/40 p-7 sm:p-8 transition-all flex flex-col justify-between group shadow-xl">
+              {/* Card 2: 4-col - Daily Nutrition */}
+              <div className="md:col-span-4 rounded-3xl bg-white border border-slate-200/90 hover:border-orange-300 p-7 sm:p-8 transition-all flex flex-col justify-between group shadow-xs hover:shadow-md">
                 <div>
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-emerald-400 group-hover:border-emerald-500/60 transition-colors shadow-inner">
+                      <div className="h-10 w-10 rounded-xl bg-orange-50 border border-orange-100/80 flex items-center justify-center text-[#ed4f28] shadow-2xs">
                         <Utensils className="w-5 h-5" />
                       </div>
                       <div>
-                        <span className="text-xs font-semibold text-slate-300 block">
+                        <span className="text-sm font-bold text-slate-900 block">
                           Daily Fueling
                         </span>
-                        <span className="text-[11px] text-slate-500">
+                        <span className="text-xs text-slate-500">
                           Targeted nutrition
                         </span>
                       </div>
                     </div>
 
-                    <span className="text-xs font-semibold text-orange-400 bg-orange-500/10 border border-orange-500/30 px-3 py-1 rounded-lg">
-                      Tailored Macros
+                    <span className="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full">
+                      Custom Macros
                     </span>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                    Custom Daily Nutrition
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+                    Targeted Daily Nutrition
                   </h3>
-                  <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal">
-                    Get protein, carbohydrate, and fat targets calculated specifically for your body weight, activity level, and physique goals.
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                    Protein, carb, and fat targets calculated specifically for your body weight, activity level, and physique goals.
                   </p>
                 </div>
 
-                <div className="mt-6 p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
+                <div className="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
                   {/* Goal Mode Toggle */}
-                  <div className="flex gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                  <div className="flex bg-white p-1 rounded-xl border border-slate-200">
                     <button
                       type="button"
                       onClick={() => setMacroMode("hypertrophy")}
-                      className={`flex-1 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+                      className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                         macroMode === "hypertrophy"
-                          ? "bg-slate-800 text-white shadow-xs"
-                          : "text-slate-400 hover:text-white"
+                          ? "bg-[#ed4f28] text-white shadow-xs"
+                          : "text-slate-600 hover:text-slate-950"
                       }`}
                     >
                       Hypertrophy
@@ -888,10 +884,10 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => setMacroMode("lean")}
-                      className={`flex-1 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+                      className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                         macroMode === "lean"
-                          ? "bg-slate-800 text-white shadow-xs"
-                          : "text-slate-400 hover:text-white"
+                          ? "bg-[#ed4f28] text-white shadow-xs"
+                          : "text-slate-600 hover:text-slate-950"
                       }`}
                     >
                       Lean Cut
@@ -899,21 +895,21 @@ export default function Home() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs font-semibold text-slate-300">
+                    <div className="flex justify-between text-xs font-bold text-slate-800">
                       <span>Protein Target</span>
-                      <span className="text-emerald-400 font-bold">
+                      <span className="text-[#ed4f28]">
                         {macroMode === "hypertrophy" ? "2.0g / kg body weight" : "2.4g / kg body weight"}
                       </span>
                     </div>
-                    <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden mt-1.5">
+                    <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden mt-1.5">
                       <div
-                        className={`h-full bg-emerald-500 rounded-full transition-all duration-300 ${
+                        className={`h-full bg-[#ed4f28] rounded-full transition-all duration-300 ${
                           macroMode === "hypertrophy" ? "w-[85%]" : "w-[95%]"
                         }`}
                       />
                     </div>
                   </div>
-                  <p className="text-[11px] text-slate-400 font-medium">
+                  <p className="text-xs text-slate-500 font-medium">
                     {macroMode === "hypertrophy"
                       ? "Calibrated for muscle growth and optimal recovery."
                       : "Preserves lean muscle mass during a calorie deficit."}
@@ -921,77 +917,79 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Bento Card 3: 6-col (Train With Any Equipment) */}
-              <div className="md:col-span-6 rounded-3xl bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 hover:border-amber-500/40 p-7 sm:p-8 transition-all group shadow-xl">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
-                  <div className="flex items-center gap-3">
-                    <div className="h-11 w-11 rounded-xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-amber-400 group-hover:border-amber-500/60 transition-colors shadow-inner">
-                      <Dumbbell className="w-5 h-5" />
+              {/* Card 3: 6-col - Train With Any Equipment */}
+              <div className="md:col-span-6 rounded-3xl bg-white border border-slate-200/90 hover:border-orange-300 p-7 sm:p-8 transition-all group shadow-xs hover:shadow-md flex flex-col justify-between">
+                <div>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-orange-50 border border-orange-100/80 flex items-center justify-center text-[#ed4f28] shadow-2xs">
+                        <Dumbbell className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-bold text-slate-900 block">
+                          Equipment Flexibility
+                        </span>
+                        <span className="text-xs text-slate-500">
+                          Gym or home setup
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-xs font-semibold text-slate-300 block">
-                        Equipment Flexibility
-                      </span>
-                      <span className="text-[11px] text-slate-500">
-                        Gym or home setup
-                      </span>
+
+                    <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 self-start sm:self-auto">
+                      <button
+                        type="button"
+                        onClick={() => setEquipmentMode("gym")}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                          equipmentMode === "gym"
+                            ? "bg-white text-slate-950 shadow-xs"
+                            : "text-slate-600 hover:text-slate-950"
+                        }`}
+                      >
+                        Gym Rack
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEquipmentMode("dumbbells")}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                          equipmentMode === "dumbbells"
+                            ? "bg-white text-slate-950 shadow-xs"
+                            : "text-slate-600 hover:text-slate-950"
+                        }`}
+                      >
+                        Dumbbells
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEquipmentMode("bodyweight")}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                          equipmentMode === "bodyweight"
+                            ? "bg-white text-slate-950 shadow-xs"
+                            : "text-slate-600 hover:text-slate-950"
+                        }`}
+                      >
+                        Bodyweight
+                      </button>
                     </div>
                   </div>
 
-                  <div className="flex gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 self-start sm:self-auto">
-                    <button
-                      type="button"
-                      onClick={() => setEquipmentMode("gym")}
-                      className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                        equipmentMode === "gym"
-                          ? "bg-slate-800 text-white shadow-xs"
-                          : "text-slate-400 hover:text-slate-200"
-                      }`}
-                    >
-                      Gym Rack
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEquipmentMode("dumbbells")}
-                      className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                        equipmentMode === "dumbbells"
-                          ? "bg-slate-800 text-white shadow-xs"
-                          : "text-slate-400 hover:text-slate-200"
-                      }`}
-                    >
-                      Dumbbells
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEquipmentMode("bodyweight")}
-                      className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                        equipmentMode === "bodyweight"
-                          ? "bg-slate-800 text-white shadow-xs"
-                          : "text-slate-400 hover:text-slate-200"
-                      }`}
-                    >
-                      Bodyweight
-                    </button>
-                  </div>
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+                    Train with any equipment
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                    Whether you train at a fully equipped commercial gym, have a pair of dumbbells at home, or rely on bodyweight movements while traveling.
+                  </p>
                 </div>
 
-                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  Train With Any Equipment
-                </h3>
-                <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal">
-                  Whether you train at a fully equipped gym, have a pair of dumbbells at home, or rely on bodyweight exercises while traveling.
-                </p>
-
-                <div className="mt-6 p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-                  <div className="flex items-center justify-between text-xs font-bold text-slate-300">
+                <div className="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-800">
                     <span>
                       {equipmentMode === "gym" && "Commercial Gym Setup"}
                       {equipmentMode === "dumbbells" && "Home Dumbbell Setup"}
                       {equipmentMode === "bodyweight" && "Bodyweight & Calisthenics"}
                     </span>
-                    <span className="text-[#ed4f28]">Active Selection</span>
+                    <span className="text-[#ed4f28]">Active Routine</span>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1 font-medium">
+                  <p className="text-xs text-slate-600 mt-1 font-medium">
                     {equipmentMode === "gym" &&
                       "Includes Barbell Squats, Cable Crossovers, Romanian Deadlifts, Lat Pulldowns."}
                     {equipmentMode === "dumbbells" &&
@@ -1002,50 +1000,50 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Bento Card 4: 6-col (Readiness & Recovery Rhythm) */}
-              <div className="md:col-span-6 rounded-3xl bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 hover:border-rose-500/40 p-7 sm:p-8 transition-all flex flex-col justify-between group shadow-xl">
+              {/* Card 4: 6-col - Structured Rest & Recovery */}
+              <div className="md:col-span-6 rounded-3xl bg-white border border-slate-200/90 hover:border-orange-300 p-7 sm:p-8 transition-all flex flex-col justify-between group shadow-xs hover:shadow-md">
                 <div>
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-rose-400 group-hover:border-rose-500/60 transition-colors shadow-inner">
+                      <div className="h-10 w-10 rounded-xl bg-orange-50 border border-orange-100/80 flex items-center justify-center text-[#ed4f28] shadow-2xs">
                         <Heart className="w-5 h-5" />
                       </div>
                       <div>
-                        <span className="text-xs font-semibold text-slate-300 block">
+                        <span className="text-sm font-bold text-slate-900 block">
                           Rest & Consistency
                         </span>
-                        <span className="text-[11px] text-slate-500">
-                          Built-in deloads
+                        <span className="text-xs text-slate-500">
+                          Built-in recovery days
                         </span>
                       </div>
                     </div>
-                    <span className="text-xs font-semibold text-rose-400 bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-lg">
+                    <span className="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full">
                       Recovery Tracking
                     </span>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                    Structured Rest & Recovery
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+                    Structured rest & recovery
                   </h3>
-                  <p className="mt-2 text-sm text-slate-300 leading-relaxed font-normal">
-                    Lifting heavy without planned recovery leads to fatigue and stalled lifts. Strive balances training intensity with rest days to protect your joints and keep energy high.
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed font-normal">
+                    Lifting heavy without planned recovery leads to fatigue and stalled lifts. Strive balances training volume with recovery days to protect your joints and keep energy high.
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-black text-sm">
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 font-black text-sm">
                       94%
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-white">Readiness Score</p>
-                      <p className="text-[11px] text-slate-400">Ready for high-intensity session</p>
+                      <p className="text-xs font-bold text-slate-900">Recovery Status</p>
+                      <p className="text-xs text-slate-500">Ready for high-intensity session</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-400">
-                    <Flame className="w-4 h-4 text-amber-400" />
-                    <span>18-Day Streak</span>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 border border-orange-200 text-xs font-bold text-[#ed4f28]">
+                    <Flame className="w-4 h-4 text-[#ed4f28]" />
+                    <span>18-Day Active Streak</span>
                   </div>
                 </div>
               </div>
