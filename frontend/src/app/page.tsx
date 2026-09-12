@@ -256,7 +256,7 @@ export default function Home() {
                   <div className="mt-8 flex flex-wrap items-center gap-4">
                     <Link
                       href="/register"
-                      className="inline-flex items-center gap-2.5 rounded-xl bg-slate-950 px-6 py-3.5 text-sm sm:text-base font-bold text-white shadow-xl shadow-slate-950/15 hover:bg-slate-800 active:scale-95 transition-all group"
+                      className="inline-flex items-center gap-2.5 rounded-xl bg-[#ed4f28] hover:bg-[#d9421c] px-6 py-3.5 text-sm sm:text-base font-bold text-white shadow-xl shadow-[#ed4f28]/25 hover:shadow-[#ed4f28]/35 active:scale-95 transition-all group"
                     >
                       Build Your Free Plan
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -264,9 +264,9 @@ export default function Home() {
 
                     <a
                       href="#interactive-demo"
-                      className="inline-flex items-center gap-2 rounded-xl bg-white hover:bg-slate-50 px-5 py-3.5 text-sm font-bold text-slate-800 border border-slate-300 shadow-xs transition-colors"
+                      className="inline-flex items-center gap-2 rounded-xl bg-white hover:bg-orange-50/50 hover:text-[#ed4f28] hover:border-orange-300 px-5 py-3.5 text-sm font-bold text-slate-800 border border-slate-300 shadow-xs transition-colors group"
                     >
-                      <Sliders className="w-4 h-4 text-slate-600" />
+                      <Sliders className="w-4 h-4 text-slate-600 group-hover:text-[#ed4f28] transition-colors" />
                       Interactive Plan Calculator
                     </a>
                   </div>
@@ -1497,7 +1497,7 @@ export default function Home() {
                 <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 max-w-2xl mx-auto">
-                  <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full inline-block mb-4">
+                  <span className="text-xs font-bold uppercase tracking-widest text-[#ed4f28] bg-orange-500/10 border border-orange-500/30 px-3 py-1 rounded-full inline-block mb-4">
                     Immediate Access • 100% Free
                   </span>
                   <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
@@ -1510,14 +1510,14 @@ export default function Home() {
                   <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                     <Link
                       href="/register"
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-orange-600 px-8 py-3.5 text-sm font-bold text-white transition-all shadow-lg shadow-[#ed4f28]/30 hover:scale-[1.02] active:scale-95"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-[#d9421c] px-8 py-3.5 text-sm font-bold text-white transition-all shadow-lg shadow-[#ed4f28]/30 hover:scale-[1.02] active:scale-95"
                     >
                       Sign Up
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                     <Link
                       href="/login"
-                      className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-slate-900 hover:bg-slate-800 px-6 py-3.5 text-sm font-bold text-slate-300 transition-colors border border-slate-800"
+                      className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-slate-900 hover:bg-slate-800 hover:text-white px-6 py-3.5 text-sm font-bold text-slate-300 transition-colors border border-slate-800 hover:border-orange-500/40"
                     >
                       Login
                     </Link>

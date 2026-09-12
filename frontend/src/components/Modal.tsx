@@ -94,7 +94,7 @@ export const Modal = ({ isOpen, onClose, title, children, onAccept }: ModalProps
                 onAccept();
                 onClose();
               }}
-              className="px-6 py-2 text-sm font-extrabold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 rounded-xl transition-all shadow-md shadow-blue-100 active:scale-95"
+              className="px-6 py-2 text-sm font-extrabold text-white bg-gradient-to-r from-[#ed4f28] to-orange-500 hover:from-[#d9421c] hover:to-orange-600 rounded-xl transition-all shadow-md shadow-[#ed4f28]/20 active:scale-95"
             >
               Accept
             </button>

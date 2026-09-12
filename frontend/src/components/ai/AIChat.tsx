@@ -142,7 +142,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all"
+          className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-[#ed4f28] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-[#ed4f28]/30 hover:bg-[#d9421c] transition-all cursor-pointer"
           aria-label="Open Strive Assistant chat"
         >
           <MessageCircle className="h-5 w-5" />
@@ -155,7 +155,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
         <div className="fixed inset-x-0 bottom-0 z-50 sm:inset-x-auto sm:bottom-5 sm:right-5">
           <div className="mx-auto flex h-[80vh] w-full max-w-md flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl sm:h-[560px] sm:w-[380px] sm:rounded-2xl">
             {/* Header */}
-            <div className="flex items-center justify-between bg-blue-600 px-4 py-3 text-white">
+            <div className="flex items-center justify-between bg-[#ed4f28] px-4 py-3 text-white">
               <div className="flex items-center gap-2">
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
                   <Sparkles className="h-4 w-4" />
@@ -168,7 +168,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-lg p-1.5 hover:bg-white/15 transition-colors"
+                className="rounded-lg p-1.5 hover:bg-white/15 transition-colors cursor-pointer"
                 aria-label="Close chat"
               >
                 <X className="h-5 w-5" />
@@ -182,7 +182,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
                   <div
                     className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                       msg.role === "user"
-                        ? "bg-blue-600 text-white rounded-br-sm"
+                        ? "bg-[#ed4f28] text-white rounded-br-sm shadow-xs"
                         : "bg-white text-slate-700 border border-slate-200 rounded-bl-sm"
                     }`}
                   >
@@ -207,7 +207,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
                       key={s}
                       type="button"
                       onClick={() => sendMessage(s)}
-                      className="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-left text-xs font-medium text-slate-600 hover:border-blue-200 hover:bg-blue-50/40 transition-colors"
+                      className="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-left text-xs font-medium text-slate-600 hover:border-orange-300 hover:bg-orange-50/40 hover:text-[#ed4f28] transition-colors cursor-pointer"
                     >
                       {s}
                     </button>
@@ -236,12 +236,12 @@ export function AIChat({ currentExercise }: AIChatProps) {
                 maxLength={1000}
                 aria-label="Message Strive Assistant"
                 placeholder="Ask about workouts, meals, or tips…"
-                className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-400"
+                className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#ed4f28] focus:ring-2 focus:ring-[#ed4f28]/15"
               />
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ed4f28] text-white hover:bg-[#d9421c] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
                 aria-label="Send message"
               >
                 <Send className="h-4 w-4" />

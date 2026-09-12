@@ -180,7 +180,7 @@ export const Navbar = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-slate-600 hover:text-slate-950 transition-colors"
+                className="text-sm font-medium text-slate-600 hover:text-[#ed4f28] transition-colors"
               >
                 {link.label}
               </Link>
@@ -199,7 +199,7 @@ export const Navbar = () => {
                 aria-expanded={isProfileOpen}
                 aria-label="User menu"
               >
-                <div className="w-8 h-8 rounded-full bg-slate-900 text-white font-semibold flex items-center justify-center text-xs ring-1 ring-slate-200 shrink-0">
+                <div className="w-8 h-8 rounded-full bg-[#ed4f28] text-white font-bold flex items-center justify-center text-xs ring-2 ring-[#ed4f28]/20 shrink-0">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <span className="text-sm font-medium text-slate-800 group-hover:text-slate-950 whitespace-nowrap">
@@ -274,13 +274,13 @@ export const Navbar = () => {
             <div className="flex items-center gap-2">
               <Link
                 href="/login"
-                className="text-sm font-medium text-slate-700 hover:text-slate-950 px-3.5 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+                className="text-sm font-medium text-slate-700 hover:text-[#ed4f28] px-3.5 py-1.5 rounded-lg hover:bg-orange-50/50 transition-colors"
               >
                 Login
               </Link>
               <Link
                 href="/register"
-                className="text-sm font-semibold text-white bg-slate-950 hover:bg-slate-800 px-4 py-1.5 rounded-lg shadow-xs active:scale-95 transition-all"
+                className="text-sm font-semibold text-white bg-[#ed4f28] hover:bg-[#d9421c] px-4 py-1.5 rounded-lg shadow-sm shadow-[#ed4f28]/25 active:scale-95 transition-all"
               >
                 Sign Up
               </Link>
@@ -307,7 +307,7 @@ export const Navbar = () => {
           {showAccountProfile ? (
             <>
               <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/70 mb-3">
-                <div className="w-9 h-9 rounded-full bg-slate-900 text-white font-semibold flex items-center justify-center text-xs">
+                <div className="w-9 h-9 rounded-full bg-[#ed4f28] text-white font-bold flex items-center justify-center text-xs">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex flex-col min-w-0">
@@ -369,7 +369,7 @@ export const Navbar = () => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block text-sm font-medium text-slate-700 hover:text-slate-950 py-2 px-3 rounded-lg hover:bg-slate-50"
+                  className="block text-sm font-medium text-slate-700 hover:text-[#ed4f28] py-2 px-3 rounded-lg hover:bg-orange-50/50"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.label}
@@ -378,14 +378,14 @@ export const Navbar = () => {
               <div className="pt-3 border-t border-slate-100 space-y-2">
                 <Link
                   href="/login"
-                  className="block text-center text-sm font-medium text-slate-700 py-2.5 px-4 rounded-lg border border-slate-200 hover:bg-slate-50"
+                  className="block text-center text-sm font-medium text-slate-700 hover:text-[#ed4f28] py-2.5 px-4 rounded-lg border border-slate-200 hover:bg-orange-50/50"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Login
                 </Link>
                 <Link
                   href="/register"
-                  className="block text-center text-sm font-semibold text-white bg-slate-950 py-2.5 px-4 rounded-lg hover:bg-slate-800"
+                  className="block text-center text-sm font-semibold text-white bg-[#ed4f28] hover:bg-[#d9421c] py-2.5 px-4 rounded-lg shadow-sm shadow-[#ed4f28]/25"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign Up

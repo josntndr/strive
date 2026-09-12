@@ -86,7 +86,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="h-screen max-h-screen overflow-hidden grid lg:grid-cols-2 bg-slate-50 selection:bg-blue-500 selection:text-white">
+    <div className="h-screen max-h-screen overflow-hidden grid lg:grid-cols-2 bg-slate-50 selection:bg-[#ed4f28] selection:text-white">
       {/* 1st Panel: Fitness Visual & Showcase */}
       <div className="relative hidden lg:flex flex-col justify-between p-10 overflow-hidden bg-slate-900 h-full">
         <div
@@ -109,7 +109,7 @@ export default function RegisterPage() {
         <div className="relative z-10 max-w-lg my-auto space-y-5">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight tracking-tight">
             Build Strong Habits. <br />
-            Achieve Your <span className="bg-gradient-to-r from-blue-400 via-coral to-amber-300 bg-clip-text text-transparent">Full Potential.</span>
+            Achieve Your <span className="bg-gradient-to-r from-[#ed4f28] via-orange-400 to-amber-300 bg-clip-text text-transparent">Full Potential.</span>
           </h1>
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-medium">
             Create your account in seconds to receive custom workouts, smart meal plans, and intelligent progress tracking.
@@ -121,14 +121,14 @@ export default function RegisterPage() {
         {/* Footer info */}
         <div className="relative z-10 flex items-center justify-between text-xs text-slate-400 font-medium">
           <p>&copy; 2026 Strive Fitness</p>
-          <Link href="/" className="hover:text-white transition-colors">Back to Home &rarr;</Link>
+          <Link href="/" className="hover:text-[#ed4f28] transition-colors">Back to Home &rarr;</Link>
         </div>
       </div>
 
       {/* 2nd Panel: Clean Warm Form Container (No Grid Lines, No Scrollbar) */}
       <div className="relative flex flex-col justify-center items-center py-8 px-6 sm:px-12 lg:px-16 bg-gradient-to-br from-cream via-slate-50 to-orange-50/30 h-full max-h-screen overflow-hidden">
         {/* Ambient Glowing Orbs */}
-        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-orange-500/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-10 left-10 w-48 h-48 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="my-auto mx-auto w-full max-w-md bg-white/95 backdrop-blur-2xl rounded-[2rem] border border-white shadow-xl shadow-slate-300/50 overflow-hidden relative z-10">
@@ -183,7 +183,7 @@ export default function RegisterPage() {
                     autoComplete="name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="block w-full pl-9 pr-3 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-xs font-medium"
+                    className="block w-full pl-9 pr-3 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-[#ed4f28]/15 focus:border-[#ed4f28] focus:bg-white transition-all text-xs font-medium"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -205,7 +205,7 @@ export default function RegisterPage() {
                     autoComplete="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="block w-full pl-9 pr-3 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-xs font-medium"
+                    className="block w-full pl-9 pr-3 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-[#ed4f28]/15 focus:border-[#ed4f28] focus:bg-white transition-all text-xs font-medium"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -228,13 +228,13 @@ export default function RegisterPage() {
                       autoComplete="new-password"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="block w-full pl-8 pr-8 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-xs font-medium"
+                      className="block w-full pl-8 pr-8 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-[#ed4f28]/15 focus:border-[#ed4f28] focus:bg-white transition-all text-xs font-medium"
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-blue-600 transition-colors"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-[#ed4f28] transition-colors"
                       aria-label={showPassword ? "Hide password" : "Show password"}
                     >
                       {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -257,13 +257,13 @@ export default function RegisterPage() {
                       autoComplete="new-password"
                       value={formData.confirmPassword}
                       onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                      className="block w-full pl-8 pr-8 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-xs font-medium"
+                      className="block w-full pl-8 pr-8 py-2 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-[#ed4f28]/15 focus:border-[#ed4f28] focus:bg-white transition-all text-xs font-medium"
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-blue-600 transition-colors"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-[#ed4f28] transition-colors"
                       aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
                     >
                       {showConfirmPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
@@ -280,27 +280,27 @@ export default function RegisterPage() {
                     type="checkbox"
                     checked={acceptedTerms}
                     onChange={(e) => setAcceptedTerms(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded-md cursor-pointer transition-colors"
+                    className="h-4 w-4 text-[#ed4f28] focus:ring-[#ed4f28] border-slate-300 rounded-md cursor-pointer transition-colors accent-[#ed4f28]"
                   />
                 </div>
                 <div className="ml-2.5 text-[11px]">
                   <label htmlFor="terms" className="font-medium text-slate-600 cursor-pointer select-none">
                     I agree to the{" "}
                     <button 
-                      type="button"
-                      onClick={() => setShowTerms(true)}
-                      className="text-blue-600 font-bold hover:underline"
-                    >
-                      Terms
-                    </button>{" "}
-                    and{" "}
-                    <button 
-                      type="button"
-                      onClick={() => setShowPrivacy(true)}
-                      className="text-blue-600 font-bold hover:underline"
-                    >
-                      Privacy Policy
-                    </button>
+                    type="button"
+                    onClick={() => setShowTerms(true)}
+                    className="text-[#ed4f28] font-bold hover:underline"
+                  >
+                    Terms
+                  </button>{" "}
+                  and{" "}
+                  <button 
+                    type="button"
+                    onClick={() => setShowPrivacy(true)}
+                    className="text-[#ed4f28] font-bold hover:underline"
+                  >
+                    Privacy Policy
+                  </button>
                   </label>
                 </div>
               </div>
@@ -323,8 +323,8 @@ export default function RegisterPage() {
                   }}
                   className={`w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-full shadow-md text-xs sm:text-sm font-bold text-white transition-all active:scale-95 group ${
                     isFormValid 
-                      ? "bg-blue-600 hover:bg-blue-700 shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/30" 
-                      : "bg-blue-600/70 hover:bg-blue-600 shadow-blue-500/10"
+                      ? "bg-[#ed4f28] hover:bg-[#d9421c] shadow-[#ed4f28]/25 hover:shadow-lg hover:shadow-[#ed4f28]/35" 
+                      : "bg-[#ed4f28]/70 hover:bg-[#ed4f28] shadow-[#ed4f28]/10"
                   }`}
                 >
                   {isLoading ? (
@@ -350,7 +350,7 @@ export default function RegisterPage() {
         onAccept={() => setAcceptedTerms(true)}
       >
         <div className="space-y-4">
-          <div className="flex items-center gap-3 text-blue-600 mb-6">
+          <div className="flex items-center gap-3 text-[#ed4f28] mb-6">
             <FileText className="w-8 h-8" />
             <span className="text-sm font-bold uppercase tracking-wider">User Agreement</span>
           </div>

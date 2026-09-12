@@ -53,7 +53,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-screen max-h-screen overflow-hidden grid lg:grid-cols-2 bg-slate-50 selection:bg-blue-500 selection:text-white">
+    <div className="h-screen max-h-screen overflow-hidden grid lg:grid-cols-2 bg-slate-50 selection:bg-[#ed4f28] selection:text-white">
       {/* 1st Panel: Fitness Visual & Showcase */}
       <div className="relative hidden lg:flex flex-col justify-between p-10 overflow-hidden bg-slate-900 h-full">
         <div
@@ -76,7 +76,7 @@ export default function LoginPage() {
         <div className="relative z-10 max-w-lg my-auto space-y-5">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight tracking-tight">
             Fuel Your Ambition. <br />
-            Track Your <span className="bg-gradient-to-r from-blue-400 via-coral to-amber-300 bg-clip-text text-transparent">Transformation.</span>
+            Track Your <span className="bg-gradient-to-r from-[#ed4f28] via-orange-400 to-amber-300 bg-clip-text text-transparent">Transformation.</span>
           </h1>
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-medium">
             Achieve your personal fitness goals with custom nutrition plans, smart workouts, and daily AI coaching.
@@ -88,14 +88,14 @@ export default function LoginPage() {
         {/* Footer info */}
         <div className="relative z-10 flex items-center justify-between text-xs text-slate-400 font-medium">
           <p>&copy; 2026 Strive Fitness</p>
-          <Link href="/" className="hover:text-white transition-colors">Back to Home &rarr;</Link>
+          <Link href="/" className="hover:text-[#ed4f28] transition-colors">Back to Home &rarr;</Link>
         </div>
       </div>
 
       {/* 2nd Panel: Clean Warm Form Container (No Grid Lines, No Scrollbar) */}
       <div className="relative flex flex-col justify-center items-center py-8 px-6 sm:px-12 lg:px-16 bg-gradient-to-br from-cream via-slate-50 to-orange-50/30 h-full max-h-screen overflow-hidden">
         {/* Ambient Glowing Background Orbs (No Grid Pattern) */}
-        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-orange-500/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-10 left-10 w-48 h-48 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="my-auto mx-auto w-full max-w-md bg-white/95 backdrop-blur-2xl rounded-[2rem] border border-white shadow-xl shadow-slate-300/50 overflow-hidden relative z-10">
@@ -150,7 +150,7 @@ export default function LoginPage() {
                     autoComplete="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="block w-full pl-10 pr-4 py-2.5 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-xs sm:text-sm font-medium"
+                    className="block w-full pl-10 pr-4 py-2.5 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-[#ed4f28]/15 focus:border-[#ed4f28] focus:bg-white transition-all text-xs sm:text-sm font-medium"
                     placeholder="name@example.com"
                   />
                 </div>
@@ -172,14 +172,14 @@ export default function LoginPage() {
                     autoComplete="current-password"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="block w-full pl-10 pr-11 py-2.5 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 focus:bg-white transition-all text-xs sm:text-sm font-medium"
+                    className="block w-full pl-10 pr-11 py-2.5 bg-slate-50/90 text-slate-900 border border-slate-200/90 rounded-xl shadow-xs placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-[#ed4f28]/15 focus:border-[#ed4f28] focus:bg-white transition-all text-xs sm:text-sm font-medium"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-blue-600 transition-colors"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-[#ed4f28] transition-colors"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -190,7 +190,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-full shadow-md shadow-blue-500/25 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all group"
+                  className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-full shadow-md shadow-[#ed4f28]/25 text-xs sm:text-sm font-bold text-white bg-[#ed4f28] hover:bg-[#d9421c] hover:shadow-lg hover:shadow-[#ed4f28]/35 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all group"
                 >
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

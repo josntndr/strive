@@ -8,6 +8,7 @@
   --background-light: #f8fafc;
   --background-card: #ffffff;
   --border-color: #cbd5e1;
+  --primary-orange: #ed4f28;
   --primary-blue: #ed4f28;
   --primary-green: #16a34a;
   --danger-red: #dc2626;
@@ -30,15 +31,19 @@
   accents, and high-contrast ink surfaces for professional fitness tech.
 */
 @theme {
-  /* Coral accent (replaces blue) */
+  /* Brand signature flame orange */
+  --color-strive-orange: #ed4f28;
+  --color-brand-orange: #ed4f28;
+
+  /* Coral / flame accent (replaces legacy blue) */
   --color-blue-50: #fff3ee;
   --color-blue-100: #ffe2d6;
   --color-blue-200: #ffc8b4;
   --color-blue-300: #ffa888;
   --color-blue-400: #fa835c;
-  --color-blue-500: #e0512c;
-  --color-blue-600: #cc3f1d;
-  --color-blue-700: #b3361a;
+  --color-blue-500: #ed4f28;
+  --color-blue-600: #d9421c;
+  --color-blue-700: #be3513;
   --color-blue-800: #a5341b;
   --color-blue-900: #832e1b;
 
