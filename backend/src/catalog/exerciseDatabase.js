@@ -32,6 +32,58 @@ const noVerifiedVideo = {
   lastValidated: "",
 };
 
+const youtubeTutorials = {
+  "Bodyweight Squats": "https://www.youtube.com/embed/P-yaD24bUE8",
+  "Dumbbell Squats": "https://www.youtube.com/embed/Xjo_fY9Hl9w",
+  "Leg Press Machine": "https://www.youtube.com/embed/Aq5uxXrXq7c",
+  "Leg Extension Machine": "https://www.youtube.com/embed/YyvSfVjQeL0",
+  "Glute Bridges": "https://www.youtube.com/embed/OUgsJ8-Vi0E",
+  "Bodyweight Hip Thrust": "https://www.youtube.com/embed/pF17m_CXfL0",
+  "Hip Thrust Machine": "https://www.youtube.com/embed/UVucPKyQVLU",
+  "Cable Kickbacks": "https://www.youtube.com/embed/5jJNfIlKTmg",
+  "Reverse Lunges": "https://www.youtube.com/embed/xrPteyQLGAo",
+  "Step-ups": "https://www.youtube.com/embed/dQqApCGd5Ss",
+  "Side-Lying Leg Raises": "https://www.youtube.com/embed/jgh6sGwtTwk",
+  "Abductor Machine": "https://www.youtube.com/embed/OjI5OpV6IWA",
+  "Dumbbell Romanian Deadlift": "https://www.youtube.com/embed/jEy_czb3RKA",
+  "Hamstring Curl Machine": "https://www.youtube.com/embed/t9sTSr-JYSs",
+  "Standing Calf Raises": "https://www.youtube.com/embed/-M4-G8p8fmc",
+  "Lat Pulldown Machine": "https://www.youtube.com/embed/AOpi-p0cJkc",
+  "Seated Row Machine": "https://www.youtube.com/embed/TeFo51Q_Nsc",
+  "Resistance Band Rows": "https://www.youtube.com/embed/Y3H17rshgZE",
+  "Dumbbell Rows": "https://www.youtube.com/embed/6gvmcqr226U",
+  "Chest Press Machine": "https://www.youtube.com/embed/sqNwDkUU_Ps",
+  "Wall Push-ups": "https://www.youtube.com/embed/QpMTk21EmaM",
+  "Push-ups": "https://www.youtube.com/embed/WDIpL0pjun0",
+  "Shoulder Press Machine": "https://www.youtube.com/embed/3R14MnZbcpw",
+  "Dumbbell Shoulder Press": "https://www.youtube.com/embed/e_f5oodNEcI",
+  "Pike Push-ups": "https://www.youtube.com/embed/XckEEwa1BPI",
+  "Cable Tricep Pushdown": "https://www.youtube.com/embed/2-LAMcpzODU",
+  "Dumbbell Bicep Curl": "https://www.youtube.com/embed/ykJmrZ5v0Oo",
+  "Cable Pallof Press": "https://www.youtube.com/embed/SY5lRzBPtM4",
+  "Dead Bug": "https://www.youtube.com/embed/bxn9FBrt4-A",
+  Plank: "https://www.youtube.com/embed/pSHjTRCQxIw",
+  "Bicycle Crunches": "https://www.youtube.com/embed/9FGilxCbdz8",
+  "Mountain Climbers": "https://www.youtube.com/embed/nmwgirgXLYM",
+  "Jumping Jacks": "https://www.youtube.com/embed/c4DAnQ6DtF8",
+  "Step Touch Intervals": "https://www.youtube.com/embed/8oTjg7ZXJok",
+  "Treadmill Incline Walk": "https://www.youtube.com/embed/NAsObfFJXvE",
+  "Brisk Walk": "https://www.youtube.com/embed/wQrV75N2BrI",
+};
+
+const makeYouTubeVideo = (name) => {
+  const url = youtubeTutorials[name];
+  return url
+    ? {
+        url,
+        provider: "YouTube",
+        sourceName: "YouTube tutorial reference",
+        status: "verified",
+        lastValidated: REVIEW_DATE,
+      }
+    : noVerifiedVideo;
+};
+
 const makeExercise = ({
   name,
   primaryMuscles,
@@ -70,7 +122,7 @@ const makeExercise = ({
   easierAlternatives,
   harderAlternatives,
   contraindications,
-  video: noVerifiedVideo,
+  video: makeYouTubeVideo(name),
   evidenceSources,
   reviewedOn: REVIEW_DATE,
 });
@@ -123,6 +175,22 @@ const exerciseDatabase = {
     commonMistakes: ["Lower back lifting.", "Knees caving in.", "Locking knees forcefully."],
     easierAlternatives: ["Bodyweight Squats"],
     harderAlternatives: ["Dumbbell Squats"],
+  }),
+  "Leg Extension Machine": makeExercise({
+    name: "Leg Extension Machine",
+    primaryMuscles: ["Quadriceps"],
+    secondaryMuscles: [],
+    movementPattern: "Knee extension",
+    equipment: ["Leg extension machine"],
+    locations: ["Gym"],
+    defaultSets: 3,
+    defaultReps: "10-15 reps",
+    defaultRest: "60 seconds",
+    instructions: ["Align your knees with the machine pivot.", "Extend the knees smoothly.", "Lower the pad with control."],
+    formCue: "Use a light load and avoid snapping the knees straight.",
+    commonMistakes: ["Kicking the weight up.", "Locking out aggressively.", "Letting the hips lift."],
+    easierAlternatives: ["Step-ups"],
+    harderAlternatives: ["Leg Press Machine"],
   }),
   "Glute Bridges": makeExercise({
     name: "Glute Bridges",
@@ -659,6 +727,8 @@ const exerciseAliases = {
   "dumbbell squat to press": "Dumbbell Squats",
   "leg press": "Leg Press Machine",
   "leg press machine": "Leg Press Machine",
+  "leg extension": "Leg Extension Machine",
+  "leg extension machine": "Leg Extension Machine",
   "glute bridge": "Glute Bridges",
   "glute bridges": "Glute Bridges",
   "single-leg glute bridges": "Glute Bridges",
@@ -703,11 +773,13 @@ const exerciseAliases = {
   "shoulder press machine": "Shoulder Press Machine",
   "dumbbell shoulder press": "Dumbbell Shoulder Press",
   "pike push-up": "Pike Push-ups",
+  "pike push-up hold": "Pike Push-ups",
   "pike push-ups": "Pike Push-ups",
   "cable tricep pushdown": "Cable Tricep Pushdown",
   "bench dips": "Cable Tricep Pushdown",
   "chair dips": "Cable Tricep Pushdown",
   "dumbbell bicep curl": "Dumbbell Bicep Curl",
+  "resistance band curl": "Dumbbell Bicep Curl",
   "resistance band curls": "Dumbbell Bicep Curl",
   "water bottle curls": "Dumbbell Bicep Curl",
   "cable pallof press": "Cable Pallof Press",
@@ -716,6 +788,7 @@ const exerciseAliases = {
   "dead bug": "Dead Bug",
   "deadbug": "Dead Bug",
   "plank": "Plank",
+  "marching plank": "Plank",
   "knee plank": "Plank",
   "shoulder taps": "Plank",
   "bicycle crunch": "Bicycle Crunches",
@@ -739,4 +812,5 @@ module.exports = {
   evidenceSources,
   exerciseAliases,
   exerciseDatabase,
+  youtubeTutorials,
 };

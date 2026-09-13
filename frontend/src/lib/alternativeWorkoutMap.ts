@@ -40,10 +40,17 @@ type RawAlt = {
   animationKey?: string;
 };
 
+const equipmentMatchesFilter = (equipmentLabel: string, selected: EquipmentKey): boolean => {
+  const value = equipmentLabel.toLowerCase();
+  if (selected === "bands") return /band|resistance/.test(value);
+  if (selected === "dumbbells") return /dumbbell|household|water bottle/.test(value);
+  return !/band|resistance|dumbbell/.test(value);
+};
+
 // Standardize the name and resolve a real YouTube tutorial video so "View demo"
 // always shows the correct video (or a clean unavailable message).
 const normalize = (alt: RawAlt): WorkoutAlternative => {
-  const name = normalizeExerciseName(alt.name);
+  const name = alt.name.trim();
   return {
     name,
     locationType: alt.locationType || "Home",
@@ -56,7 +63,7 @@ const normalize = (alt: RawAlt): WorkoutAlternative => {
     prescriptionType: alt.prescriptionType || (/minute|second|sec|\d+\s*s/i.test(alt.reps || "") ? "duration" : "reps"),
     reason: alt.reason,
     instruction: alt.instruction,
-    youtubeEmbedUrl: resolveWorkoutVideo(name, alt.youtubeEmbedUrl),
+    youtubeEmbedUrl: resolveWorkoutVideo(normalizeExerciseName(name), alt.youtubeEmbedUrl) || resolveWorkoutVideo(name, alt.youtubeEmbedUrl),
   };
 };
 
@@ -217,7 +224,7 @@ export function getAlternatives(exercise: ExerciseLike, equipment: EquipmentKey 
 
   const push = (alt: RawAlt) => {
     const key = alt.name.toLowerCase();
-    if (key === currentName || seen.has(key)) return;
+    if (key === currentName || seen.has(key) || !equipmentMatchesFilter(alt.equipment, equipment)) return;
     seen.add(key);
     out.push(normalize(alt));
   };

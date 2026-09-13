@@ -99,6 +99,8 @@ export function normalizeExerciseName(name: string): string {
     // Machine aliases
     "lat pulldown": "Lat Pulldown Machine",
     "leg press": "Leg Press Machine",
+    "leg extension": "Leg Extension Machine",
+    "leg extension machine": "Leg Extension Machine",
     "cable kickback": "Cable Kickbacks",
     "band glute kickbacks": "Cable Kickbacks",
     "band squats": "Bodyweight Squats",

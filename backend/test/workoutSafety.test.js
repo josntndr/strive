@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
   attachExerciseMetadata,
+  exerciseDatabase,
   estimateExerciseMinutes,
   validateWorkoutPlan,
 } = require("../src/services/workoutSafety");
@@ -21,6 +22,13 @@ test("generated sessions pass safety validation for core focuses", () => {
     const days = _test.buildSessionDays(baseProfile, focus, 6);
     const result = validateWorkoutPlan({ workoutLocation: "Gym", days });
     assert.equal(result.valid, true, `${focus}: ${result.issues.join("; ")}`);
+
+    for (const exercise of days.flatMap((day) => day.exercises)) {
+      assert.match(exercise.youtubeEmbedUrl, /^https:\/\/www\.youtube\.com\/embed\//, `${exercise.name} is missing a YouTube tutorial`);
+      for (const alternative of exercise.alternativeExercises || []) {
+        assert.match(alternative.youtubeEmbedUrl, /^https:\/\/www\.youtube\.com\/embed\//, `${alternative.name} alternative is missing a YouTube tutorial`);
+      }
+    }
   }
 });
 
@@ -45,7 +53,14 @@ test("duration exercises are labeled as duration and estimated from minutes", ()
   assert.equal(estimateExerciseMinutes(exercise), 20);
 });
 
-test("unverified videos are removed instead of embedded", () => {
+test("catalog provides a YouTube tutorial for every workout exercise", () => {
+  for (const exercise of Object.values(exerciseDatabase)) {
+    assert.match(exercise.video.url, /^https:\/\/www\.youtube\.com\/embed\//, `${exercise.name} is missing a YouTube tutorial`);
+    assert.equal(exercise.video.provider, "YouTube");
+  }
+});
+
+test("existing exercise video URLs are replaced by the catalog YouTube tutorial", () => {
   const exercise = attachExerciseMetadata({
     name: "Lat Pulldown",
     sets: 3,
@@ -56,8 +71,8 @@ test("unverified videos are removed instead of embedded", () => {
     youtubeEmbedUrl: "https://www.youtube.com/embed/AOpi-p0cJkc",
   });
 
-  assert.equal(exercise.youtubeEmbedUrl, "");
-  assert.equal(exercise.videoStatus, "unavailable");
+  assert.equal(exercise.youtubeEmbedUrl, "https://www.youtube.com/embed/AOpi-p0cJkc");
+  assert.equal(exercise.videoStatus, "verified");
 });
 
 test("validator catches duplicate exercises", () => {

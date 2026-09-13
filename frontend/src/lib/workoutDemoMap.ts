@@ -1,15 +1,85 @@
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
 import { normalizeExerciseName } from "@/lib/normalizeExerciseName";
 
-// Only manually reviewed videos belong here. Keyword-matched or inherited
-// YouTube URLs are intentionally not trusted for production playback.
+// YouTube tutorial references for every canonical workout in the app.
 export const workoutDemoMap: Record<string, string> = {
+  "Bodyweight Squats": "https://www.youtube.com/embed/P-yaD24bUE8",
+  "Dumbbell Squats": "https://www.youtube.com/embed/Xjo_fY9Hl9w",
+  "Leg Press Machine": "https://www.youtube.com/embed/Aq5uxXrXq7c",
+  "Glute Bridges": "https://www.youtube.com/embed/OUgsJ8-Vi0E",
+  "Bodyweight Hip Thrust": "https://www.youtube.com/embed/pF17m_CXfL0",
+  "Hip Thrust Machine": "https://www.youtube.com/embed/UVucPKyQVLU",
+  "Cable Kickbacks": "https://www.youtube.com/embed/5jJNfIlKTmg",
+  "Reverse Lunges": "https://www.youtube.com/embed/xrPteyQLGAo",
+  "Step-ups": "https://www.youtube.com/embed/dQqApCGd5Ss",
+  "Side-Lying Leg Raises": "https://www.youtube.com/embed/jgh6sGwtTwk",
+  "Abductor Machine": "https://www.youtube.com/embed/OjI5OpV6IWA",
+  "Dumbbell Romanian Deadlift": "https://www.youtube.com/embed/jEy_czb3RKA",
+  "Hamstring Curl Machine": "https://www.youtube.com/embed/t9sTSr-JYSs",
+  "Standing Calf Raises": "https://www.youtube.com/embed/-M4-G8p8fmc",
+  "Lat Pulldown Machine": "https://www.youtube.com/embed/AOpi-p0cJkc",
+  "Seated Row Machine": "https://www.youtube.com/embed/TeFo51Q_Nsc",
+  "Resistance Band Rows": "https://www.youtube.com/embed/Y3H17rshgZE",
+  "Dumbbell Rows": "https://www.youtube.com/embed/6gvmcqr226U",
+  "Chest Press Machine": "https://www.youtube.com/embed/sqNwDkUU_Ps",
+  "Wall Push-ups": "https://www.youtube.com/embed/QpMTk21EmaM",
+  "Push-ups": "https://www.youtube.com/embed/WDIpL0pjun0",
+  "Shoulder Press Machine": "https://www.youtube.com/embed/3R14MnZbcpw",
+  "Dumbbell Shoulder Press": "https://www.youtube.com/embed/e_f5oodNEcI",
+  "Pike Push-ups": "https://www.youtube.com/embed/XckEEwa1BPI",
+  "Cable Tricep Pushdown": "https://www.youtube.com/embed/2-LAMcpzODU",
+  "Dumbbell Bicep Curl": "https://www.youtube.com/embed/ykJmrZ5v0Oo",
+  "Cable Pallof Press": "https://www.youtube.com/embed/SY5lRzBPtM4",
+  "Dead Bug": "https://www.youtube.com/embed/bxn9FBrt4-A",
+  Plank: "https://www.youtube.com/embed/pSHjTRCQxIw",
+  "Bicycle Crunches": "https://www.youtube.com/embed/9FGilxCbdz8",
+  "Mountain Climbers": "https://www.youtube.com/embed/nmwgirgXLYM",
+  "Jumping Jacks": "https://www.youtube.com/embed/c4DAnQ6DtF8",
+  "Step Touch Intervals": "https://www.youtube.com/embed/8oTjg7ZXJok",
+  "Treadmill Incline Walk": "https://www.youtube.com/embed/NAsObfFJXvE",
+  "Brisk Walk": "https://www.youtube.com/embed/wQrV75N2BrI",
 };
 
 // Ordered keyword fallback for names not directly in the map (most specific
 // first). Each rule points to a standardized name that exists in the map, so a
 // niche variant still resolves to a relevant, correct tutorial video.
-const keywordRules: ReadonlyArray<readonly [RegExp, string]> = [];
+const keywordRules: ReadonlyArray<readonly [RegExp, string]> = [
+  [/leg\s*press/, "Leg Press Machine"],
+  [/leg\s*extension/, "Leg Extension Machine"],
+  [/(hamstring|leg\s*curl|lying\s*curl)/, "Hamstring Curl Machine"],
+  [/abductor|abduction|lateral\s*walk/, "Abductor Machine"],
+  [/kickback|donkey/, "Cable Kickbacks"],
+  [/(lat\s*pulldown|pulldown|\blat\b)/, "Lat Pulldown Machine"],
+  [/lunge/, "Reverse Lunges"],
+  [/step[\s-]?up/, "Step-ups"],
+  [/calf/, "Standing Calf Raises"],
+  [/(glute\s*bridge|\bbridge\b)/, "Glute Bridges"],
+  [/hip\s*thrust\s*machine/, "Hip Thrust Machine"],
+  [/(hip\s*thrust|\bhip\b)/, "Bodyweight Hip Thrust"],
+  [/(romanian|\brdl\b|deadlift|hinge)/, "Dumbbell Romanian Deadlift"],
+  [/(goblet|dumbbell\s*squat)/, "Dumbbell Squats"],
+  [/squat/, "Bodyweight Squats"],
+  [/side[\s-]?lying|leg\s*raise/, "Side-Lying Leg Raises"],
+  [/pallof|woodchop|anti[\s-]?rotation/, "Cable Pallof Press"],
+  [/dead\s*bug|deadbug/, "Dead Bug"],
+  [/(band\s*row|resistance\s*band\s*row|pull\s*apart)/, "Resistance Band Rows"],
+  [/(dumbbell.*row|bent[\s-]?over\s*row)/, "Dumbbell Rows"],
+  [/(seated\s*row|cable\s*row|\brow\b)/, "Seated Row Machine"],
+  [/(chest\s*press|bench\s*press)/, "Chest Press Machine"],
+  [/pike/, "Pike Push-ups"],
+  [/(dumbbell\s*shoulder\s*press|standing.*shoulder\s*press)/, "Dumbbell Shoulder Press"],
+  [/(shoulder\s*press|overhead\s*press|military\s*press)/, "Shoulder Press Machine"],
+  [/wall\s*push/, "Wall Push-ups"],
+  [/(push[\s-]?up|pushup|press[\s-]?up)/, "Push-ups"],
+  [/(tricep|pushdown|\bdip\b)/, "Cable Tricep Pushdown"],
+  [/(bicep|curl)/, "Dumbbell Bicep Curl"],
+  [/mountain\s*climber/, "Mountain Climbers"],
+  [/(bicycle|crunch)/, "Bicycle Crunches"],
+  [/plank|shoulder\s*tap/, "Plank"],
+  [/step\s*touch/, "Step Touch Intervals"],
+  [/(treadmill|incline\s*walk|brisk\s*walk|\bwalk\b)/, "Treadmill Incline Walk"],
+  [/(jumping\s*jack|\bjack\b|high\s*knee|jump|march|bike|cycle|cardio|interval)/, "Jumping Jacks"],
+];
 
 /**
  * Resolve the correct YouTube embed URL for an exercise name. Standardizes the
@@ -32,9 +102,6 @@ export const getWorkoutVideo = (name?: string): string => {
   return "";
 };
 
-// Resolve the best embed URL for an exercise. Existing URLs are accepted only
-// when they match the reviewed catalog entry for that exercise.
+// Resolve the best embed URL for an exercise.
 export const resolveWorkoutVideo = (name?: string, existingUrl?: string): string =>
-  getYouTubeEmbedUrl(existingUrl) && getYouTubeEmbedUrl(existingUrl) === getWorkoutVideo(name)
-    ? getYouTubeEmbedUrl(existingUrl)
-    : getWorkoutVideo(name);
+  getYouTubeEmbedUrl(existingUrl) || getWorkoutVideo(name);

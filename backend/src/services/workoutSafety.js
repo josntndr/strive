@@ -126,6 +126,9 @@ const validateExercise = (exercise, workoutLocation = "Both") => {
   if (!isLocationCompatible(normalized, workoutLocation)) {
     issues.push(`${normalized.name} does not match the selected workout location.`);
   }
+  if (!normalized.youtubeEmbedUrl) {
+    issues.push(`${normalized.name} is missing a YouTube tutorial video.`);
+  }
   if (normalized.youtubeEmbedUrl && normalized.videoStatus !== "verified") {
     issues.push(`${normalized.name} has an unverified video URL.`);
   }
