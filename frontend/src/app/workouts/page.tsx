@@ -892,22 +892,27 @@ export default function WorkoutsPage() {
 
             {/* Alternative Workouts */}
             <Section title="Equipment Alternative Swapper" icon={Repeat2} variant="slate">
-              <div className="mb-4 flex flex-wrap items-center gap-2">
-                <span className="text-xs font-semibold text-stone-500">Filter by equipment:</span>
-                {EQUIPMENT_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.key}
-                    type="button"
-                    onClick={() => setEquipment(opt.key)}
-                    className={`rounded-full px-3 py-1 text-xs font-bold transition-all ${
-                      equipment === opt.key
-                        ? "bg-blue-600 text-white shadow-xs"
-                        : "border border-stone-200 bg-white text-stone-600 hover:border-stone-300"
-                    }`}
+              <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <label className="text-xs font-semibold text-stone-500" htmlFor="equipment-filter">
+                  Filter by equipment
+                </label>
+                <div className="flex items-center gap-2">
+                  <select
+                    id="equipment-filter"
+                    value={equipment}
+                    onChange={(event) => setEquipment(event.target.value as EquipmentKey)}
+                    className="h-10 min-w-[220px] rounded-xl border border-stone-200 bg-white px-3 text-sm font-bold text-stone-800 shadow-xs outline-none transition-colors hover:border-stone-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   >
-                    {opt.label}
-                  </button>
-                ))}
+                    {EQUIPMENT_OPTIONS.map((opt) => (
+                      <option key={opt.key} value={opt.key}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="hidden rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 sm:inline-flex">
+                    {alternatives.length} options
+                  </span>
+                </div>
               </div>
 
               {alternatives.length === 0 ? (
