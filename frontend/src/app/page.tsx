@@ -1162,30 +1162,32 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-orange-50/70 border border-orange-200/70">
-                    <div className="flex items-center gap-2 text-xs font-bold text-[#ed4f28]">
-                      <Sparkles className="w-4 h-4 text-[#ed4f28]" />
-                      <span>Evidence-Based Estimates</span>
+                  <div className="p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80 flex items-start gap-3">
+                    <div className="p-1.5 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-600 shrink-0 mt-0.5">
+                      <ShieldCheck className="w-4 h-4" />
                     </div>
-                    <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">
-                      Calorie and macro estimations follow validated sports science formulas (Mifflin-St Jeor) and standard hypertrophy volume guidelines.
-                    </p>
+                    <div>
+                      <p className="text-xs font-bold text-slate-900">Sports Science Calibrated</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                        Formulated using standard sports nutrition equations (Mifflin-St Jeor) and proven progressive overload volume.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Right Output Card (7 cols) */}
                 <div className="lg:col-span-7 bg-slate-50/90 rounded-2xl p-6 sm:p-8 border border-slate-200/90 flex flex-col justify-between shadow-xs">
                   <div>
-                    <div className="flex items-center justify-between pb-4 border-b border-slate-200">
-                      <div>
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#ed4f28]">
+                    <div className="flex items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
+                      <div className="min-w-0">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#ed4f28] block">
                           Recommended Routine
                         </span>
                         <h3 className="text-xl sm:text-2xl font-black text-slate-950 mt-0.5 tracking-tight">
                           {calcOutput.splitName}
                         </h3>
                       </div>
-                      <span className="text-xs font-bold text-slate-800 bg-white border border-slate-200 px-3 py-1 rounded-full shadow-2xs">
+                      <span className="shrink-0 whitespace-nowrap text-xs font-bold text-slate-700 bg-white border border-slate-200/90 px-3.5 py-1.5 rounded-full shadow-2xs">
                         {calcDays} Sessions / Wk
                       </span>
                     </div>
@@ -1255,15 +1257,16 @@ export default function Home() {
                   </div>
 
                   <div className="mt-6 pt-5 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-xs text-slate-500 text-center sm:text-left">
+                    <p className="text-xs text-slate-500 text-center sm:text-left leading-normal">
                       Ready to lock in this routine? Sign up takes under 60 seconds.
                     </p>
                     <button
                       type="button"
                       onClick={handleApplyPlan}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-[#d9421c] px-6 py-3.5 text-xs font-bold text-white transition-all shadow-md shadow-[#ed4f28]/25 active:scale-95 cursor-pointer"
+                      className="w-full sm:w-auto shrink-0 whitespace-nowrap inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-[#d9421c] px-5 py-3 text-sm font-bold text-white transition-all shadow-md shadow-[#ed4f28]/25 hover:shadow-[#ed4f28]/35 active:scale-95 cursor-pointer group"
                     >
-                      Get Started With This Plan →
+                      <span>Get Started With This Plan</span>
+                      <ArrowRight className="w-4 h-4 shrink-0 group-hover:translate-x-0.5 transition-transform" />
                     </button>
                   </div>
                 </div>
