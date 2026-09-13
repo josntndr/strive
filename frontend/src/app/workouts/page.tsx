@@ -56,6 +56,13 @@ type Exercise = {
   completed?: boolean;
   notes?: string;
   visualDemo?: string;
+  prescriptionType?: "reps" | "duration";
+  targetUnitLabel?: string;
+  movementPattern?: string;
+  videoStatus?: "verified" | "unavailable";
+  videoSourceName?: string;
+  videoLastValidated?: string;
+  estimatedMinutes?: number;
   youtubeEmbedUrl?: string;
   alternativeExercise?: {
     name?: string;
@@ -125,6 +132,36 @@ function enhanceExercise(exercise: Exercise): Exercise {
   };
 }
 
+function getPrescriptionType(exercise: Exercise): "reps" | "duration" {
+  if (exercise.prescriptionType) return exercise.prescriptionType;
+  return /minute|min|second|sec|\d+\s*s\b|interval/i.test(exercise.reps || "") ? "duration" : "reps";
+}
+
+function getTargetLabel(exercise: Exercise): string {
+  return exercise.targetUnitLabel || (getPrescriptionType(exercise) === "duration" ? "Duration" : "Target");
+}
+
+function getTargetSuffix(exercise: Exercise): string {
+  return getPrescriptionType(exercise) === "duration" ? "" : " per set";
+}
+
+function parseRestSeconds(rest?: string): number | null {
+  const value = String(rest || "").toLowerCase();
+  if (!value || value.includes("as needed")) return null;
+  const match = value.match(/(\d+)/);
+  if (!match) return null;
+  const amount = Number(match[1]);
+  return value.includes("min") ? amount * 60 : amount;
+}
+
+function estimateSessionMinutes(exercises: Exercise[]): string {
+  const minutes = exercises.reduce((total, exercise) => total + (Number(exercise.estimatedMinutes) || 0), 0);
+  if (!minutes) return "Duration varies";
+  const low = Math.max(10, Math.round(minutes / 5) * 5);
+  const high = Math.max(low + 5, low + 10);
+  return `${low}-${high} min`;
+}
+
 function enhanceWorkoutPlan(plan: WorkoutPlan | null): WorkoutPlan | null {
   if (!plan) return null;
 
@@ -172,7 +209,15 @@ export default function WorkoutsPage() {
   const [selectedDayIdx, setSelectedDayIdx] = useState(0);
 
   // Set Tracking State (key: `dayIdx-exIdx-setIdx`)
-  const [completedSets, setCompletedSets] = useState<Record<string, boolean>>({});
+  const [completedSets, setCompletedSets] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const savedSets = localStorage.getItem("strive_completed_sets");
+      return savedSets ? JSON.parse(savedSets) : {};
+    } catch {
+      return {};
+    }
+  });
 
   // Interactive Rest Timer State
   const [restSeconds, setRestSeconds] = useState(0);
@@ -210,24 +255,21 @@ export default function WorkoutsPage() {
 
     loadWorkouts();
 
-    // Load saved set checkmarks
-    try {
-      const savedSets = localStorage.getItem("strive_completed_sets");
-      if (savedSets) setCompletedSets(JSON.parse(savedSets));
-    } catch {
-      // ignore
-    }
   }, [router]);
 
   // Rest Timer Effect
   useEffect(() => {
-    if (timerActive && restSeconds > 0) {
+    if (timerActive) {
       timerRef.current = setTimeout(() => {
-        setRestSeconds((prev) => prev - 1);
+        setRestSeconds((prev) => {
+          if (prev <= 1) {
+            setTimerActive(false);
+            toast.success("Rest complete! Ready for your next set.", { icon: "Timer" });
+            return 0;
+          }
+          return prev - 1;
+        });
       }, 1000);
-    } else if (timerActive && restSeconds === 0) {
-      setTimerActive(false);
-      toast.success("Rest complete! Ready for your next set. 🔥", { icon: "⏱️" });
     }
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
@@ -264,8 +306,15 @@ export default function WorkoutsPage() {
     const replacement: Exercise = {
       ...current,
       name: alt.name,
+      sets: alt.sets || current.sets,
+      reps: alt.reps || current.reps,
+      rest: alt.rest || current.rest,
       equipment: alt.equipment,
       locationType: alt.locationType,
+      targetMuscle: alt.targetMuscle || current.targetMuscle,
+      difficulty: alt.difficulty || current.difficulty,
+      prescriptionType: alt.prescriptionType || current.prescriptionType,
+      targetUnitLabel: alt.prescriptionType === "duration" ? "Duration" : "Reps",
       instruction: alt.instruction || current.instruction,
       instructions: alt.instruction || current.instructions,
       steps: alt.instruction ? [alt.instruction] : current.steps,
@@ -482,6 +531,13 @@ export default function WorkoutsPage() {
           </div>
         </div>
 
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+          <p className="font-bold">General fitness guidance only</p>
+          <p className="mt-1 text-xs leading-relaxed">
+            Stop if you feel sharp pain, dizziness, chest pain, unusual shortness of breath, or loss of balance. This app does not replace advice from a doctor, physiotherapist, or qualified trainer.
+          </p>
+        </div>
+
         {!workoutPlan || allDays.length === 0 ? (
           /* ── Empty State ── */
           <div className="bg-white rounded-3xl p-12 text-center border border-stone-200/80 shadow-xs">
@@ -588,7 +644,7 @@ export default function WorkoutsPage() {
                   {/* Session Badges & Telemetry */}
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs">
-                      <span>45–60 min</span>
+                      <span>{estimateSessionMinutes(currentDay.exercises)}</span>
                     </div>
                     <div className="inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs">
                       <span>{currentDay.exercises.length} Exercises</span>
@@ -605,6 +661,7 @@ export default function WorkoutsPage() {
                     {currentDay.exercises.map((ex, exIdx) => {
                       const badge = getMuscleBadgeColor(ex.targetMuscle);
                       const totalSets = ex.sets || 3;
+                      const restSecondsForExercise = parseRestSeconds(ex.rest);
 
                       return (
                         <div
@@ -673,7 +730,7 @@ export default function WorkoutsPage() {
                             </div>
 
                             <p className="text-[11px] font-medium text-stone-600 pt-0.5">
-                              Target: <strong className="text-stone-900 font-bold">{ex.reps}</strong> per set
+                              {getTargetLabel(ex)}: <strong className="text-stone-900 font-bold">{ex.reps}</strong>{getTargetSuffix(ex)}
                             </p>
                           </div>
 
@@ -701,11 +758,11 @@ export default function WorkoutsPage() {
                             <button
                               type="button"
                               onClick={() => {
-                                const seconds = parseInt(ex.rest) || 45;
-                                startRestTimer(seconds);
+                                if (restSecondsForExercise) startRestTimer(restSecondsForExercise);
                               }}
-                              className="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-[11px] font-bold transition-colors"
-                              title="Quick Rest Timer"
+                              disabled={!restSecondsForExercise}
+                              className="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-[11px] font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                              title={restSecondsForExercise ? "Quick Rest Timer" : "Rest as needed"}
                             >
                               <span>Rest {ex.rest || "45s"}</span>
                             </button>
@@ -766,7 +823,7 @@ export default function WorkoutsPage() {
             {/* Prescriptions */}
             <div className="grid grid-cols-3 gap-3">
               <MetricLarge label="Prescribed Sets" value={selectedExercise.exercise.sets} />
-              <MetricLarge label="Reps Per Set" value={selectedExercise.exercise.reps} />
+              <MetricLarge label={getPrescriptionType(selectedExercise.exercise) === "duration" ? "Duration" : "Reps Per Set"} value={selectedExercise.exercise.reps} />
               <MetricLarge label="Rest Interval" value={selectedExercise.exercise.rest} />
             </div>
 
@@ -783,6 +840,10 @@ export default function WorkoutsPage() {
                   exerciseName={selectedExercise.exercise.name}
                   youtubeEmbedUrl={selectedExercise.exercise.youtubeEmbedUrl}
                 />
+                <p className="mt-3 text-xs text-stone-500">
+                  Video status: {selectedExercise.exercise.videoStatus === "verified" ? "Verified" : "Unavailable pending manual review"}
+                  {selectedExercise.exercise.videoLastValidated ? ` (${selectedExercise.exercise.videoLastValidated})` : ""}
+                </p>
               </div>
             </div>
 
@@ -858,6 +919,9 @@ export default function WorkoutsPage() {
                       <p className="font-extrabold text-stone-900 text-sm">{alt.name}</p>
                       <p className="mt-0.5 text-xs text-stone-400 font-medium">
                         {alt.equipment} &bull; {alt.locationType}
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-stone-700">
+                        {alt.sets} sets &bull; {alt.reps} &bull; rest {alt.rest}
                       </p>
                       <p className="mt-2 text-xs text-stone-600">{alt.reason}</p>
                       <div className="mt-3 flex flex-wrap gap-2">

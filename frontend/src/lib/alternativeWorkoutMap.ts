@@ -7,6 +7,12 @@ export type WorkoutAlternative = {
   name: string;
   locationType: "Home" | "Gym" | "Both";
   equipment: string;
+  sets: number;
+  reps: string;
+  rest: string;
+  targetMuscle?: string;
+  difficulty?: string;
+  prescriptionType?: "reps" | "duration";
   reason: string;
   instruction: string;
   youtubeEmbedUrl: string;
@@ -22,6 +28,12 @@ type RawAlt = {
   name: string;
   locationType?: "Home" | "Gym" | "Both";
   equipment: string;
+  sets?: number;
+  reps?: string;
+  rest?: string;
+  targetMuscle?: string;
+  difficulty?: string;
+  prescriptionType?: "reps" | "duration";
   reason: string;
   instruction: string;
   youtubeEmbedUrl?: string;
@@ -36,6 +48,12 @@ const normalize = (alt: RawAlt): WorkoutAlternative => {
     name,
     locationType: alt.locationType || "Home",
     equipment: alt.equipment,
+    sets: alt.sets || 3,
+    reps: alt.reps || (alt.prescriptionType === "duration" ? "20-45 seconds" : "8-12 reps"),
+    rest: alt.rest || "60 seconds",
+    targetMuscle: alt.targetMuscle,
+    difficulty: alt.difficulty || "Beginner",
+    prescriptionType: alt.prescriptionType || (/minute|second|sec|\d+\s*s/i.test(alt.reps || "") ? "duration" : "reps"),
     reason: alt.reason,
     instruction: alt.instruction,
     youtubeEmbedUrl: resolveWorkoutVideo(name, alt.youtubeEmbedUrl),
@@ -45,8 +63,8 @@ const normalize = (alt: RawAlt): WorkoutAlternative => {
 // Hand-picked alternatives for specific (mostly gym) exercises.
 export const alternativeWorkoutMap: Record<string, RawAlt[]> = {
   "Leg Press Machine": [
-    { name: "Bodyweight Squats", locationType: "Home", equipment: "Bodyweight", reason: "Good home alternative for training legs and glutes.", instruction: "Keep your chest up and lower your hips with control.", youtubeEmbedUrl: "https://www.youtube.com/embed/P-yaD24bUE8", animationKey: "bodyweight-squats" },
-    { name: "Step-ups", locationType: "Home", equipment: "Chair, bench, or step", reason: "Good single-leg alternative for legs and glutes.", instruction: "Step onto a stable surface and push through your heel.", youtubeEmbedUrl: "https://www.youtube.com/embed/dQqApCGd5Ss", animationKey: "step-ups" },
+    { name: "Bodyweight Squats", locationType: "Home", equipment: "Bodyweight", reason: "Good home alternative for training legs and glutes.", instruction: "Keep your chest up and lower your hips with control.", animationKey: "bodyweight-squats" },
+    { name: "Step-ups", locationType: "Home", equipment: "Chair, bench, or step", reason: "Good single-leg alternative for legs and glutes.", instruction: "Step onto a stable surface and push through your heel.", animationKey: "step-ups" },
     { name: "Reverse Lunges", locationType: "Home", equipment: "Bodyweight", reason: "Single-leg move that builds legs and balance at home.", instruction: "Step back and lower your back knee with control." },
   ],
   "Leg Extension Machine": [
@@ -70,19 +88,19 @@ export const alternativeWorkoutMap: Record<string, RawAlt[]> = {
     { name: "Water Bottle Curls", locationType: "Home", equipment: "Water bottles or household weights", reason: "No-equipment biceps option using household items.", instruction: "Hold full bottles and curl slowly, elbows tucked." },
   ],
   "Hip Thrust Machine": [
-    { name: "Glute Bridges", locationType: "Home", equipment: "Bodyweight or mat", reason: "Good home alternative for glute activation.", instruction: "Push through your heels and squeeze your glutes at the top.", youtubeEmbedUrl: "https://www.youtube.com/embed/OUgsJ8-Vi0E", animationKey: "glute-bridges" },
-    { name: "Bodyweight Hip Thrust", locationType: "Home", equipment: "Chair, couch, or bench", reason: "Similar movement pattern to a hip thrust machine.", instruction: "Support your upper back and lift your hips with control.", youtubeEmbedUrl: "https://www.youtube.com/embed/pF17m_CXfL0", animationKey: "bodyweight-hip-thrust" },
+    { name: "Glute Bridges", locationType: "Home", equipment: "Bodyweight or mat", reason: "Good home alternative for glute activation.", instruction: "Push through your heels and squeeze your glutes at the top.", animationKey: "glute-bridges" },
+    { name: "Bodyweight Hip Thrust", locationType: "Home", equipment: "Chair, couch, or bench", reason: "Similar movement pattern to a hip thrust machine.", instruction: "Support your upper back and lift your hips with control.", animationKey: "bodyweight-hip-thrust" },
   ],
   "Cable Kickbacks": [
-    { name: "Side-Lying Leg Raises", locationType: "Home", equipment: "Bodyweight or mat", reason: "Good alternative for glute and hip work without cables.", instruction: "Lie on your side and lift your top leg with control.", youtubeEmbedUrl: "https://www.youtube.com/embed/jgh6sGwtTwk", animationKey: "side-lying-leg-raises" },
-    { name: "Glute Bridges", locationType: "Home", equipment: "Bodyweight or mat", reason: "Simple glute-focused movement for home workouts.", instruction: "Lift your hips and squeeze your glutes at the top.", youtubeEmbedUrl: "https://www.youtube.com/embed/OUgsJ8-Vi0E", animationKey: "glute-bridges" },
+    { name: "Side-Lying Leg Raises", locationType: "Home", equipment: "Bodyweight or mat", reason: "Good alternative for glute and hip work without cables.", instruction: "Lie on your side and lift your top leg with control.", animationKey: "side-lying-leg-raises" },
+    { name: "Glute Bridges", locationType: "Home", equipment: "Bodyweight or mat", reason: "Simple glute-focused movement for home workouts.", instruction: "Lift your hips and squeeze your glutes at the top.", animationKey: "glute-bridges" },
   ],
   "Lat Pulldown Machine": [
-    { name: "Resistance Band Rows", locationType: "Home", equipment: "Resistance band", reason: "Good back exercise alternative for home workouts.", instruction: "Pull the band toward your body and squeeze your back.", youtubeEmbedUrl: "https://www.youtube.com/embed/Y3H17rshgZE", animationKey: "resistance-band-rows" },
+    { name: "Resistance Band Rows", locationType: "Home", equipment: "Resistance band", reason: "Good back exercise alternative for home workouts.", instruction: "Pull the band toward your body and squeeze your back.", animationKey: "resistance-band-rows" },
     { name: "Dumbbell Rows", locationType: "Home", equipment: "Dumbbells", reason: "Good alternative for strengthening the back.", instruction: "Pull the dumbbell toward your waist while keeping your back stable.", youtubeEmbedUrl: "", animationKey: "dumbbell-rows" },
   ],
   "Chest Press Machine": [
-    { name: "Wall Push-ups", locationType: "Home", equipment: "Wall", reason: "Beginner-friendly chest exercise at home.", instruction: "Place your hands on the wall and lower your chest with control.", youtubeEmbedUrl: "https://www.youtube.com/embed/QpMTk21EmaM", animationKey: "wall-push-ups" },
+    { name: "Wall Push-ups", locationType: "Home", equipment: "Wall", reason: "Beginner-friendly chest exercise at home.", instruction: "Place your hands on the wall and lower your chest with control.", animationKey: "wall-push-ups" },
     { name: "Push-ups", locationType: "Home", equipment: "Bodyweight", reason: "Good bodyweight alternative for chest and arms.", instruction: "Keep your body straight and lower your chest toward the floor.", youtubeEmbedUrl: "", animationKey: "push-ups" },
   ],
   "Shoulder Press Machine": [

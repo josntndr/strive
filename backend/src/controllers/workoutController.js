@@ -3,151 +3,17 @@ const { randomUUID } = require("crypto");
 const connectDB = require("../config/db");
 const { getProfileByUserId } = require("../services/profileStore");
 const WorkoutPlan = require("../models/WorkoutPlan");
+const {
+  attachExerciseMetadata,
+  getVerifiedExerciseVideoUrl,
+  normalizeExerciseName,
+  validateWorkoutPlan,
+} = require("../services/workoutSafety");
 
-const exerciseVideoMap = {
-  "Bodyweight Squats": "https://www.youtube.com/embed/P-yaD24bUE8",
-  "Glute Bridges": "https://www.youtube.com/embed/OUgsJ8-Vi0E",
-  "Reverse Lunges": "https://www.youtube.com/embed/xrPteyQLGAo",
-  "Wall Push-ups": "https://www.youtube.com/embed/QpMTk21EmaM",
-  "Dumbbell Romanian Deadlift": "https://www.youtube.com/embed/jEy_czb3RKA",
-  "Resistance Band Rows": "https://www.youtube.com/embed/Y3H17rshgZE",
-  "Dumbbell Rows": "https://www.youtube.com/embed/6gvmcqr226U",
-  "Push-ups": "https://www.youtube.com/embed/WDIpL0pjun0",
-  "Pike Push-ups": "https://www.youtube.com/embed/XckEEwa1BPI",
-  "Dumbbell Shoulder Press": "https://www.youtube.com/embed/e_f5oodNEcI",
-  "Dumbbell Squats": "https://www.youtube.com/embed/Xjo_fY9Hl9w",
-  "Dead Bug": "https://www.youtube.com/embed/bxn9FBrt4-A",
-  "Cable Pallof Press": "https://www.youtube.com/embed/SY5lRzBPtM4",
-  "Step Touch Intervals": "https://www.youtube.com/embed/8oTjg7ZXJok",
-  Plank: "https://www.youtube.com/embed/pSHjTRCQxIw",
-  "Mountain Climbers": "https://www.youtube.com/embed/nmwgirgXLYM",
-  "Standing Calf Raises": "https://www.youtube.com/embed/-M4-G8p8fmc",
-  "Step-ups": "https://www.youtube.com/embed/dQqApCGd5Ss",
-  "Side-Lying Leg Raises": "https://www.youtube.com/embed/jgh6sGwtTwk",
-  "Bodyweight Hip Thrust": "https://www.youtube.com/embed/pF17m_CXfL0",
-  "Bicycle Crunches": "https://www.youtube.com/embed/9FGilxCbdz8",
-  "Jumping Jacks": "https://www.youtube.com/embed/c4DAnQ6DtF8",
-  "Leg Press Machine": "https://www.youtube.com/embed/Aq5uxXrXq7c",
-  "Hip Thrust Machine": "https://www.youtube.com/embed/UVucPKyQVLU",
-  "Cable Kickbacks": "https://www.youtube.com/embed/5jJNfIlKTmg",
-  "Lat Pulldown Machine": "https://www.youtube.com/embed/AOpi-p0cJkc",
-  "Seated Row Machine": "https://www.youtube.com/embed/TeFo51Q_Nsc",
-  "Chest Press Machine": "https://www.youtube.com/embed/sqNwDkUU_Ps",
-  "Shoulder Press Machine": "https://www.youtube.com/embed/3R14MnZbcpw",
-  "Leg Extension Machine": "https://www.youtube.com/embed/YyvSfVjQeL0",
-  "Hamstring Curl Machine": "https://www.youtube.com/embed/t9sTSr-JYSs",
-  "Abductor Machine": "https://www.youtube.com/embed/OjI5OpV6IWA",
-  "Treadmill Incline Walk": "https://www.youtube.com/embed/NAsObfFJXvE",
-  "Brisk Walk": "https://www.youtube.com/embed/wQrV75N2BrI",
-  "Cable Tricep Pushdown": "https://www.youtube.com/embed/2-LAMcpzODU",
-  "Dumbbell Bicep Curl": "https://www.youtube.com/embed/ykJmrZ5v0Oo",
-};
+const getExerciseVideoUrl = (name) => getVerifiedExerciseVideoUrl(name);
 
-const exerciseVideoAliases = {
-  "Bodyweight Squat": "Bodyweight Squats",
-  "Glute Bridge": "Glute Bridges",
-  "Reverse Lunge": "Reverse Lunges",
-  "Wall Push-ups": "Wall Push-ups",
-  "Dumbbell Romanian Deadlift": "Dumbbell Romanian Deadlift",
-  "Resistance Band Rows": "Resistance Band Rows",
-  "Standing Calf Raise": "Standing Calf Raises",
-  "Step-Up": "Step-ups",
-  "Side-Lying Leg Raise": "Side-Lying Leg Raises",
-  "Bodyweight Hip Thrust": "Bodyweight Hip Thrust",
-  "Bicycle Crunch": "Bicycle Crunches",
-  "Cable Kickback": "Cable Kickbacks",
-  "Lat Pulldown": "Lat Pulldown Machine",
-  "Leg Press": "Leg Press Machine",
-  "Hip Thrust Machine": "Hip Thrust Machine",
-  "Chest Press Machine": "Chest Press Machine",
-  "Shoulder Press Machine": "Shoulder Press Machine",
-  "Leg Extension Machine": "Leg Extension Machine",
-  "Hamstring Curl Machine": "Hamstring Curl Machine",
-  "Abductor Machine": "Abductor Machine",
-  "Treadmill Incline Walk": "Treadmill Incline Walk",
-  "Cable Tricep Pushdown": "Cable Tricep Pushdown",
-  "Dumbbell Bicep Curl": "Dumbbell Bicep Curl",
-  "Pike Push-Up Hold": "Pike Push-ups",
-  "Pike Push-Up": "Pike Push-ups",
-  "Cable Pallof Press": "Cable Pallof Press",
-  "Cable Woodchop": "Cable Pallof Press",
-  "Machine Crunch": "Bicycle Crunches",
-  "Step Touch Intervals": "Step Touch Intervals",
-  "High Knee March": "Jumping Jacks",
-  "Squat Reach": "Bodyweight Squats",
-  "Bench Dips": "Cable Tricep Pushdown",
-  "Donkey Kick": "Cable Kickbacks",
-  "Dead Bug": "Dead Bug",
-  "Dumbbell Shoulder Press": "Dumbbell Shoulder Press",
-  "Dumbbell Rows": "Dumbbell Rows",
-  "Push-Up": "Push-ups",
-  "Resistance Band Curl": "Dumbbell Bicep Curl",
-};
-
-// Ordered keyword rules: the FIRST match wins, so the most specific movements
-// must come before the generic ones (e.g. "leg press" before "press", "glute
-// bridge" before "hip"). This keeps "Walking Lunges" mapped to a lunge video
-// instead of a generic squat. Keep in sync with frontend src/lib/workoutDemoMap.ts.
-const exerciseKeywordRules = [
-  [/leg\s*press/, "Leg Press Machine"],
-  [/leg\s*extension/, "Leg Extension Machine"],
-  [/(hamstring|leg\s*curl|lying\s*curl)/, "Hamstring Curl Machine"],
-  [/abductor|abduction|lateral\s*walk/, "Abductor Machine"],
-  [/kickback/, "Cable Kickbacks"],
-  [/(lat\s*pulldown|pulldown|\blat\b)/, "Lat Pulldown Machine"],
-  [/lunge/, "Reverse Lunges"],
-  [/step\s*touch/, "Step Touch Intervals"],
-  [/step[\s-]?up/, "Step-ups"],
-  [/calf/, "Standing Calf Raises"],
-  [/(glute\s*bridge|\bbridge\b)/, "Glute Bridges"],
-  [/hip\s*thrust\s*machine/, "Hip Thrust Machine"],
-  [/(hip\s*thrust|\bhip\b)/, "Bodyweight Hip Thrust"],
-  [/(romanian|\brdl\b|deadlift|hinge)/, "Dumbbell Romanian Deadlift"],
-  [/squat/, "Bodyweight Squats"],
-  [/side[\s-]?lying|leg\s*raise/, "Side-Lying Leg Raises"],
-  // Specific row variants BEFORE the generic \brow\b, or band/dumbbell rows
-  // would wrongly resolve to the Seated Row Machine video.
-  [/(band\s*row|resistance\s*band\s*row)/, "Resistance Band Rows"],
-  [/(dumbbell\s*row|bent[\s-]?over\s*row)/, "Dumbbell Rows"],
-  [/(seated\s*row|cable\s*row|\brow\b)/, "Seated Row Machine"],
-  [/(chest\s*press|bench\s*press)/, "Chest Press Machine"],
-  [/dumbbell\s*shoulder\s*press/, "Dumbbell Shoulder Press"],
-  [/(shoulder\s*press|overhead\s*press|military\s*press)/, "Shoulder Press Machine"],
-  [/pallof|woodchop|anti[\s-]?rotation/, "Cable Pallof Press"],
-  // Wall push-ups BEFORE generic push-ups, so each gets its own correct video.
-  [/wall\s*push/, "Wall Push-ups"],
-  [/(push[\s-]?up|pushup|press[\s-]?up)/, "Push-ups"],
-  [/(tricep|pushdown|\bdip\b)/, "Cable Tricep Pushdown"],
-  [/(bicep|curl)/, "Dumbbell Bicep Curl"],
-  [/dead\s*bug/, "Dead Bug"],
-  [/mountain\s*climber/, "Mountain Climbers"],
-  [/(bicycle|crunch)/, "Bicycle Crunches"],
-  [/plank/, "Plank"],
-  [/(jumping\s*jack|\bjack\b|jump)/, "Jumping Jacks"],
-  [/(treadmill|incline\s*walk|brisk\s*walk|\bwalk\b)/, "Treadmill Incline Walk"],
-  [/(bike|cycle|cardio|interval|march)/, "Jumping Jacks"],
-];
-
-const getExerciseVideoUrl = (name) => {
-  const key = exerciseVideoAliases[name] || name;
-  if (exerciseVideoMap[key]) return exerciseVideoMap[key];
-
-  const lower = String(name || "").toLowerCase();
-  for (const [pattern, canonical] of exerciseKeywordRules) {
-    if (pattern.test(lower) && exerciseVideoMap[canonical]) {
-      return exerciseVideoMap[canonical];
-    }
-  }
-
-  return "";
-};
-
-const makeYouTubeEmbedUrl = (exerciseName) => {
-  return getExerciseVideoUrl(exerciseName);
-};
-
-const makeVariant = ({ name, sets, reps, rest, equipment, summary, steps, safetyTips, commonMistakes, visualDemo, animationUrl, youtubeEmbedUrl }) => ({
-  name,
+const makeVariant = ({ name, sets, reps, rest, equipment, summary, steps, safetyTips, commonMistakes, visualDemo, animationUrl }) => ({
+  name: normalizeExerciseName(name),
   sets,
   reps,
   rest,
@@ -158,7 +24,7 @@ const makeVariant = ({ name, sets, reps, rest, equipment, summary, steps, safety
   commonMistakes,
   visualDemo,
   animationUrl: animationUrl || "",
-  youtubeEmbedUrl: youtubeEmbedUrl || getExerciseVideoUrl(name),
+  youtubeEmbedUrl: getExerciseVideoUrl(name),
 });
 
 const slugify = (value) =>
@@ -1088,7 +954,7 @@ const resolveVariant = (blueprint, workoutLocation) => {
           "Keep your back supported and move in a smooth, controlled tempo.",
         ];
 
-  return {
+  const exercise = attachExerciseMetadata({
     name: primary.name,
     sets: primary.sets,
     reps: primary.reps,
@@ -1119,12 +985,36 @@ const resolveVariant = (blueprint, workoutLocation) => {
         name: alternative.name,
         locationType: alternativeLocation,
         equipment: alternative.equipment,
+        sets: alternative.sets,
+        reps: alternative.reps,
+        rest: alternative.rest,
         reason: alternative.summary || "Trains the same muscles in a different setting.",
         instruction: (alternative.steps && alternative.steps[0]) || alternative.summary || "Move slowly with controlled form.",
+        steps: alternative.steps || [],
+        safetyTips: alternative.safetyTips || [],
+        commonMistakes: alternative.commonMistakes || [],
+        targetMuscle: blueprint.targetMuscle,
+        difficulty: "Beginner",
         youtubeEmbedUrl: alternative.youtubeEmbedUrl || getExerciseVideoUrl(alternative.name),
       },
     ],
+  });
+
+  exercise.alternativeExercise = {
+    ...exercise.alternativeExercise,
+    name: normalizeExerciseName(exercise.alternativeExercise.name),
+    youtubeEmbedUrl: getExerciseVideoUrl(exercise.alternativeExercise.name),
   };
+  exercise.alternativeExercises = exercise.alternativeExercises.map((alt) =>
+    attachExerciseMetadata({
+      ...alt,
+      locationType: alt.locationType,
+      instruction: alt.instruction,
+      instructions: alt.instruction,
+    })
+  );
+
+  return exercise;
 };
 
 const exerciseSetsForFocus = (focus, workoutLocation, dayIndex = 0) => {
@@ -1233,6 +1123,13 @@ const buildSessionDays = (profile, focus, exerciseCount) => {
   ];
 };
 
+const sanitizeWorkoutDays = (days = [], workoutLocation = "Both") =>
+  days.map((day) => ({
+    ...day,
+    workoutLocation: day.workoutLocation || workoutLocation,
+    exercises: (day.exercises || []).map((exercise) => attachExerciseMetadata(exercise)),
+  }));
+
 const readJsonDb = () => connectDB.readDatabase();
 const writeWorkoutPlans = (plans) => connectDB.writeCollection("workoutPlans", plans);
 
@@ -1245,8 +1142,17 @@ const generateWorkoutPlan = async (req, res, next) => {
     // generate page. Otherwise fall back to the profile-based weekly plan.
     const { focus, exerciseCount } = req.body || {};
     const sessionMode = Boolean(focus);
-    const days = sessionMode ? buildSessionDays(profile, focus, exerciseCount) : generateWorkoutDays(profile);
+    const rawDays = sessionMode ? buildSessionDays(profile, focus, exerciseCount) : generateWorkoutDays(profile);
+    const workoutLocation = profile.workoutLocation || profile.location || "Both";
+    const days = sanitizeWorkoutDays(rawDays, workoutLocation);
     const planName = sessionMode ? `${focus} Session` : "Workout Plan";
+    const validation = validateWorkoutPlan({ workoutLocation, days });
+    if (!validation.valid) {
+      return res.status(422).json({
+        message: "Generated workout did not pass safety validation.",
+        issues: validation.issues,
+      });
+    }
 
     if (connectDB.getDatabaseMode() === "json") {
       const db = await readJsonDb();
@@ -1260,7 +1166,7 @@ const generateWorkoutPlan = async (req, res, next) => {
         _id: randomUUID(),
         user: String(req.user.id),
         planName,
-        workoutLocation: profile.workoutLocation || profile.location || "Both",
+        workoutLocation,
         days,
         isActive: true,
         createdAt: now,
@@ -1281,7 +1187,7 @@ const generateWorkoutPlan = async (req, res, next) => {
     const workoutPlan = await WorkoutPlan.create({
       user: req.user.id,
       planName,
-      workoutLocation: profile.workoutLocation || profile.location || "Both",
+      workoutLocation,
       days,
       isActive: true,
     });
@@ -1300,12 +1206,15 @@ const getWorkoutPlans = async (req, res, next) => {
   try {
     if (connectDB.getDatabaseMode() === "json") {
       const db = await readJsonDb();
-      const plans = db.workoutPlans.filter((plan) => String(plan.user) === String(req.user.id)).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const plans = db.workoutPlans
+        .filter((plan) => String(plan.user) === String(req.user.id))
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .map((plan) => ({ ...plan, days: sanitizeWorkoutDays(plan.days || [], plan.workoutLocation) }));
       return res.json(plans);
     }
 
-    const plans = await WorkoutPlan.find({ user: req.user.id }).sort({ createdAt: -1 });
-    res.json(plans);
+    const plans = await WorkoutPlan.find({ user: req.user.id }).sort({ createdAt: -1 }).lean();
+    res.json(plans.map((plan) => ({ ...plan, days: sanitizeWorkoutDays(plan.days || [], plan.workoutLocation) })));
   } catch (error) {
     next(error);
   }
@@ -1313,19 +1222,23 @@ const getWorkoutPlans = async (req, res, next) => {
 
 const updateWorkoutPlan = async (req, res, next) => {
   try {
+    const body = req.body?.days
+      ? { ...req.body, days: sanitizeWorkoutDays(req.body.days, req.body.workoutLocation || "Both") }
+      : req.body;
+
     if (connectDB.getDatabaseMode() === "json") {
       const db = await readJsonDb();
       const index = db.workoutPlans.findIndex((plan) => String(plan._id) === String(req.params.id) && String(plan.user) === String(req.user.id));
       if (index === -1) return res.status(404).json({ message: "Workout plan not found." });
 
-      db.workoutPlans[index] = { ...db.workoutPlans[index], ...req.body, updatedAt: new Date().toISOString() };
+      db.workoutPlans[index] = { ...db.workoutPlans[index], ...body, updatedAt: new Date().toISOString() };
       await writeWorkoutPlans(db.workoutPlans);
       return res.json({ message: "Workout plan updated successfully.", workoutPlan: db.workoutPlans[index] });
     }
 
     const plan = await WorkoutPlan.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id },
-      { $set: req.body },
+      { $set: body },
       { new: true, runValidators: true }
     );
 
@@ -1355,4 +1268,15 @@ const deleteWorkoutPlan = async (req, res, next) => {
   }
 };
 
-module.exports = { generateWorkoutPlan, getWorkoutPlans, updateWorkoutPlan, deleteWorkoutPlan };
+module.exports = {
+  generateWorkoutPlan,
+  getWorkoutPlans,
+  updateWorkoutPlan,
+  deleteWorkoutPlan,
+  _test: {
+    buildSessionDays,
+    buildSessionExercises,
+    generateWorkoutDays,
+    sanitizeWorkoutDays,
+  },
+};
