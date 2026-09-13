@@ -143,6 +143,18 @@ const buildMealReply = (message, context = {}) => {
 };
 
 const explainConcept = (text, context = {}) => {
+  if (/\bworkout\b/.test(text)) {
+    return [
+      "A workout is a planned training session made of exercises, sets, reps, and rest periods.",
+      "",
+      "Example: a beginner full-body workout might include squats, push-ups, rows, glute bridges, and planks. The goal is to train your body safely and consistently, not to exhaust yourself every time.",
+    ].join("\n");
+  }
+
+  if (/\bexercise\b/.test(text)) {
+    return "An exercise is one specific movement used in a workout, like a squat, push-up, plank, row, or glute bridge. A workout is the full session; exercises are the pieces inside it.";
+  }
+
   if (/calorie deficit|caloric deficit/.test(text)) {
     return [
       "A calorie deficit means you eat fewer calories than your body uses in a day.",
@@ -151,6 +163,10 @@ const explainConcept = (text, context = {}) => {
       "",
       "For a healthy approach, keep the deficit moderate, eat enough protein, include vegetables and carbs for energy, and keep strength training so you maintain muscle.",
     ].join("\n");
+  }
+
+  if (/\bcalorie\b/.test(text)) {
+    return "A calorie is a unit of energy from food and drinks. Your body uses calories to move, think, breathe, recover, and train. Eating more than you use tends to increase weight; eating less than you use tends to reduce weight.";
   }
 
   if (/protein/.test(text)) {
@@ -181,13 +197,25 @@ const explainConcept = (text, context = {}) => {
     return "A good warm-up raises your heart rate and prepares the joints you will train. Try 3 to 5 minutes of easy movement, then 1 to 2 light sets of your first exercise before working harder.";
   }
 
+  if (/\bset\b|\brep\b|repetition/.test(text)) {
+    return "A rep is one complete movement, like one squat. A set is a group of reps done together, like 10 squats. So 3 sets of 10 reps means you do 10 reps, rest, then repeat that two more times.";
+  }
+
+  if (/cardio/.test(text)) {
+    return "Cardio is training that raises your heart rate for a sustained period. Walking, running, cycling, dancing, jump rope, and treadmill work are common examples. It supports heart health, endurance, and calorie burn.";
+  }
+
+  if (/strength training|weight training|resistance training/.test(text)) {
+    return "Strength training means using resistance to make muscles stronger. That resistance can be your bodyweight, dumbbells, bands, machines, barbells, or cables.";
+  }
+
   if (/rest day|recovery/.test(text)) {
     return "Recovery is when your body adapts to training. Rest days, sleep, protein, hydration, and lighter movement all help you get stronger without burning out.";
   }
 
   if (FITNESS_KEYWORDS.test(text)) {
     const goal = context.fitnessGoal ? ` For your goal of ${context.fitnessGoal},` : " In simple terms,";
-    return `${goal} the key is matching your workouts, meals, and recovery to what you can repeat consistently. Ask me the specific term or exercise and I will explain it clearly.`;
+    return `${goal} the answer is to keep the basics aligned: train consistently, eat in a way that supports your goal, recover well, and make small progress over time.`;
   }
 
   return null;
@@ -216,22 +244,27 @@ const ruleBasedReply = (message, context = {}) => {
     return "Hi! I'm Strive Assistant. I can help with workouts, exercise form, home or gym alternatives, meals, progress tracking, and using Strive. What would you like help with?";
   }
 
+  // 2a. "What is my workout today?" is asking for a plan, not a definition.
+  if (/(what('?s| is)?\s*(my)?\s*(workout|exercise|session|plan)\s*(today|now|for today)|today'?s\s*(workout|session|plan)|workout today)/.test(text)) {
+    return `${buildSessionReply(context)}\n\nYou can also open the Workouts page for your saved session and tap any exercise for its video tutorial and alternatives.`;
+  }
+
   if (EXPLAIN_INTENT.test(text)) {
     const explanation = explainConcept(text, context);
     if (explanation) return explanation;
   }
 
-  // 2a. No-equipment requests should answer with specific bodyweight options.
+  // 2b. No-equipment requests should answer with specific bodyweight options.
   if (/(no equipment|without equipment|bodyweight|no machine|no gym)/.test(text) && /(workout|exercise|routine|session|beginner|send|give|list|recommend|suggest)/.test(text)) {
     return buildNoEquipmentWorkoutReply(context);
   }
 
-  // 2a. Build a quick workout directly when the user asks for one.
+  // 2c. Build a quick workout directly when the user asks for one.
   if (/(build|make|create|give me|suggest|recommend|need|want).*(workout|routine|session|exercise plan)|what.*(train|do).*today|workout for today|quick workout|home workout|gym workout/.test(text)) {
     return buildSessionReply(context);
   }
 
-  // 2b. Easier / modified version of an exercise.
+  // 2d. Easier / modified version of an exercise.
   if (/(easier|simpler|modif|regression|less intense|beginner version|scale (it )?down|make it easier)/.test(text)) {
     const target = findAlternativeTarget(text) || findAlternativeTarget(current);
     const name = context.currentExercise || (target && target.name) || "this exercise";
@@ -285,11 +318,6 @@ const ruleBasedReply = (message, context = {}) => {
   // 8. Motivation / consistency.
   if (/(motivat|consistent|consistency|give up|lazy|stick|habit|discourag|keep going|stay on track)/.test(text)) {
     return "Consistency beats intensity. Start small, schedule workouts like appointments, track your wins, and aim for progress not perfection. Missing one day is fine - just pick it back up the next day. You've got this!";
-  }
-
-  // 8b. "What is my workout today?" - give a direct starter plan.
-  if (/(what('?s| is)?\s*(my)?\s*(workout|exercise|session|plan)\s*(today|now|for today)|today'?s\s*(workout|session|plan)|workout today)/.test(text)) {
-    return `${buildSessionReply(context)}\n\nYou can also open the Workouts page for your saved session and tap any exercise for its video tutorial and alternatives.`;
   }
 
   // 9. App usage.

@@ -146,3 +146,21 @@ test("assistant fallback explains calorie deficit directly", () => {
   assert.match(reply, /fat loss/);
   assert.doesNotMatch(reply, /Tell me the exercise or muscle group/);
 });
+
+test("assistant fallback defines workout instead of generating one for definition questions", () => {
+  const reply = ruleBasedReply("what is workout");
+
+  assert.match(reply, /planned training session/);
+  assert.match(reply, /exercises, sets, reps, and rest periods/);
+  assert.doesNotMatch(reply, /here are 5 beginner-friendly/);
+});
+
+test("assistant fallback still answers today's workout as a session", () => {
+  const reply = ruleBasedReply("what is my workout today?", {
+    workoutLocation: "Home",
+    workoutExperience: "Beginner",
+  });
+
+  assert.match(reply, /simple home session/);
+  assert.match(reply, /Bodyweight Squats/);
+});

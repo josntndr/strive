@@ -33,6 +33,18 @@ const mealReply = (context: LocalAssistantContext) => {
 };
 
 const explainConcept = (text: string) => {
+  if (/\bworkout\b/.test(text)) {
+    return [
+      "A workout is a planned training session made of exercises, sets, reps, and rest periods.",
+      "",
+      "Example: a beginner full-body workout might include squats, push-ups, rows, glute bridges, and planks. The goal is to train your body safely and consistently, not to exhaust yourself every time.",
+    ].join("\n");
+  }
+
+  if (/\bexercise\b/.test(text)) {
+    return "An exercise is one specific movement used in a workout, like a squat, push-up, plank, row, or glute bridge. A workout is the full session; exercises are the pieces inside it.";
+  }
+
   if (/calorie deficit|caloric deficit/.test(text)) {
     return [
       "A calorie deficit means you eat fewer calories than your body uses in a day.",
@@ -41,6 +53,10 @@ const explainConcept = (text: string) => {
       "",
       "For a healthy approach, keep the deficit moderate, eat enough protein, include vegetables and carbs for energy, and keep strength training so you maintain muscle.",
     ].join("\n");
+  }
+
+  if (/\bcalorie\b/.test(text)) {
+    return "A calorie is a unit of energy from food and drinks. Your body uses calories to move, think, breathe, recover, and train. Eating more than you use tends to increase weight; eating less than you use tends to reduce weight.";
   }
 
   if (/protein/.test(text)) {
@@ -61,6 +77,18 @@ const explainConcept = (text: string) => {
 
   if (/hypertrophy|build muscle|muscle growth/.test(text)) {
     return "Hypertrophy means muscle growth. The basics are consistent strength training, enough challenging sets, good form, enough protein, and recovery.";
+  }
+
+  if (/\bset\b|\brep\b|repetition/.test(text)) {
+    return "A rep is one complete movement, like one squat. A set is a group of reps done together, like 10 squats. So 3 sets of 10 reps means you do 10 reps, rest, then repeat that two more times.";
+  }
+
+  if (/cardio/.test(text)) {
+    return "Cardio is training that raises your heart rate for a sustained period. Walking, running, cycling, dancing, jump rope, and treadmill work are common examples.";
+  }
+
+  if (/strength training|weight training|resistance training/.test(text)) {
+    return "Strength training means using resistance to make muscles stronger. That resistance can be your bodyweight, dumbbells, bands, machines, barbells, or cables.";
   }
 
   return null;
@@ -88,6 +116,10 @@ export const getLocalAssistantReply = (message: string, context: LocalAssistantC
     return "Please stop the activity and check with a qualified healthcare professional before continuing. I can help with general fitness guidance, but not medical diagnosis or treatment.";
   }
 
+  if (has(text, /what('?s| is)?\s*(my)?\s*(workout|exercise|session|plan)\s*(today|now|for today)|today'?s\s*(workout|session|plan)|workout today/)) {
+    return noEquipmentWorkout(beginner);
+  }
+
   if (has(text, /what('?s| is| are)|meaning|define|explain|how does|tell me about/)) {
     const explanation = explainConcept(text);
     if (explanation) return explanation;
@@ -109,5 +141,5 @@ export const getLocalAssistantReply = (message: string, context: LocalAssistantC
     return noEquipmentWorkout(beginner);
   }
 
-  return "I can help with workouts, exercise form, alternatives, meals, and progress tracking. Ask me the exercise, goal, or equipment you have, and I will give you a practical answer.";
+  return "Direct answer: I am best at fitness, workouts, meals, and progress questions. For anything in that area, ask naturally and I will answer directly instead of sending you to a menu.";
 };
