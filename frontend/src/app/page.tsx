@@ -1480,11 +1480,6 @@ export default function Home() {
                 <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-b from-[#ed4f28]/10 via-amber-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 max-w-2xl mx-auto">
-                  <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-200/80 text-xs font-bold text-[#ed4f28] mb-4 shadow-2xs">
-                    <Flame className="w-3.5 h-3.5 fill-current" />
-                    Start Your Fitness Journey
-                  </span>
-
                   <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
                     Ready to start training?
                   </h2>
