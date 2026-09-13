@@ -1065,185 +1065,203 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="max-w-5xl mx-auto rounded-3xl bg-slate-950 text-white p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-slate-800">
-              {/* Radiant ambient glow */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-[#ed4f28]/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="grid lg:grid-cols-12 gap-8 relative z-10">
+            <div className="max-w-5xl mx-auto rounded-3xl bg-white p-6 sm:p-10 shadow-xl shadow-slate-200/60 border border-slate-200/90 relative overflow-hidden">
+              <div className="grid lg:grid-cols-12 gap-8 relative z-10 items-stretch">
                 {/* Left Controller (5 cols) */}
-                <div className="lg:col-span-5 space-y-6">
-                  <div>
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
-                      1. Primary Goal
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { id: "hypertrophy", label: "Muscle Size" },
-                        { id: "fatloss", label: "Cut & Lean" },
-                        { id: "strength", label: "Raw Strength" },
-                      ].map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => setCalcGoal(item.id as any)}
-                          className={`py-2.5 px-2 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
-                            calcGoal === item.id
-                              ? "bg-[#ed4f28] text-white shadow-md shadow-[#ed4f28]/30 font-extrabold"
-                              : "bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800"
-                          }`}
-                        >
-                          {item.label}
-                        </button>
-                      ))}
+                <div className="lg:col-span-5 space-y-6 flex flex-col justify-between">
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                          1. Primary Goal
+                        </label>
+                        <span className="text-[11px] font-semibold text-[#ed4f28]">
+                          {calcGoal === "hypertrophy" && "Volume & Muscle Growth"}
+                          {calcGoal === "fatloss" && "Calorie Deficit & Retention"}
+                          {calcGoal === "strength" && "Heavy Compound Strength"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 bg-slate-100/90 p-1 rounded-xl">
+                        {[
+                          { id: "hypertrophy", label: "Muscle Size" },
+                          { id: "fatloss", label: "Cut & Lean" },
+                          { id: "strength", label: "Strength" },
+                        ].map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => setCalcGoal(item.id as any)}
+                            className={`py-2 px-2 rounded-lg text-xs font-bold text-center transition-all cursor-pointer ${
+                              calcGoal === item.id
+                                ? "bg-[#ed4f28] text-white shadow-xs"
+                                : "text-slate-600 hover:text-slate-950 hover:bg-slate-200/50"
+                            }`}
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                          2. Weekly Schedule
+                        </label>
+                        <span className="text-[11px] font-semibold text-slate-600">
+                          {calcDays} Training Days
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 bg-slate-100/90 p-1 rounded-xl">
+                        {[3, 4, 5].map((d) => (
+                          <button
+                            key={d}
+                            type="button"
+                            onClick={() => setCalcDays(d as any)}
+                            className={`py-2 px-2 rounded-lg text-xs font-bold text-center transition-all cursor-pointer ${
+                              calcDays === d
+                                ? "bg-[#ed4f28] text-white shadow-xs"
+                                : "text-slate-600 hover:text-slate-950 hover:bg-slate-200/50"
+                            }`}
+                          >
+                            {d} Days / Wk
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                          3. Experience Level
+                        </label>
+                        <span className="text-[11px] font-semibold text-slate-600 capitalize">
+                          {calcLevel}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 bg-slate-100/90 p-1 rounded-xl">
+                        {[
+                          { id: "beginner", label: "Beginner" },
+                          { id: "intermediate", label: "Intermediate" },
+                          { id: "advanced", label: "Advanced" },
+                        ].map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => setCalcLevel(item.id as any)}
+                            className={`py-2 px-2 rounded-lg text-xs font-bold text-center transition-all cursor-pointer ${
+                              calcLevel === item.id
+                                ? "bg-[#ed4f28] text-white shadow-xs"
+                                : "text-slate-600 hover:text-slate-950 hover:bg-slate-200/50"
+                            }`}
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
-                  <div>
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
-                      2. Days Per Week
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[3, 4, 5].map((d) => (
-                        <button
-                          key={d}
-                          type="button"
-                          onClick={() => setCalcDays(d as any)}
-                          className={`py-2.5 px-2 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
-                            calcDays === d
-                              ? "bg-[#ed4f28] text-white shadow-md shadow-[#ed4f28]/30 font-extrabold"
-                              : "bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800"
-                          }`}
-                        >
-                          {d} Days / Wk
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2.5">
-                      3. Experience Level
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { id: "beginner", label: "Beginner" },
-                        { id: "intermediate", label: "Intermediate" },
-                        { id: "advanced", label: "Advanced" },
-                      ].map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => setCalcLevel(item.id as any)}
-                          className={`py-2 px-2 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
-                            calcLevel === item.id
-                              ? "bg-[#ed4f28] text-white shadow-md shadow-[#ed4f28]/30 font-extrabold"
-                              : "bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800"
-                          }`}
-                        >
-                          {item.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
-                    <div className="flex items-center gap-2 text-xs font-bold text-orange-400">
-                      <Sparkles className="w-4 h-4" />
+                  <div className="p-4 rounded-2xl bg-orange-50/70 border border-orange-200/70">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#ed4f28]">
+                      <Sparkles className="w-4 h-4 text-[#ed4f28]" />
                       <span>Evidence-Based Estimates</span>
                     </div>
-                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
-                      Calorie and macronutrient estimates are calculated from standard sports nutrition formulas (Mifflin-St Jeor) and proven volume guidelines.
+                    <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">
+                      Calorie and macro estimations follow validated sports science formulas (Mifflin-St Jeor) and standard hypertrophy volume guidelines.
                     </p>
                   </div>
                 </div>
 
                 {/* Right Output Card (7 cols) */}
-                <div className="lg:col-span-7 bg-slate-900/80 rounded-2xl p-6 sm:p-8 border border-slate-800 flex flex-col justify-between">
+                <div className="lg:col-span-7 bg-slate-50/90 rounded-2xl p-6 sm:p-8 border border-slate-200/90 flex flex-col justify-between shadow-xs">
                   <div>
-                    <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                    <div className="flex items-center justify-between pb-4 border-b border-slate-200">
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-orange-400">
-                          Recommended Split
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#ed4f28]">
+                          Recommended Routine
                         </span>
-                        <h3 className="text-lg sm:text-xl font-black text-white mt-0.5">
+                        <h3 className="text-xl sm:text-2xl font-black text-slate-950 mt-0.5 tracking-tight">
                           {calcOutput.splitName}
                         </h3>
                       </div>
-                      <span className="text-xs font-extrabold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full">
+                      <span className="text-xs font-bold text-slate-800 bg-white border border-slate-200 px-3 py-1 rounded-full shadow-2xs">
                         {calcDays} Sessions / Wk
                       </span>
                     </div>
 
                     {/* Weekly Schedule Timeline Preview */}
-                    <div className="mt-4">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-                        Weekly Schedule
+                    <div className="mt-5">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                        Weekly Split Breakdown
                       </p>
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {calcOutput.schedule.map((dayItem, idx) => (
-                          <span
+                          <div
                             key={idx}
-                            className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-200"
+                            className="text-xs font-semibold px-3 py-2 rounded-xl bg-white border border-slate-200/80 text-slate-800 flex items-center gap-2 shadow-2xs"
                           >
-                            {dayItem}
-                          </span>
+                            <span className="w-6 h-6 rounded-lg bg-orange-50 text-[#ed4f28] font-bold text-[11px] flex items-center justify-center shrink-0">
+                              D{idx + 1}
+                            </span>
+                            <span className="truncate">{dayItem}</span>
+                          </div>
                         ))}
                       </div>
                     </div>
 
                     {/* Macro Target Summary Cards */}
                     <div className="grid grid-cols-4 gap-2.5 my-5">
-                      <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center">
+                      <div className="p-3 rounded-xl bg-white border border-slate-200/80 text-center shadow-2xs">
                         <p className="text-[10px] font-bold uppercase text-slate-400">Calories</p>
-                        <p className="text-sm sm:text-base font-black text-white mt-1">
+                        <p className="text-sm sm:text-base font-black text-slate-950 mt-0.5">
                           {calcOutput.calories}
                         </p>
                       </div>
-                      <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center">
+                      <div className="p-3 rounded-xl bg-white border border-slate-200/80 text-center shadow-2xs">
                         <p className="text-[10px] font-bold uppercase text-[#ed4f28]">Protein</p>
-                        <p className="text-sm sm:text-base font-black text-white mt-1">
+                        <p className="text-sm sm:text-base font-black text-slate-950 mt-0.5">
                           {calcOutput.protein}
                         </p>
                       </div>
-                      <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center">
-                        <p className="text-[10px] font-bold uppercase text-amber-400">Carbs</p>
-                        <p className="text-sm sm:text-base font-black text-white mt-1">
+                      <div className="p-3 rounded-xl bg-white border border-slate-200/80 text-center shadow-2xs">
+                        <p className="text-[10px] font-bold uppercase text-amber-600">Carbs</p>
+                        <p className="text-sm sm:text-base font-black text-slate-950 mt-0.5">
                           {calcOutput.carbs}
                         </p>
                       </div>
-                      <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center">
-                        <p className="text-[10px] font-bold uppercase text-emerald-400">Fats</p>
-                        <p className="text-sm sm:text-base font-black text-white mt-1">
+                      <div className="p-3 rounded-xl bg-white border border-slate-200/80 text-center shadow-2xs">
+                        <p className="text-[10px] font-bold uppercase text-emerald-600">Fats</p>
+                        <p className="text-sm sm:text-base font-black text-slate-950 mt-0.5">
                           {calcOutput.fats}
                         </p>
                       </div>
                     </div>
 
-                    <div className="space-y-2 text-xs text-slate-300">
+                    <div className="space-y-2 text-xs text-slate-600 pt-1">
                       <div className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                         <span>
-                          <strong>Training Focus:</strong> {calcOutput.primaryFocus}
+                          <strong className="text-slate-900">Training Focus:</strong> {calcOutput.primaryFocus}
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                         <span>
-                          <strong>Rest Recommendation:</strong> {calcOutput.restInterval}
+                          <strong className="text-slate-900">Rest Recommendation:</strong> {calcOutput.restInterval}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-6 pt-5 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-xs text-slate-400 text-center sm:text-left">
+                  <div className="mt-6 pt-5 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p className="text-xs text-slate-500 text-center sm:text-left">
                       Ready to lock in this routine? Sign up takes under 60 seconds.
                     </p>
                     <button
                       type="button"
                       onClick={handleApplyPlan}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-orange-600 px-6 py-3 text-xs font-bold text-white transition-all shadow-md shadow-[#ed4f28]/30 active:scale-95 cursor-pointer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-[#d9421c] px-6 py-3.5 text-xs font-bold text-white transition-all shadow-md shadow-[#ed4f28]/25 active:scale-95 cursor-pointer"
                     >
                       Get Started With This Plan →
                     </button>
