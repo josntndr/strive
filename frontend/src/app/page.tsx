@@ -1518,12 +1518,6 @@ export default function Home() {
                   Sign Up
                 </Link>
               </div>
-
-              {/* App Status / Tagline */}
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
-                <span className="w-2 h-2 rounded-full bg-[#ed4f28]" />
-                <span>Train with purpose</span>
-              </div>
             </div>
 
             <div className="pt-8 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-4">
