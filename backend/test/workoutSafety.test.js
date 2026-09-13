@@ -138,3 +138,11 @@ test("assistant fallback gives practical meal guidance", () => {
   assert.match(reply, /chicken adobo|tofu sisig|grilled fish/);
   assert.match(reply, /consistency/);
 });
+
+test("assistant fallback explains calorie deficit directly", () => {
+  const reply = ruleBasedReply("What is calorie deficit?");
+
+  assert.match(reply, /eat fewer calories than your body uses/);
+  assert.match(reply, /fat loss/);
+  assert.doesNotMatch(reply, /Tell me the exercise or muscle group/);
+});

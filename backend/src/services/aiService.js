@@ -65,6 +65,7 @@ const findAlternativeTarget = (text) => {
 };
 
 const FITNESS_KEYWORDS = /(workout|exercise|gym|home|muscle|fitness|train|rep|set|warm|stretch|cardio|strength|fat|tone|squat|lunge|plank|push|pull|glute|leg|arm|chest|back|shoulder|core|abs|run|walk|weight|diet|meal|food|protein|nutrition|calorie|progress|motivat|consistent|plan|strive|beginner|rest|recover)/;
+const EXPLAIN_INTENT = /(what('?s| is| are)|meaning|define|explain|how does|tell me about)/;
 
 const listWords = (items) => {
   if (items.length === 1) return items[0];
@@ -127,7 +128,7 @@ const buildMealReply = (message, context = {}) => {
   const goal = String(context.fitnessGoal || "").toLowerCase();
   const diet = String(context.dietaryPreference || "").toLowerCase();
   const proteinFocus = /protein|muscle|bulk|gain|build/.test(message) || /muscle|build|gain/.test(goal);
-  const fatLoss = /lose|fat|cut|weight loss/.test(message) || /lose|fat|cut/.test(goal);
+  const fatLoss = /calorie deficit|lose|fat|cut|weight loss/.test(message) || /lose|fat|cut/.test(goal);
   const filipino = diet.includes("filipino");
 
   const plate = fatLoss
@@ -141,11 +142,61 @@ const buildMealReply = (message, context = {}) => {
   return `A good Strive-style meal is simple: ${plate}.${protein}\n${examples}\nKeep water nearby and avoid extreme restrictions - consistency matters more than perfect eating.`;
 };
 
+const explainConcept = (text, context = {}) => {
+  if (/calorie deficit|caloric deficit/.test(text)) {
+    return [
+      "A calorie deficit means you eat fewer calories than your body uses in a day.",
+      "",
+      "Simple example: if your body uses around 2,000 calories and you eat around 1,700 to 1,850, you are in a deficit. Over time, that can help with fat loss.",
+      "",
+      "For a healthy approach, keep the deficit moderate, eat enough protein, include vegetables and carbs for energy, and keep strength training so you maintain muscle.",
+    ].join("\n");
+  }
+
+  if (/protein/.test(text)) {
+    return "Protein helps repair muscle, supports recovery, and keeps you full. Good beginner-friendly sources include eggs, chicken, fish, tuna, tofu, beans, yogurt, milk, and lean meat.";
+  }
+
+  if (/carb|carbohydrate/.test(text)) {
+    return "Carbs are your body's quick training fuel. Rice, oats, potatoes, fruit, bread, and pasta can all fit in a healthy plan. The goal is choosing portions that match your activity and fitness goal.";
+  }
+
+  if (/progressive overload/.test(text)) {
+    return "Progressive overload means gradually making training a little more challenging so your body adapts. You can add reps, add weight, improve control, increase range of motion, or reduce rest slightly.";
+  }
+
+  if (/hypertrophy|build muscle|muscle growth/.test(text)) {
+    return "Hypertrophy means muscle growth. The basics are consistent strength training, enough challenging sets, good form, enough protein, and recovery. Most muscle-building sets should feel hard but still controlled.";
+  }
+
+  if (/macro|macros/.test(text)) {
+    return "Macros are protein, carbohydrates, and fats. Protein supports muscle repair, carbs fuel training, and fats support hormones and general health. Calories decide weight change; macros help shape how you feel and perform.";
+  }
+
+  if (/bmi/.test(text)) {
+    return "BMI is a height-to-weight screening number. It can be useful as a rough population tool, but it does not show muscle mass, body composition, strength, or health by itself.";
+  }
+
+  if (/warm.?up/.test(text)) {
+    return "A good warm-up raises your heart rate and prepares the joints you will train. Try 3 to 5 minutes of easy movement, then 1 to 2 light sets of your first exercise before working harder.";
+  }
+
+  if (/rest day|recovery/.test(text)) {
+    return "Recovery is when your body adapts to training. Rest days, sleep, protein, hydration, and lighter movement all help you get stronger without burning out.";
+  }
+
+  if (FITNESS_KEYWORDS.test(text)) {
+    const goal = context.fitnessGoal ? ` For your goal of ${context.fitnessGoal},` : " In simple terms,";
+    return `${goal} the key is matching your workouts, meals, and recovery to what you can repeat consistently. Ask me the specific term or exercise and I will explain it clearly.`;
+  }
+
+  return null;
+};
+
 const ruleBasedReply = (message, context = {}) => {
   const text = String(message || "").toLowerCase();
   const current = String(context.currentExercise || "").toLowerCase();
   const experience = String(context.workoutExperience || "").toLowerCase();
-  const diet = String(context.dietaryPreference || "").toLowerCase();
 
   // 1. Safety always comes first.
   if (/(pain|hurts?|injur|sprain|illness|sick|pregnan|dizzy|faint|chest pain|eating disorder|anorexi|bulimi|disease|medical|condition|surgery)/.test(text)) {
@@ -163,6 +214,11 @@ const ruleBasedReply = (message, context = {}) => {
   // 2. Greeting.
   if (/^(hi|hello|hey|yo|sup|good (morning|afternoon|evening))\b/.test(text.trim())) {
     return "Hi! I'm Strive Assistant. I can help with workouts, exercise form, home or gym alternatives, meals, progress tracking, and using Strive. What would you like help with?";
+  }
+
+  if (EXPLAIN_INTENT.test(text)) {
+    const explanation = explainConcept(text, context);
+    if (explanation) return explanation;
   }
 
   // 2a. No-equipment requests should answer with specific bodyweight options.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, Send, X, Loader2, Sparkles } from "lucide-react";
 import { api, getToken } from "@/lib/api";
@@ -51,7 +51,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
   const [profile, setProfile] = useState<ProfileContext | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const pathname = usePathname();
   const currentPage = PAGE_NAMES[pathname] || undefined;
 
@@ -138,6 +138,13 @@ export function AIChat({ currentExercise }: AIChatProps) {
       setError("");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleInputKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage(input);
     }
   };
 
@@ -237,14 +244,16 @@ export function AIChat({ currentExercise }: AIChatProps) {
               }}
               className="flex items-center gap-2 border-t border-slate-100 bg-white p-3"
             >
-              <input
+              <textarea
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleInputKeyDown}
                 maxLength={1000}
                 aria-label="Message Strive Assistant"
                 placeholder="Ask about workouts, meals, or tips..."
-                className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#ed4f28] focus:ring-2 focus:ring-[#ed4f28]/15"
+                rows={1}
+                className="max-h-28 min-h-10 flex-1 resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm leading-5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#ed4f28] focus:ring-2 focus:ring-[#ed4f28]/15"
               />
               <button
                 type="submit"

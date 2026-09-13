@@ -32,6 +32,40 @@ const mealReply = (context: LocalAssistantContext) => {
   return `For a balanced meal, build your plate around protein, carbs, vegetables, and water.\nGood options: ${examples}.\nKeep it realistic and repeatable - that is what makes progress easier.`;
 };
 
+const explainConcept = (text: string) => {
+  if (/calorie deficit|caloric deficit/.test(text)) {
+    return [
+      "A calorie deficit means you eat fewer calories than your body uses in a day.",
+      "",
+      "Simple example: if your body uses around 2,000 calories and you eat around 1,700 to 1,850, you are in a deficit. Over time, that can help with fat loss.",
+      "",
+      "For a healthy approach, keep the deficit moderate, eat enough protein, include vegetables and carbs for energy, and keep strength training so you maintain muscle.",
+    ].join("\n");
+  }
+
+  if (/protein/.test(text)) {
+    return "Protein helps repair muscle, supports recovery, and keeps you full. Good options include eggs, chicken, fish, tuna, tofu, beans, yogurt, milk, and lean meat.";
+  }
+
+  if (/carb|carbohydrate/.test(text)) {
+    return "Carbs are your body's quick training fuel. Rice, oats, potatoes, fruit, bread, and pasta can all fit in a healthy plan when portions match your goal.";
+  }
+
+  if (/macro|macros/.test(text)) {
+    return "Macros are protein, carbohydrates, and fats. Protein supports muscle repair, carbs fuel training, and fats support hormones and general health.";
+  }
+
+  if (/progressive overload/.test(text)) {
+    return "Progressive overload means gradually making training more challenging by adding reps, adding weight, improving control, increasing range of motion, or reducing rest slightly.";
+  }
+
+  if (/hypertrophy|build muscle|muscle growth/.test(text)) {
+    return "Hypertrophy means muscle growth. The basics are consistent strength training, enough challenging sets, good form, enough protein, and recovery.";
+  }
+
+  return null;
+};
+
 const alternativeReply = (text: string) => {
   if (text.includes("leg press")) {
     return "For leg press without a machine, use bodyweight squats, step-ups, reverse lunges, or glute bridges. Start with 2 to 3 sets of 10 to 12 reps and keep the movement controlled.";
@@ -52,6 +86,11 @@ export const getLocalAssistantReply = (message: string, context: LocalAssistantC
 
   if (has(text, /pain|injur|dizzy|faint|chest pain|pregnan|medical|surgery|illness/)) {
     return "Please stop the activity and check with a qualified healthcare professional before continuing. I can help with general fitness guidance, but not medical diagnosis or treatment.";
+  }
+
+  if (has(text, /what('?s| is| are)|meaning|define|explain|how does|tell me about/)) {
+    const explanation = explainConcept(text);
+    if (explanation) return explanation;
   }
 
   if (has(text, /no equipment|without equipment|bodyweight|at home|home workout/) && has(text, /workout|exercise|beginner|send|give|list|routine/)) {
