@@ -1,5 +1,6 @@
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
 import { normalizeExerciseName } from "@/lib/normalizeExerciseName";
+import { expandedWorkoutDemoMap } from "@/lib/expandedExerciseCatalog";
 
 // YouTube tutorial references for every canonical workout in the app.
 export const workoutDemoMap: Record<string, string> = {
@@ -38,6 +39,7 @@ export const workoutDemoMap: Record<string, string> = {
   "Step Touch Intervals": "https://www.youtube.com/embed/8oTjg7ZXJok",
   "Treadmill Incline Walk": "https://www.youtube.com/embed/NAsObfFJXvE",
   "Brisk Walk": "https://www.youtube.com/embed/wQrV75N2BrI",
+  ...expandedWorkoutDemoMap,
 };
 
 // Ordered keyword fallback for names not directly in the map (most specific

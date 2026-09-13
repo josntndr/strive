@@ -4,6 +4,7 @@ const {
   attachExerciseMetadata,
   exerciseDatabase,
   estimateExerciseMinutes,
+  providedExerciseCatalog,
   validateWorkoutPlan,
 } = require("../src/services/workoutSafety");
 const { _test } = require("../src/controllers/workoutController");
@@ -57,6 +58,14 @@ test("catalog provides a YouTube tutorial for every workout exercise", () => {
   for (const exercise of Object.values(exerciseDatabase)) {
     assert.match(exercise.video.url, /^https:\/\/www\.youtube\.com\/embed\//, `${exercise.name} is missing a YouTube tutorial`);
     assert.equal(exercise.video.provider, "YouTube");
+  }
+});
+
+test("user-provided exercise list is fully available in the workout catalog", () => {
+  assert.equal(providedExerciseCatalog.length, 540);
+  for (const exercise of providedExerciseCatalog) {
+    assert.ok(exerciseDatabase[exercise.name], `${exercise.name} is missing from the workout catalog`);
+    assert.match(exerciseDatabase[exercise.name].video.url, /^https:\/\/www\.youtube\.com\/embed\//);
   }
 });
 

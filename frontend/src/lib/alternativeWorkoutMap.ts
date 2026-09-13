@@ -1,7 +1,25 @@
 import { resolveWorkoutVideo } from "@/lib/workoutDemoMap";
 import { normalizeExerciseName } from "@/lib/normalizeExerciseName";
+import { expandedExerciseAlternatives } from "@/lib/expandedExerciseCatalog";
 
-export type EquipmentKey = "none" | "dumbbells" | "bands";
+export type EquipmentKey =
+  | "none"
+  | "dumbbells"
+  | "bands"
+  | "barbells"
+  | "kettlebells"
+  | "cables"
+  | "machines"
+  | "pullup"
+  | "bench"
+  | "trx"
+  | "medicineBall"
+  | "stabilityBall"
+  | "bosu"
+  | "battleRopes"
+  | "cardio"
+  | "agility"
+  | "mobility";
 
 export type WorkoutAlternative = {
   name: string;
@@ -22,6 +40,20 @@ export const EQUIPMENT_OPTIONS: { key: EquipmentKey; label: string }[] = [
   { key: "none", label: "No equipment" },
   { key: "dumbbells", label: "Dumbbells" },
   { key: "bands", label: "Resistance bands" },
+  { key: "barbells", label: "Barbells" },
+  { key: "kettlebells", label: "Kettlebells" },
+  { key: "cables", label: "Cable machines" },
+  { key: "machines", label: "Weight machines" },
+  { key: "pullup", label: "Pull-up/Dip" },
+  { key: "bench", label: "Bench/Box" },
+  { key: "trx", label: "TRX" },
+  { key: "medicineBall", label: "Medicine ball" },
+  { key: "stabilityBall", label: "Stability ball" },
+  { key: "bosu", label: "BOSU" },
+  { key: "battleRopes", label: "Battle ropes" },
+  { key: "cardio", label: "Cardio equipment" },
+  { key: "agility", label: "Agility" },
+  { key: "mobility", label: "Mobility" },
 ];
 
 type RawAlt = {
@@ -42,9 +74,26 @@ type RawAlt = {
 
 const equipmentMatchesFilter = (equipmentLabel: string, selected: EquipmentKey): boolean => {
   const value = equipmentLabel.toLowerCase();
-  if (selected === "bands") return /band|resistance/.test(value);
-  if (selected === "dumbbells") return /dumbbell|household|water bottle/.test(value);
-  return !/band|resistance|dumbbell/.test(value);
+  const patterns: Record<EquipmentKey, RegExp> = {
+    none: /bodyweight|wall|mat|walking shoes|mobility tool/,
+    dumbbells: /dumbbell|household|water bottle/,
+    bands: /band|resistance/,
+    barbells: /barbell|landmine/,
+    kettlebells: /kettlebell/,
+    cables: /cable/,
+    machines: /machine|smith/,
+    pullup: /pull-up|pullup|dip station/,
+    bench: /bench|box|step|chair|couch/,
+    trx: /trx|suspension/,
+    medicineBall: /medicine ball/,
+    stabilityBall: /stability ball/,
+    bosu: /bosu/,
+    battleRopes: /battle ropes/,
+    cardio: /cardio|treadmill|bike|elliptical|climber|row|ski|jump rope|sled|sandbag/,
+    agility: /agility|cone|hurdle/,
+    mobility: /mobility|foam|stretch/,
+  };
+  return patterns[selected].test(value);
 };
 
 // Standardize the name and resolve a real YouTube tutorial video so "View demo"
@@ -158,11 +207,11 @@ const mapAliases: Record<string, string> = {
 };
 
 // Category-tagged equipment pools for building home alternatives.
-type Category = "legs" | "glutes" | "chest" | "back" | "shoulders" | "arms" | "core" | "cardio" | "calves";
+type Category = "legs" | "glutes" | "chest" | "back" | "shoulders" | "arms" | "core" | "cardio" | "calves" | "mobility";
 
 type PoolItem = RawAlt & { categories: Category[] };
 
-const equipmentPools: Record<EquipmentKey, PoolItem[]> = {
+const equipmentPools: Partial<Record<EquipmentKey, PoolItem[]>> = {
   none: [
     { name: "Bodyweight Squats", equipment: "Bodyweight", reason: "Builds legs and glutes with no equipment.", instruction: "Sit your hips back and keep your chest up.", categories: ["legs"] },
     { name: "Glute Bridges", equipment: "Bodyweight or mat", reason: "Activates the glutes from the floor.", instruction: "Drive through your heels and squeeze at the top.", categories: ["glutes"] },
@@ -202,6 +251,7 @@ const categorize = (name: string, targetMuscle?: string): Category => {
   if (/bicep|tricep|curl|\barm\b|\bdip\b/.test(t)) return "arms";
   if (/plank|crunch|core|climber|abs|bicycle|woodchop|pallof/.test(t)) return "core";
   if (/jump|cardio|treadmill|walk|march|run|bike|jack/.test(t)) return "cardio";
+  if (/mobility|stretch|warm-up|release|rotation|circle/.test(t)) return "mobility";
   return "legs";
 };
 
@@ -248,7 +298,12 @@ export function getAlternatives(exercise: ExerciseLike, equipment: EquipmentKey 
 
   // 3. Equipment-pool moves that match the muscle group.
   const category = categorize(exercise.name, exercise.targetMuscle);
-  const pool = equipmentPools[equipment] || equipmentPools.none;
+  const expandedMatches = expandedExerciseAlternatives.filter(
+    (item) => (item.categories as readonly string[]).includes(category) && equipmentMatchesFilter(item.equipment, equipment)
+  );
+  expandedMatches.forEach((item) => push(item));
+
+  const pool = equipmentPools[equipment] || equipmentPools.none || [];
   const matches = pool.filter((item) => item.categories.includes(category));
   (matches.length ? matches : pool).forEach(push);
 

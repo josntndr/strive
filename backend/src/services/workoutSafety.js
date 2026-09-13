@@ -4,6 +4,7 @@ const {
   evidenceSources,
   exerciseAliases,
   exerciseDatabase,
+  providedExerciseCatalog,
 } = require("../catalog/exerciseDatabase");
 
 const normalizeExerciseName = (name) => {
@@ -168,6 +169,7 @@ module.exports = {
   REVIEW_DATE,
   evidenceSources,
   exerciseDatabase,
+  providedExerciseCatalog,
   normalizeExerciseName,
   getExerciseCatalogEntry,
   getVerifiedExerciseVideoUrl,

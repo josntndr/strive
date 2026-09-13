@@ -1,3 +1,5 @@
+const { providedExerciseCatalog } = require("./providedExerciseCatalog");
+
 const REVIEW_DATE = "2026-09-13";
 
 const evidenceSources = [
@@ -69,6 +71,7 @@ const youtubeTutorials = {
   "Step Touch Intervals": "https://www.youtube.com/embed/8oTjg7ZXJok",
   "Treadmill Incline Walk": "https://www.youtube.com/embed/NAsObfFJXvE",
   "Brisk Walk": "https://www.youtube.com/embed/wQrV75N2BrI",
+  ...Object.fromEntries(providedExerciseCatalog.map((exercise) => [exercise.name, exercise.videoUrl])),
 };
 
 const makeYouTubeVideo = (name) => {
@@ -715,6 +718,27 @@ const exerciseDatabase = {
   }),
 };
 
+for (const exercise of providedExerciseCatalog) {
+  if (!exerciseDatabase[exercise.name]) {
+    exerciseDatabase[exercise.name] = makeExercise({
+      name: exercise.name,
+      primaryMuscles: exercise.primaryMuscles,
+      secondaryMuscles: exercise.secondaryMuscles,
+      movementPattern: exercise.movementPattern,
+      equipment: [exercise.equipment],
+      locations: exercise.locations,
+      difficulty: exercise.difficulty,
+      defaultSets: exercise.defaultSets,
+      defaultReps: exercise.defaultReps,
+      defaultRest: exercise.defaultRest,
+      prescriptionType: exercise.prescriptionType,
+      instructions: exercise.instructions,
+      formCue: exercise.formCue,
+      commonMistakes: exercise.commonMistakes,
+    });
+  }
+}
+
 const exerciseAliases = {
   "bodyweight squat": "Bodyweight Squats",
   "bodyweight squats": "Bodyweight Squats",
@@ -806,11 +830,17 @@ const exerciseAliases = {
   "brisk walk": "Brisk Walk",
 };
 
+for (const exercise of providedExerciseCatalog) {
+  const aliasKey = exercise.name.toLowerCase();
+  if (!exerciseAliases[aliasKey]) exerciseAliases[aliasKey] = exercise.name;
+}
+
 module.exports = {
   REVIEW_DATE,
   defaultSafetyNotes,
   evidenceSources,
   exerciseAliases,
   exerciseDatabase,
+  providedExerciseCatalog,
   youtubeTutorials,
 };
