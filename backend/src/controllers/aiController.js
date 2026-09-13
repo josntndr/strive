@@ -1,4 +1,21 @@
 const { getAssistantReply, ruleBasedReply, MAX_MESSAGE_LENGTH } = require("../services/aiService");
+const { getProfileByUserId } = require("../services/profileStore");
+
+const PROFILE_CONTEXT_FIELDS = [
+  "fitnessGoal",
+  "workoutLocation",
+  "workoutExperience",
+  "dietaryPreference",
+  "targetBodyFocus",
+];
+
+const compactProfileContext = (profile) => {
+  if (!profile) return {};
+  return PROFILE_CONTEXT_FIELDS.reduce((acc, field) => {
+    if (profile[field]) acc[field] = profile[field];
+    return acc;
+  }, {});
+};
 
 const chat = async (req, res) => {
   const { message, context, history } = req.body || {};
@@ -12,10 +29,21 @@ const chat = async (req, res) => {
   const safeHistory = Array.isArray(history) ? history : [];
 
   try {
-    const { reply, source } = await getAssistantReply({ message: trimmed, context: safeContext, history: safeHistory });
+    let profileContext = {};
+    try {
+      profileContext = compactProfileContext(await getProfileByUserId(req.user?._id || req.user?.id));
+    } catch {
+      profileContext = {};
+    }
+
+    const { reply, source } = await getAssistantReply({
+      message: trimmed,
+      context: { ...profileContext, ...safeContext },
+      history: safeHistory,
+    });
     return res.json({ reply, source });
   } catch (error) {
-    // Never crash the chat — return a helpful fallback reply instead.
+    // Never crash the chat - return a helpful fallback reply instead.
     console.error("AI chat error:", error.message);
     return res.json({ reply: ruleBasedReply(trimmed, safeContext), source: "fallback" });
   }

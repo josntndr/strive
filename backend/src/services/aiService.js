@@ -20,10 +20,12 @@ If the user mentions pain, injury, dizziness, illness, pregnancy, eating disorde
 
 If the user asks something unrelated to fitness, meals, progress, or Strive, politely redirect them back to fitness support.
 
-Do not give long overwhelming answers. Be helpful but concise.`;
+Do not give long overwhelming answers. Be helpful but concise.
+
+When helpful, format the response as a short plan with bullets or numbered steps.`;
 
 const MAX_MESSAGE_LENGTH = 1000;
-const REQUEST_TIMEOUT_MS = 15000;
+const REQUEST_TIMEOUT_MS = 25000;
 
 const buildContextLine = (context = {}) => {
   const parts = [];
@@ -34,7 +36,7 @@ const buildContextLine = (context = {}) => {
   if (context.targetBodyFocus) parts.push(`Target body focus: ${context.targetBodyFocus}`);
   if (context.currentExercise) parts.push(`Current exercise: ${context.currentExercise}`);
   if (context.currentPage) parts.push(`Current page: ${context.currentPage}`);
-  return parts.length ? `\n\nUser context — ${parts.join(", ")}.` : "";
+  return parts.length ? `\n\nUser context - ${parts.join(", ")}.` : "";
 };
 
 // --- Rule-based fallback ------------------------------------------------------
@@ -69,6 +71,61 @@ const listWords = (items) => {
   return `${items.slice(0, -1).join(", ")}, or ${items[items.length - 1]}`;
 };
 
+const getTrainingContext = (context = {}) => {
+  const location = String(context.workoutLocation || "").toLowerCase().includes("gym") ? "gym" : "home";
+  const experience = String(context.workoutExperience || "beginner").toLowerCase();
+  const focus = String(context.targetBodyFocus || context.fitnessGoal || "full body").toLowerCase();
+  const beginner = !experience || experience.includes("begin");
+
+  return {
+    location,
+    beginner,
+    focus,
+    sets: beginner ? 2 : 3,
+    reps: beginner ? "8-10" : "10-12",
+    rest: beginner ? "75-90 seconds" : "60-75 seconds",
+  };
+};
+
+const buildSessionReply = (context = {}) => {
+  const plan = getTrainingContext(context);
+  const lower = plan.location === "gym"
+    ? ["Leg Press Machine", "Hip Thrust Machine", "Seated Hamstring Curl", "Cable Pallof Press"]
+    : ["Bodyweight Squats", "Glute Bridges", "Reverse Lunges", "Dead Bug"];
+  const upper = plan.location === "gym"
+    ? ["Lat Pulldown Machine", "Chest Press Machine", "Seated Cable Row", "Cable Tricep Pushdown"]
+    : ["Incline Push-ups", "Resistance Band Rows", "Dumbbell Shoulder Press", "Plank Shoulder Taps"];
+  const full = plan.focus.includes("leg") || plan.focus.includes("glute")
+    ? lower
+    : plan.focus.includes("upper") || plan.focus.includes("arm") || plan.focus.includes("chest") || plan.focus.includes("back")
+      ? upper
+      : [lower[0], upper[0], lower[1], upper[1], "Plank"];
+
+  return [
+    `Here is a simple ${plan.location} session matched to your profile:`,
+    ...full.map((exercise, index) => `${index + 1}. ${exercise} - ${plan.sets} sets of ${plan.reps} reps`),
+    `Rest ${plan.rest} between sets. Start lighter than you think, keep every rep controlled, and stop if anything feels sharp or painful.`,
+  ].join("\n");
+};
+
+const buildMealReply = (message, context = {}) => {
+  const goal = String(context.fitnessGoal || "").toLowerCase();
+  const diet = String(context.dietaryPreference || "").toLowerCase();
+  const proteinFocus = /protein|muscle|bulk|gain|build/.test(message) || /muscle|build|gain/.test(goal);
+  const fatLoss = /lose|fat|cut|weight loss/.test(message) || /lose|fat|cut/.test(goal);
+  const filipino = diet.includes("filipino");
+
+  const plate = fatLoss
+    ? "half vegetables, one palm of protein, and one cupped-hand portion of rice or carbs"
+    : "one palm of protein, one fist of carbs, vegetables, and a little healthy fat";
+  const examples = filipino
+    ? "Examples: chicken adobo with rice and vegetables, tuna with egg and rice, tofu sisig with vegetables, or grilled fish with saba and greens."
+    : "Examples: eggs and toast, chicken rice bowl, tuna sandwich, Greek yogurt with fruit, tofu bowl, or fish with potatoes and vegetables.";
+  const protein = proteinFocus ? " Aim for a protein source at each meal so recovery is easier." : "";
+
+  return `A good Strive-style meal is simple: ${plate}.${protein}\n${examples}\nKeep water nearby and avoid extreme restrictions - consistency matters more than perfect eating.`;
+};
+
 const ruleBasedReply = (message, context = {}) => {
   const text = String(message || "").toLowerCase();
   const current = String(context.currentExercise || "").toLowerCase();
@@ -80,17 +137,22 @@ const ruleBasedReply = (message, context = {}) => {
     return "Please stop the activity and consult a qualified healthcare professional before continuing. I can only give general fitness guidance, not medical advice.";
   }
 
-  // 1b. Fear / nervousness / low confidence — reassure supportively first.
+  // 1b. Fear / nervousness / low confidence - reassure supportively first.
   if (/(afraid|scared|nervous|anxious|intimidat|worried|unsure|doubt|embarrass|can'?t do (this|it)|not strong enough|too weak)/.test(text)) {
     const ex = current
       ? ` For ${context.currentExercise}, begin with fewer reps or an easier variation and focus on slow, controlled form.`
       : "";
-    return `That's completely okay — feeling nervous is normal and everyone starts somewhere. Go at your own pace, breathe, and you can stop or rest any time. Start with a lighter version and build up as you get comfortable.${ex} I can suggest easier alternatives whenever you'd like.`;
+    return `That's completely okay - feeling nervous is normal and everyone starts somewhere. Go at your own pace, breathe, and you can stop or rest any time. Start with a lighter version and build up as you get comfortable.${ex} I can suggest easier alternatives whenever you'd like.`;
   }
 
   // 2. Greeting.
   if (/^(hi|hello|hey|yo|sup|good (morning|afternoon|evening))\b/.test(text.trim())) {
     return "Hi! I'm Strive Assistant. I can help with workouts, exercise form, home or gym alternatives, meals, progress tracking, and using Strive. What would you like help with?";
+  }
+
+  // 2a. Build a quick workout directly when the user asks for one.
+  if (/(build|make|create|give me|suggest|recommend|need|want).*(workout|routine|session|exercise plan)|what.*(train|do).*today|workout for today|quick workout|home workout|gym workout/.test(text)) {
+    return buildSessionReply(context);
   }
 
   // 2b. Easier / modified version of an exercise.
@@ -125,13 +187,12 @@ const ruleBasedReply = (message, context = {}) => {
     if (/protein/.test(text)) {
       return "Protein helps repair and build muscle and keeps you full. Beginner-friendly sources include eggs, chicken, fish, tuna, tofu, beans, yogurt, and milk. Try to include some protein in each meal.";
     }
-    const filipino = diet.includes("filipino") ? " Filipino-style, think rice with grilled chicken, fish, or tofu plus vegetables like pinakbet or ensaladang talong." : "";
-    return `For a beginner-friendly meal, try rice with chicken or fish, vegetables, and a piece of fruit. Good protein options include eggs, tuna, tofu, chicken, fish, yogurt, or milk. Keep portions reasonable and stay hydrated.${filipino}`;
+    return buildMealReply(text, context);
   }
 
   // 6. Progress tracking.
   if (/(progress|track|measurement|results|photos|plateau|not seeing|scale)/.test(text)) {
-    return "Track your workout consistency, completed workouts, strength improvements, energy level, weight, waist and hip measurements, and progress photos. Don't rely only on the scale — improvements in strength and energy count too.";
+    return "Track your workout consistency, completed workouts, strength improvements, energy level, weight, waist and hip measurements, and progress photos. Do not rely only on the scale - improvements in strength and energy count too.";
   }
 
   // 7. Schedule / how often.
@@ -142,17 +203,17 @@ const ruleBasedReply = (message, context = {}) => {
 
   // 7b. Skipping a session / rest days.
   if (/(skip|rest day|day off|too tired|don'?t feel like|not feeling it|take a break|miss(ing)? (a )?(day|workout)|can i skip)/.test(text)) {
-    return "It's okay to take a rest day when your body needs it — recovery is part of progress. If you're just feeling unmotivated, try a shorter or lighter session instead of skipping entirely. One missed day won't undo your progress; just pick it back up tomorrow.";
+    return "It's okay to take a rest day when your body needs it - recovery is part of progress. If you're just feeling unmotivated, try a shorter or lighter session instead of skipping entirely. One missed day will not undo your progress; just pick it back up tomorrow.";
   }
 
   // 8. Motivation / consistency.
   if (/(motivat|consistent|consistency|give up|lazy|stick|habit|discourag|keep going|stay on track)/.test(text)) {
-    return "Consistency beats intensity. Start small, schedule workouts like appointments, track your wins, and aim for progress not perfection. Missing one day is fine — just pick it back up the next day. You've got this!";
+    return "Consistency beats intensity. Start small, schedule workouts like appointments, track your wins, and aim for progress not perfection. Missing one day is fine - just pick it back up the next day. You've got this!";
   }
 
-  // 8b. "What is my workout today?" — point to the plan.
+  // 8b. "What is my workout today?" - give a direct starter plan.
   if (/(what('?s| is)?\s*(my)?\s*(workout|exercise|session|plan)\s*(today|now|for today)|today'?s\s*(workout|session|plan)|workout today)/.test(text)) {
-    return "Head to the Workouts page to see today's session. Tap any exercise for step-by-step instructions, a demo video, setup tips, and home or gym alternatives. Want help with a specific exercise from your plan?";
+    return `${buildSessionReply(context)}\n\nYou can also open the Workouts page for your saved session and tap any exercise for its video tutorial and alternatives.`;
   }
 
   // 9. App usage.
@@ -163,7 +224,8 @@ const ruleBasedReply = (message, context = {}) => {
   // 10. General fitness question (keyword present) -> helpful, context-aware reply.
   if (FITNESS_KEYWORDS.test(text)) {
     const where = context.workoutLocation ? ` Since you train at ${context.workoutLocation.toLowerCase()}, I can tailor suggestions to that.` : "";
-    return `I can help with that. Tell me the muscle group or exercise you're working on and I'll suggest beginner-friendly steps, form tips, or alternatives.${where} For example, ask "How do I do a squat?" or "What can I do instead of leg press at home?"`;
+    const plan = getTrainingContext(context);
+    return `I can help with that.${where} For a quick starting point, use ${plan.sets} sets of ${plan.reps} reps, rest ${plan.rest}, and keep the movement slow and controlled. Tell me the exercise or muscle group and I will make it more specific.`;
   }
 
   // 11. Unrelated -> polite redirect.

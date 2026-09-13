@@ -14,11 +14,14 @@ export type AuthUser = {
   role: "user" | "admin";
 };
 
-// When NEXT_PUBLIC_API_URL is "" (or unset in production), API calls go to the
-// same origin. Local frontend-only dev still falls back to the backend port.
+const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
+
+// Production is deployed as one Vercel app, so browser API calls should stay
+// on the same origin and hit the routes in vercel.json.
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  (process.env.NODE_ENV === "production" ? "https://backend-one-sigma-19.vercel.app" : "http://localhost:5000");
+  process.env.NODE_ENV === "production"
+    ? ""
+    : configuredApiUrl || "http://localhost:5000";
 
 export const getLocalCache = <T>(key: string): T | null => {
   if (typeof window === "undefined") return null;

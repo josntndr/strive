@@ -7,6 +7,7 @@ const {
   providedExerciseCatalog,
   validateWorkoutPlan,
 } = require("../src/services/workoutSafety");
+const { ruleBasedReply } = require("../src/services/aiService");
 const { _test } = require("../src/controllers/workoutController");
 
 const baseProfile = {
@@ -102,4 +103,28 @@ test("validator catches duplicate exercises", () => {
 
   assert.equal(result.valid, false);
   assert.ok(result.issues.some((issue) => issue.includes("duplicate exercise Bodyweight Squats")));
+});
+
+test("assistant fallback gives a contextual workout session", () => {
+  const reply = ruleBasedReply("What should I train today?", {
+    workoutLocation: "Home",
+    workoutExperience: "Beginner",
+    targetBodyFocus: "Glutes and legs",
+  });
+
+  assert.match(reply, /simple home session/);
+  assert.match(reply, /Bodyweight Squats/);
+  assert.match(reply, /Glute Bridges/);
+  assert.doesNotMatch(reply, /Head to the Workouts page/);
+});
+
+test("assistant fallback gives practical meal guidance", () => {
+  const reply = ruleBasedReply("What should I eat after a workout?", {
+    fitnessGoal: "Build muscle",
+    dietaryPreference: "Filipino",
+  });
+
+  assert.match(reply, /protein source/);
+  assert.match(reply, /chicken adobo|tofu sisig|grilled fish/);
+  assert.match(reply, /consistency/);
 });

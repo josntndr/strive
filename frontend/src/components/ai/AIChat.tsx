@@ -30,7 +30,7 @@ type ProfileContext = {
 const WELCOME: ChatMessage = {
   role: "assistant",
   content:
-    "Hi! I'm your Strive Assistant. Ask me about workouts, home alternatives, meals, or beginner fitness tips — for example, \"What can I do instead of leg press at home?\"",
+    "Hi! I'm your Strive Assistant. Ask me about workouts, home alternatives, meals, or beginner fitness tips - for example, \"What can I do instead of leg press at home?\"",
 };
 
 const SUGGESTIONS = [
@@ -115,15 +115,19 @@ export function AIChat({ currentExercise }: AIChatProps) {
     setLoading(true);
 
     try {
-      const res = await api.post("/api/ai/chat", {
-        message,
-        history,
-        context: {
-          ...(profile || {}),
-          ...(currentExercise ? { currentExercise } : {}),
-          ...(currentPage ? { currentPage } : {}),
+      const res = await api.post(
+        "/api/ai/chat",
+        {
+          message,
+          history,
+          context: {
+            ...(profile || {}),
+            ...(currentExercise ? { currentExercise } : {}),
+            ...(currentPage ? { currentPage } : {}),
+          },
         },
-      });
+        { timeout: 25000 }
+      );
       const reply = res.data?.reply || "Strive Assistant is unavailable right now. Please try again later.";
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch {
@@ -180,7 +184,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                    className={`max-w-[85%] whitespace-pre-line rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                       msg.role === "user"
                         ? "bg-[#ed4f28] text-white rounded-br-sm shadow-xs"
                         : "bg-white text-slate-700 border border-slate-200 rounded-bl-sm"
@@ -195,7 +199,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
                 <div className="flex justify-start" role="status" aria-live="polite">
                   <div className="inline-flex items-center gap-2 rounded-2xl rounded-bl-sm border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-500">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Thinking…
+                    Thinking...
                   </div>
                 </div>
               )}
@@ -235,7 +239,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
                 onChange={(e) => setInput(e.target.value)}
                 maxLength={1000}
                 aria-label="Message Strive Assistant"
-                placeholder="Ask about workouts, meals, or tips…"
+                placeholder="Ask about workouts, meals, or tips..."
                 className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#ed4f28] focus:ring-2 focus:ring-[#ed4f28]/15"
               />
               <button
