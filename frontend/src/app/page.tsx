@@ -1472,36 +1472,55 @@ export default function Home() {
         {/* ========================================================================= */}
         {/* 6. CALL TO ACTION: Dynamic, high-impact athletic conversion banner        */}
         {/* ========================================================================= */}
-        <section className="py-20 bg-slate-50">
+        <section className="py-20 bg-slate-50 border-b border-slate-200/80">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <Reveal>
-              <div className="rounded-3xl bg-slate-950 p-8 sm:p-14 text-center relative overflow-hidden shadow-2xl border border-slate-800">
-                {/* Radiant ambient background glows */}
-                <div className="absolute top-0 right-1/4 w-80 h-80 bg-[#ed4f28]/20 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+              <div className="rounded-3xl bg-white p-8 sm:p-14 text-center relative overflow-hidden shadow-xl shadow-slate-200/60 border border-slate-200/90">
+                {/* Subtle warm ambient background glow */}
+                <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-b from-[#ed4f28]/10 via-amber-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 max-w-2xl mx-auto">
-                  <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                  <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-200/80 text-xs font-bold text-[#ed4f28] mb-4 shadow-2xs">
+                    <Flame className="w-3.5 h-3.5 fill-current" />
+                    Start Your Fitness Journey
+                  </span>
+
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
                     Ready to start training?
                   </h2>
-                  <p className="mt-4 text-slate-300 text-base font-normal leading-relaxed">
-                    Create your workout routine and custom nutrition targets in under two minutes. Free to use, no credit card required.
+                  <p className="mt-4 text-slate-600 text-base sm:text-lg font-normal leading-relaxed max-w-xl mx-auto">
+                    Create your personalized workout routine and custom nutrition targets in under two minutes. Completely free to start.
                   </p>
 
-                  <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
                     <Link
                       href="/register"
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-[#d9421c] px-8 py-3.5 text-sm font-bold text-white transition-all shadow-lg shadow-[#ed4f28]/30 hover:scale-[1.02] active:scale-95"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#ed4f28] hover:bg-[#d9421c] px-8 py-3.5 text-base font-bold text-white transition-all shadow-lg shadow-[#ed4f28]/25 hover:shadow-[#ed4f28]/35 active:scale-95 group"
                     >
-                      Sign Up
-                      <ArrowRight className="w-4 h-4" />
+                      <span>Sign Up Free</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                     <Link
                       href="/login"
-                      className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-slate-900 hover:bg-slate-800 hover:text-white px-6 py-3.5 text-sm font-bold text-slate-300 transition-colors border border-slate-800 hover:border-orange-500/40"
+                      className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-slate-50 hover:bg-slate-100 hover:text-slate-950 px-7 py-3.5 text-base font-bold text-slate-700 transition-colors border border-slate-300 shadow-2xs"
                     >
                       Login
                     </Link>
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-slate-100 flex flex-wrap items-center justify-center gap-6 text-xs font-semibold text-slate-500">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Check className="w-4 h-4 text-emerald-600" />
+                      Free to use
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Check className="w-4 h-4 text-emerald-600" />
+                      No credit card required
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Check className="w-4 h-4 text-emerald-600" />
+                      Setup in under 2 minutes
+                    </span>
                   </div>
                 </div>
               </div>
