@@ -118,6 +118,16 @@ test("assistant fallback gives a contextual workout session", () => {
   assert.doesNotMatch(reply, /Head to the Workouts page/);
 });
 
+test("assistant fallback answers no-equipment beginner workout requests", () => {
+  const reply = ruleBasedReply("Can you send me at least 5 beginner workouts without equipment?", {
+    workoutExperience: "Beginner",
+  });
+
+  assert.match(reply, /5 beginner-friendly no-equipment workouts/);
+  assert.match(reply, /Bodyweight squats/);
+  assert.match(reply, /Forearm plank/);
+});
+
 test("assistant fallback gives practical meal guidance", () => {
   const reply = ruleBasedReply("What should I eat after a workout?", {
     fitnessGoal: "Build muscle",

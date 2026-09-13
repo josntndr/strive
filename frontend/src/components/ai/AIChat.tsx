@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, Send, X, Loader2, Sparkles } from "lucide-react";
 import { api, getToken } from "@/lib/api";
+import { getLocalAssistantReply, type LocalAssistantContext } from "@/lib/localAssistantFallback";
 
 const PAGE_NAMES: Record<string, string> = {
   "/dashboard": "Dashboard",
@@ -114,24 +115,27 @@ export function AIChat({ currentExercise }: AIChatProps) {
     setMessages((prev) => [...prev, { role: "user", content: message }]);
     setLoading(true);
 
+    const requestContext: LocalAssistantContext = {
+      ...(profile || {}),
+      ...(currentExercise ? { currentExercise } : {}),
+      ...(currentPage ? { currentPage } : {}),
+    };
+
     try {
       const res = await api.post(
         "/api/ai/chat",
         {
           message,
           history,
-          context: {
-            ...(profile || {}),
-            ...(currentExercise ? { currentExercise } : {}),
-            ...(currentPage ? { currentPage } : {}),
-          },
+          context: requestContext,
         },
         { timeout: 25000 }
       );
-      const reply = res.data?.reply || "Strive Assistant is unavailable right now. Please try again later.";
+      const reply = res.data?.reply || getLocalAssistantReply(message, requestContext);
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch {
-      setError("Strive Assistant is unavailable right now. Please try again later.");
+      setMessages((prev) => [...prev, { role: "assistant", content: getLocalAssistantReply(message, requestContext) }]);
+      setError("");
     } finally {
       setLoading(false);
     }

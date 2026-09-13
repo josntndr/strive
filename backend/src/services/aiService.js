@@ -108,6 +108,21 @@ const buildSessionReply = (context = {}) => {
   ].join("\n");
 };
 
+const buildNoEquipmentWorkoutReply = (context = {}) => {
+  const plan = getTrainingContext(context);
+  const rounds = plan.beginner ? "2 rounds" : "3 rounds";
+
+  return [
+    `Yes - here are 5 ${plan.beginner ? "beginner-friendly" : "simple"} no-equipment workouts you can do at home. Do ${rounds}, resting 45-75 seconds between moves:`,
+    "1. Bodyweight squats - 10 to 12 reps",
+    "2. Glute bridges - 12 to 15 reps",
+    "3. Incline or wall push-ups - 8 to 10 reps",
+    "4. Reverse lunges - 8 reps each leg",
+    "5. Forearm plank - 20 to 30 seconds",
+    "Move slowly, keep your breathing steady, and stop if anything feels sharp or painful.",
+  ].join("\n");
+};
+
 const buildMealReply = (message, context = {}) => {
   const goal = String(context.fitnessGoal || "").toLowerCase();
   const diet = String(context.dietaryPreference || "").toLowerCase();
@@ -148,6 +163,11 @@ const ruleBasedReply = (message, context = {}) => {
   // 2. Greeting.
   if (/^(hi|hello|hey|yo|sup|good (morning|afternoon|evening))\b/.test(text.trim())) {
     return "Hi! I'm Strive Assistant. I can help with workouts, exercise form, home or gym alternatives, meals, progress tracking, and using Strive. What would you like help with?";
+  }
+
+  // 2a. No-equipment requests should answer with specific bodyweight options.
+  if (/(no equipment|without equipment|bodyweight|no machine|no gym)/.test(text) && /(workout|exercise|routine|session|beginner|send|give|list|recommend|suggest)/.test(text)) {
+    return buildNoEquipmentWorkoutReply(context);
   }
 
   // 2a. Build a quick workout directly when the user asks for one.

@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { findUserById } = require("../services/userStore");
 
+const JWT_SECRET = process.env.JWT_SECRET || "236f09c4f59d776cd949baabd54a323075383ad7dba840b605281cb0d5b21f91";
+
 const protect = async (req, res, next) => {
   const authHeader = req.headers.authorization || "";
 
@@ -11,7 +13,7 @@ const protect = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
 
     // Look up the user for fresh role/name. If the lookup fails or the record
     // isn't readable yet (storage write propagation), still trust the verified
