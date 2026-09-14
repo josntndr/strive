@@ -45,6 +45,37 @@ const noEquipmentWorkout = (beginner: boolean) => {
   ].join("\n");
 };
 
+const weeklyWorkoutPlanReply = (context: LocalAssistantContext) => {
+  const location = String(context.workoutLocation || "").toLowerCase().includes("gym") ? "gym" : "home";
+  const beginner = !context.workoutExperience || String(context.workoutExperience).toLowerCase().includes("begin");
+  const sets = beginner ? 2 : 3;
+  const reps = beginner ? "8-10" : "10-12";
+  const rest = beginner ? "75-90 seconds" : "60-75 seconds";
+  const lowerStrength = location === "gym"
+    ? "Leg press, hip thrust machine, hamstring curl, calf raises"
+    : "Bodyweight squats, reverse lunges, glute bridges, calf raises";
+  const upperStrength = location === "gym"
+    ? "Chest press, lat pulldown, seated row, cable tricep pushdown"
+    : "Incline push-ups, resistance band rows, shoulder taps, plank";
+  const fullBody = location === "gym"
+    ? "Goblet squat, chest press, lat pulldown, cable Pallof press, treadmill walk"
+    : "Squats, push-ups, glute bridges, dead bug, plank";
+
+  return [
+    `Absolutely. Here is a ${beginner ? "beginner-friendly" : "balanced"} 1-week workout plan for ${location} training:`,
+    "",
+    `Day 1 - Full body: ${fullBody}. Do ${sets} sets of ${reps} reps.`,
+    "Day 2 - Recovery: 20-30 minutes easy walking plus light stretching.",
+    `Day 3 - Lower body and glutes: ${lowerStrength}. Do ${sets} sets of ${reps} reps.`,
+    "Day 4 - Rest or mobility: hip circles, hamstring stretch, shoulder rolls, and easy walking.",
+    `Day 5 - Upper body and core: ${upperStrength}. Do ${sets} sets of ${reps} reps.`,
+    "Day 6 - Light cardio: 20-30 minutes brisk walk, bike, or treadmill at a comfortable pace.",
+    "Day 7 - Rest: focus on sleep, hydration, and preparing for next week.",
+    "",
+    `Keep rests around ${rest}. If a set feels too hard, reduce reps first before forcing form.`,
+  ].join("\n");
+};
+
 const mealReply = (context: LocalAssistantContext) => {
   const filipino = String(context.dietaryPreference || "").toLowerCase().includes("filipino");
   const examples = filipino
@@ -182,6 +213,10 @@ export const getLocalAssistantReply = (
   if (has(text, /what('?s| is| are| does)|meaning|means?\b|define|explain|how does|tell me about/)) {
     const explanation = explainConcept(conceptText);
     if (explanation) return explanation;
+  }
+
+  if (has(text, /(workout|routine|training|exercise plan).*(week|7 days|seven days|1 week|one week)|(week|7 days|seven days|1 week|one week).*(workout|routine|training|exercise plan)/)) {
+    return weeklyWorkoutPlanReply(context);
   }
 
   if (has(text, /no equipment|without equipment|bodyweight|at home|home workout/) && has(text, /workout|exercise|beginner|send|give|list|routine/)) {

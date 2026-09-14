@@ -128,6 +128,18 @@ test("assistant fallback answers no-equipment beginner workout requests", () => 
   assert.match(reply, /Forearm plank/);
 });
 
+test("assistant fallback answers one-week workout requests with a weekly plan", () => {
+  const reply = ruleBasedReply("how about a 1 week workout", {
+    workoutLocation: "Home",
+    workoutExperience: "Beginner",
+  });
+
+  assert.match(reply, /1-week workout plan/);
+  assert.match(reply, /Day 1/);
+  assert.match(reply, /Day 7/);
+  assert.doesNotMatch(reply, /here are 5 beginner-friendly no-equipment workouts/);
+});
+
 test("assistant fallback gives practical meal guidance", () => {
   const reply = ruleBasedReply("What should I eat after a workout?", {
     fitnessGoal: "Build muscle",

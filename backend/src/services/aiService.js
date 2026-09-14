@@ -141,6 +141,35 @@ const buildNoEquipmentWorkoutReply = (context = {}) => {
   ].join("\n");
 };
 
+const buildWeeklyWorkoutPlanReply = (context = {}) => {
+  const plan = getTrainingContext(context);
+  const home = plan.location !== "gym";
+  const level = plan.beginner ? "beginner-friendly" : "balanced";
+  const lowerStrength = home
+    ? "Bodyweight squats, reverse lunges, glute bridges, calf raises"
+    : "Leg press, hip thrust machine, hamstring curl, calf raises";
+  const upperStrength = home
+    ? "Incline push-ups, resistance band rows, shoulder taps, plank"
+    : "Chest press, lat pulldown, seated row, cable tricep pushdown";
+  const fullBody = home
+    ? "Squats, push-ups, glute bridges, dead bug, plank"
+    : "Goblet squat, chest press, lat pulldown, cable Pallof press, treadmill walk";
+
+  return [
+    `Absolutely. Here is a ${level} 1-week workout plan for ${plan.location} training:`,
+    "",
+    `Day 1 - Full body: ${fullBody}. Do ${plan.sets} sets of ${plan.reps} reps.`,
+    "Day 2 - Recovery: 20-30 minutes easy walking plus light stretching.",
+    `Day 3 - Lower body and glutes: ${lowerStrength}. Do ${plan.sets} sets of ${plan.reps} reps.`,
+    "Day 4 - Rest or mobility: hip circles, hamstring stretch, shoulder rolls, and easy walking.",
+    `Day 5 - Upper body and core: ${upperStrength}. Do ${plan.sets} sets of ${plan.reps} reps.`,
+    "Day 6 - Light cardio: 20-30 minutes brisk walk, bike, or treadmill at a comfortable pace.",
+    "Day 7 - Rest: focus on sleep, hydration, and preparing for next week.",
+    "",
+    `Keep rests around ${plan.rest}. If a set feels too hard, reduce reps first before forcing form.`,
+  ].join("\n");
+};
+
 const buildMealReply = (message, context = {}) => {
   const goal = String(context.fitnessGoal || "").toLowerCase();
   const diet = String(context.dietaryPreference || "").toLowerCase();
@@ -298,6 +327,10 @@ const ruleBasedReply = (message, context = {}, history = []) => {
   if (EXPLAIN_INTENT.test(text)) {
     const explanation = explainConcept(conceptText, context);
     if (explanation) return explanation;
+  }
+
+  if (/(workout|routine|training|exercise plan).*(week|7 days|seven days|1 week|one week)|(week|7 days|seven days|1 week|one week).*(workout|routine|training|exercise plan)/.test(text)) {
+    return buildWeeklyWorkoutPlanReply(context);
   }
 
   // 2b. No-equipment requests should answer with specific bodyweight options.
