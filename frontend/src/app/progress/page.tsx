@@ -38,9 +38,13 @@ type FitnessProfile = {
 
 export default function ProgressPage() {
   const router = useRouter();
-  const [records, setRecords] = useState<ProgressRecord[]>(() =>
-    getLocalCache<ProgressRecord[]>("strive_cached_progress") || []
-  );
+  const [isMounted, setIsMounted] = useState(false);
+  const [records, setRecords] = useState<ProgressRecord[]>(() => {
+    const cached = getLocalCache<any>("strive_cached_progress");
+    if (Array.isArray(cached)) return cached;
+    if (Array.isArray(cached?.records)) return cached.records;
+    return [];
+  });
   const [profile, setProfile] = useState<FitnessProfile | null>(() => {
     const dash = getLocalCache<{ profile?: FitnessProfile }>("strive_cached_dashboard");
     return dash?.profile || null;
@@ -59,6 +63,10 @@ export default function ProgressPage() {
     notes: "",
   });
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const fetchRecords = useCallback(async () => {
     if (!getToken()) {
       router.replace("/login");
@@ -68,13 +76,19 @@ export default function ProgressPage() {
 
     try {
       const [progressRes, dashRes] = await Promise.allSettled([
-        api.get<ProgressRecord[]>("/api/progress"),
+        api.get<any>("/api/progress"),
         api.get("/api/dashboard"),
       ]);
 
       if (progressRes.status === "fulfilled") {
-        setRecords(progressRes.value.data);
-        setLocalCache("strive_cached_progress", progressRes.value.data);
+        const raw = progressRes.value.data;
+        const list: ProgressRecord[] = Array.isArray(raw)
+          ? raw
+          : Array.isArray(raw?.records)
+          ? raw.records
+          : [];
+        setRecords(list);
+        setLocalCache("strive_cached_progress", list);
       }
 
       if (dashRes.status === "fulfilled" && dashRes.value.data) {
@@ -153,15 +167,18 @@ export default function ProgressPage() {
   const bmi = (baseWeight / ((userHeight / 100) * (userHeight / 100))).toFixed(1);
 
   // Synthesize chart data (anchoring baseline if empty)
-  const sortedRecords = [...records].sort(
+  const safeRecords = Array.isArray(records) ? records : [];
+  const sortedRecords = [...safeRecords].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
   const chartData =
     sortedRecords.length > 0
-      ? sortedRecords.map((r) => ({
-          date: new Date(r.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-          weight: r.weight,
+      ? sortedRecords.map((r, idx) => ({
+          date: r.date && !isNaN(new Date(r.date).getTime())
+            ? new Date(r.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+            : `Log ${idx + 1}`,
+          weight: r.weight || baseWeight,
         }))
       : [
           { date: "Day 1", weight: baseWeight },
@@ -193,7 +210,7 @@ export default function ProgressPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fbf5f0] text-slate-900 flex flex-col selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-[#fbf5f0] text-slate-900 flex flex-col selection:bg-[#ed4f28] selection:text-white">
       <Navbar />
       <AIChat />
 
@@ -216,7 +233,7 @@ export default function ProgressPage() {
 
           <div className="relative z-10 p-6 sm:p-10 w-full max-w-3xl space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-blue-600 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-blue-500/30">
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-[#ed4f28] text-white text-xs font-black uppercase tracking-wider shadow-md shadow-[#ed4f28]/30">
                 Biometric Progression
               </span>
               <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
@@ -239,7 +256,7 @@ export default function ProgressPage() {
             <div className="pt-2 flex flex-wrap items-center gap-3">
               <a
                 href="#log-section"
-                className="inline-flex items-center px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-600/30 transition-all active:scale-95"
+                className="inline-flex items-center px-6 py-3.5 rounded-2xl bg-[#ed4f28] hover:bg-[#d9421c] text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-[#ed4f28]/30 transition-all active:scale-95"
               >
                 <span>Log Today&apos;s Biometrics</span>
               </a>
@@ -321,60 +338,67 @@ export default function ProgressPage() {
 
               {/* Chart Area */}
               <div className="h-[280px] sm:h-[320px] w-full pt-4">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData}>
-                    <defs>
-                      <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#ed4f28" stopOpacity={0.25} />
-                        <stop offset="95%" stopColor="#ed4f28" stopOpacity={0.0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3ebe4" />
-                    <XAxis
-                      dataKey="date"
-                      stroke="#a8a29e"
-                      fontSize={11}
-                      fontWeight={600}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis
-                      stroke="#a8a29e"
-                      fontSize={11}
-                      fontWeight={600}
-                      tickLine={false}
-                      axisLine={false}
-                      domain={["dataMin - 1.5", "dataMax + 1.5"]}
-                      tickFormatter={(val) => `${val}kg`}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#1c1b1a",
-                        color: "#fff",
-                        borderRadius: "16px",
-                        border: "none",
-                        boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)",
-                        fontSize: "12px",
-                        fontWeight: "700",
-                      }}
-                      itemStyle={{ color: "#fa835c" }}
-                      formatter={(val: unknown) => [`${val} kg`, "Weight"]}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="weight"
-                      stroke="#ed4f28"
-                      strokeWidth={3}
-                      fillOpacity={1}
-                      fill="url(#weightGradient)"
-                      dot={{ fill: "#ed4f28", stroke: "#ffffff", strokeWidth: 2, r: 4 }}
-                      activeDot={{ r: 6, fill: "#ed4f28", stroke: "#ffffff", strokeWidth: 3 }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                {isMounted ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData}>
+                      <defs>
+                        <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ed4f28" stopOpacity={0.25} />
+                          <stop offset="95%" stopColor="#ed4f28" stopOpacity={0.0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3ebe4" />
+                      <XAxis
+                        dataKey="date"
+                        stroke="#a8a29e"
+                        fontSize={11}
+                        fontWeight={600}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        stroke="#a8a29e"
+                        fontSize={11}
+                        fontWeight={600}
+                        tickLine={false}
+                        axisLine={false}
+                        domain={["dataMin - 1.5", "dataMax + 1.5"]}
+                        tickFormatter={(val) => `${val}kg`}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#1c1b1a",
+                          color: "#fff",
+                          borderRadius: "16px",
+                          border: "none",
+                          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)",
+                          fontSize: "12px",
+                          fontWeight: "700",
+                        }}
+                        itemStyle={{ color: "#fa835c" }}
+                        formatter={(val: unknown) => [`${val} kg`, "Weight"]}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="weight"
+                        stroke="#ed4f28"
+                        strokeWidth={3}
+                        fillOpacity={1}
+                        fill="url(#weightGradient)"
+                        dot={{ fill: "#ed4f28", stroke: "#ffffff", strokeWidth: 2, r: 4 }}
+                        activeDot={{ r: 6, fill: "#ed4f28", stroke: "#ffffff", strokeWidth: 3 }}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full w-full flex items-center justify-center text-xs text-slate-400">
+                    <Loader2 className="w-5 h-5 animate-spin text-[#ed4f28] mr-2" />
+                    <span>Loading biometrics curve...</span>
+                  </div>
+                )}
               </div>
 
-              {records.length <= 1 && (
+              {safeRecords.length <= 1 && (
                 <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-100 text-xs text-stone-600 leading-relaxed">
                   Your profile baseline is locked at <strong>{baseWeight} kg</strong>. Log regular check-ins to unlock dynamic weekly trend lines.
                 </div>
@@ -392,19 +416,19 @@ export default function ProgressPage() {
                 </div>
 
                 <span className="text-xs font-bold text-stone-400">
-                  {records.length > 0 ? `${records.length} Recorded` : "Starting Profile"}
+                  {safeRecords.length > 0 ? `${safeRecords.length} Recorded` : "Starting Profile"}
                 </span>
               </div>
 
               <div className="p-6 space-y-3">
-                {records.length > 0 ? (
-                  records.map((r, idx) => (
+                {safeRecords.length > 0 ? (
+                  safeRecords.map((r, idx) => (
                     <div
-                      key={r.id}
-                      className="p-4 rounded-2xl bg-stone-50/70 hover:bg-white border border-stone-200/70 hover:border-blue-300 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                      key={r.id || (r as any)._id || idx}
+                      className="p-4 rounded-2xl bg-stone-50/70 hover:bg-white border border-stone-200/70 hover:border-orange-300 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-white border border-stone-200 text-stone-900 font-mono font-black text-xs flex items-center justify-center shrink-0 shadow-2xs group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <div className="w-10 h-10 rounded-xl bg-white border border-stone-200 text-stone-900 font-mono font-black text-xs flex items-center justify-center shrink-0 shadow-2xs group-hover:bg-[#ed4f28] group-hover:text-white transition-colors">
                           0{idx + 1}
                         </div>
                         <div>
@@ -413,11 +437,13 @@ export default function ProgressPage() {
                               {r.weight ? `${r.weight} kg` : `${baseWeight} kg`}
                             </span>
                             <span className="text-[10px] font-bold text-stone-400">
-                              {new Date(r.date).toLocaleDateString("en-US", {
-                                weekday: "short",
-                                month: "short",
-                                day: "numeric",
-                              })}
+                              {r.date && !isNaN(new Date(r.date).getTime())
+                                ? new Date(r.date).toLocaleDateString("en-US", {
+                                    weekday: "short",
+                                    month: "short",
+                                    day: "numeric",
+                                  })
+                                : "Recent"}
                             </span>
                           </div>
                           {(r.waist || r.hips) && (

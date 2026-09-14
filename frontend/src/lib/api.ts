@@ -323,8 +323,9 @@ api.interceptors.response.use(
     if (url.includes("/api/progress")) {
       const cached = getLocalCache("strive_cached_progress");
       if (cached) {
+        const recordsList = Array.isArray(cached) ? cached : ((cached as any)?.records || []);
         return Promise.resolve({
-          data: cached,
+          data: recordsList,
           status: 200,
           statusText: "OK",
           headers: {},
@@ -332,13 +333,13 @@ api.interceptors.response.use(
         });
       }
       const mockProgress = [
-        { _id: "prog_1", date: new Date(Date.now() - 14 * 86400000).toISOString(), weight: 81.2, waist: 84, feeling: "strong", notes: "Starting baseline" },
-        { _id: "prog_2", date: new Date(Date.now() - 7 * 86400000).toISOString(), weight: 79.5, waist: 82.5, feeling: "energized", notes: "Strength improving on compound lifts" },
-        { _id: "prog_3", date: new Date().toISOString(), weight: 78.0, waist: 81.0, feeling: "unstoppable", notes: "Hit target physique milestone" },
+        { id: "prog_1", _id: "prog_1", date: new Date(Date.now() - 14 * 86400000).toISOString(), weight: 81.2, waist: 84, feeling: "strong", notes: "Starting baseline" },
+        { id: "prog_2", _id: "prog_2", date: new Date(Date.now() - 7 * 86400000).toISOString(), weight: 79.5, waist: 82.5, feeling: "energized", notes: "Strength improving on compound lifts" },
+        { id: "prog_3", _id: "prog_3", date: new Date().toISOString(), weight: 78.0, waist: 81.0, feeling: "unstoppable", notes: "Hit target physique milestone" },
       ];
 
       return Promise.resolve({
-        data: { records: mockProgress, streak: 4 },
+        data: mockProgress,
         status: 200,
         statusText: "OK",
         headers: {},
