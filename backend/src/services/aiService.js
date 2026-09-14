@@ -707,26 +707,20 @@ const resolveProvider = () => {
 };
 
 /**
- * Returns { reply, source }. Uses a configured AI provider when an API key is
- * present (with conversation history for natural multi-turn chat), and always
- * falls back to the rule-based assistant on any failure so the chat never crashes.
+ * Returns { reply, source }. Production chat must use a configured AI provider;
+ * the older rule-based helper remains only for targeted unit tests.
  */
 const getAssistantReply = async ({ message, context = {}, history = [] }) => {
   const provider = resolveProvider();
 
-  try {
-    if (provider === "openai") {
-      return { reply: await callOpenAI({ message, context, history }), source: "openai" };
-    }
-    if (provider === "anthropic") {
-      return { reply: await callAnthropic({ message, context, history }), source: "anthropic" };
-    }
-  } catch (error) {
-    // Fall through to the rule-based assistant on any provider error.
-    console.warn("AI provider failed, using rule-based fallback:", error.message);
+  if (provider === "openai") {
+    return { reply: await callOpenAI({ message, context, history }), source: "openai" };
+  }
+  if (provider === "anthropic") {
+    return { reply: await callAnthropic({ message, context, history }), source: "anthropic" };
   }
 
-  return { reply: ruleBasedReply(message, context, history), source: "fallback" };
+  throw new Error("OpenAI API key is not configured for Strive Assistant.");
 };
 
 module.exports = { getAssistantReply, ruleBasedReply, SYSTEM_PROMPT, MAX_MESSAGE_LENGTH };

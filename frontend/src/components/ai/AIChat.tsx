@@ -4,7 +4,6 @@ import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, Send, X, Loader2, Sparkles, RotateCcw } from "lucide-react";
 import { api, getStoredUser, getToken } from "@/lib/api";
-import { getLocalAssistantReply, type LocalAssistantContext } from "@/lib/localAssistantFallback";
 
 const PAGE_NAMES: Record<string, string> = {
   "/dashboard": "Dashboard",
@@ -28,6 +27,12 @@ type ProfileContext = {
   targetBodyFocus?: string;
 };
 
+type AssistantRequestContext = ProfileContext & {
+  userName?: string;
+  currentExercise?: string;
+  currentPage?: string;
+};
+
 const WELCOME: ChatMessage = {
   role: "assistant",
   content:
@@ -45,6 +50,15 @@ const CHAT_HISTORY_LIMIT = 30;
 const getChatStorageKey = () => {
   const user = getStoredUser();
   return `strive_ai_chat_${user?.id || "current"}`;
+};
+
+const getAssistantErrorReply = (error: unknown) => {
+  const maybeError = error as { response?: { data?: { reply?: string; message?: string } } };
+  return (
+    maybeError.response?.data?.reply ||
+    maybeError.response?.data?.message ||
+    "I cannot reach the OpenAI assistant right now. Please try again in a moment."
+  );
 };
 
 export function AIChat({ currentExercise }: AIChatProps) {
@@ -149,7 +163,7 @@ export function AIChat({ currentExercise }: AIChatProps) {
     setLoading(true);
 
     const storedUser = getStoredUser();
-    const requestContext: LocalAssistantContext = {
+    const requestContext: AssistantRequestContext = {
       ...(storedUser?.fullName ? { userName: storedUser.fullName } : {}),
       ...(profile || {}),
       ...(currentExercise ? { currentExercise } : {}),
@@ -166,14 +180,14 @@ export function AIChat({ currentExercise }: AIChatProps) {
         },
         { timeout: 25000 }
       );
-      const reply = String(res.data?.reply || getLocalAssistantReply(message, requestContext, history)).trim();
+      const reply = String(res.data?.reply || "I did not receive a response from the AI model. Please send that again.").trim();
       setMessages((prev) => {
         const last = prev[prev.length - 1];
         if (last?.role === "assistant" && last.content === reply) return prev;
         return [...prev, { role: "assistant", content: reply }];
       });
-    } catch {
-      const reply = getLocalAssistantReply(message, requestContext, history);
+    } catch (err) {
+      const reply = getAssistantErrorReply(err);
       setMessages((prev) => {
         const last = prev[prev.length - 1];
         if (last?.role === "assistant" && last.content === reply) return prev;

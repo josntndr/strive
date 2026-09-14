@@ -1,4 +1,4 @@
-const { getAssistantReply, ruleBasedReply, MAX_MESSAGE_LENGTH } = require("../services/aiService");
+const { getAssistantReply, MAX_MESSAGE_LENGTH } = require("../services/aiService");
 const { buildAssistantContext } = require("../services/aiContextService");
 
 const RATE_WINDOW_MS = 60000;
@@ -53,9 +53,11 @@ const chat = async (req, res) => {
     });
     return res.json({ reply, source });
   } catch (error) {
-    // Never crash the chat - return a helpful fallback reply instead.
     console.error("AI chat error:", error.message);
-    return res.json({ reply: ruleBasedReply(trimmed, safeContext, safeHistory), source: "fallback" });
+    return res.status(503).json({
+      reply: "Strive Assistant cannot reach the AI model right now. Please try again in a moment.",
+      source: "error",
+    });
   }
 };
 

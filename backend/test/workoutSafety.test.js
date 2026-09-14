@@ -7,7 +7,7 @@ const {
   providedExerciseCatalog,
   validateWorkoutPlan,
 } = require("../src/services/workoutSafety");
-const { ruleBasedReply } = require("../src/services/aiService");
+const { getAssistantReply, ruleBasedReply } = require("../src/services/aiService");
 const { _test } = require("../src/controllers/workoutController");
 
 const baseProfile = {
@@ -302,4 +302,28 @@ test("assistant fallback redirects unrelated requests politely", () => {
 
   assert.match(reply, /training, meals, recovery, progress, or using Strive/);
   assert.doesNotMatch(reply, /workout plan/);
+});
+
+test("assistant service requires a real AI provider instead of using fallback", async () => {
+  const oldOpenAIKey = process.env.OPENAI_API_KEY;
+  const oldAnthropicKey = process.env.ANTHROPIC_API_KEY;
+  const oldProvider = process.env.AI_PROVIDER;
+
+  delete process.env.OPENAI_API_KEY;
+  delete process.env.ANTHROPIC_API_KEY;
+  delete process.env.AI_PROVIDER;
+
+  try {
+    await assert.rejects(
+      () => getAssistantReply({ message: "What does calorie deficit mean?" }),
+      /OpenAI API key is not configured/
+    );
+  } finally {
+    if (oldOpenAIKey === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = oldOpenAIKey;
+    if (oldAnthropicKey === undefined) delete process.env.ANTHROPIC_API_KEY;
+    else process.env.ANTHROPIC_API_KEY = oldAnthropicKey;
+    if (oldProvider === undefined) delete process.env.AI_PROVIDER;
+    else process.env.AI_PROVIDER = oldProvider;
+  }
 });
