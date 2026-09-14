@@ -1,22 +1,24 @@
-const SYSTEM_PROMPT = `You are Strive Assistant, a supportive ChatGPT-style fitness and meal planning assistant inside the Strive web application.
+const { detectAssistantIntent } = require("./aiIntentService");
 
-Your role is to help users with workouts, home and gym exercise alternatives, exercise form, beginner fitness concerns, meal planning, basic nutrition, motivation, progress tracking, and how to use the Strive app.
+const SYSTEM_PROMPT = `You are Strive Assistant, a ChatGPT-like personal fitness assistant inside the Strive web application.
 
-Always answer the user's actual message. Use the user's context when available, including fitness goal, workout location, workout experience, target body focus, dietary preference, current exercise, and current page.
+Your role is to help users with workouts, exercise form, home and gym alternatives, sets, reps, rest, tempo, recovery, meal planning, basic nutrition, weight management, progress tracking, and how to use Strive.
 
-Keep answers conversational, clear, supportive, and beginner-friendly.
+Always answer the user's actual question first. Read the full sentence, recent history, and relevant Strive context before responding. Do not answer a different saved template just because one keyword appears.
 
-If the user feels scared, unsure, or intimidated by a workout, reassure them and suggest easier alternatives or modifications.
+Use relevant user context when available: profile, workout location, experience, goals, dietary preference, current page, current exercise, saved workout plan, saved meal plan, and progress records. Never invent user data.
 
-If the user asks for a home alternative, suggest exercises that can be done at home with bodyweight, dumbbells, or resistance bands.
+Keep answers conversational, direct, supportive, and beginner-friendly. Adjust length to the question: short questions can get short answers; plan requests can get structured plans.
 
-If the user asks for a gym alternative, suggest machine-based or equipment-based exercises.
+Use conversation context for follow-ups such as "this", "that", "second one", or "how about dumbbells?" If the reference is unclear, ask one concise clarifying question and still offer a useful next step.
+
+If the user asks for alternatives, match the same movement pattern and muscles when possible, and consider equipment, location, difficulty, goal, and limitations.
 
 If the user asks about meals, suggest balanced and realistic food options. Prefer affordable and Filipino-friendly examples when appropriate.
 
 Do not give medical diagnosis, treatment, or extreme diet advice.
 
-If the user mentions pain, injury, dizziness, illness, pregnancy, eating disorder, or serious medical conditions, advise them to stop and consult a qualified healthcare professional.
+If the user mentions pain, injury, dizziness, illness, pregnancy, eating disorder, or serious medical conditions, advise them to stop the painful activity and consult a qualified healthcare professional when severe, sharp, recurring, or unclear.
 
 If the user asks something unrelated to fitness, meals, progress, or Strive, politely redirect them back to fitness support.
 
@@ -37,8 +39,33 @@ const buildContextLine = (context = {}) => {
   if (context.targetBodyFocus) parts.push(`Target body focus: ${context.targetBodyFocus}`);
   if (context.currentExercise) parts.push(`Current exercise: ${context.currentExercise}`);
   if (context.currentPage) parts.push(`Current page: ${context.currentPage}`);
+  if (context.intent) parts.push(`Detected intent: ${context.intent}`);
   return parts.length ? `\n\nUser context - ${parts.join(", ")}.` : "";
 };
+
+const buildStructuredContext = (context = {}) =>
+  JSON.stringify(
+    {
+      profile: {
+        userName: context.userName,
+        fitnessGoal: context.fitnessGoal,
+        workoutLocation: context.workoutLocation,
+        workoutExperience: context.workoutExperience,
+        dietaryPreference: context.dietaryPreference,
+        targetBodyFocus: context.targetBodyFocus,
+        workoutDaysPerWeek: context.workoutDaysPerWeek,
+        workoutDuration: context.workoutDuration,
+      },
+      page: context.currentPage,
+      currentExercise: context.currentExercise,
+      intent: context.intent,
+      currentWorkout: context.currentWorkout,
+      currentMealPlan: context.currentMealPlan,
+      progress: context.progress,
+    },
+    null,
+    2
+  );
 
 // --- Rule-based fallback ------------------------------------------------------
 
@@ -213,6 +240,131 @@ const buildWeeklyMealPlanReply = (message, context = {}) => {
   ].join("\n");
 };
 
+const buildCurrentWorkoutReply = (context = {}) => {
+  const session = context.currentWorkout?.todaySession;
+  if (!session?.exercises?.length) {
+    return "I do not see a saved workout session in your Strive account yet. If you want, I can make a beginner session now, or you can generate a plan from the Workouts page.";
+  }
+
+  return [
+    `Today in your saved Strive plan: ${session.day || "Next session"} - ${session.focus || "Workout"}.`,
+    "",
+    ...session.exercises.slice(0, 8).map((exercise, index) => {
+      const sets = exercise.sets ? `${exercise.sets} sets` : "sets as listed";
+      const reps = exercise.reps ? ` x ${exercise.reps}` : "";
+      const rest = exercise.rest ? `, rest ${exercise.rest}` : "";
+      return `${index + 1}. ${exercise.name} - ${sets}${reps}${rest}`;
+    }),
+    "",
+    "Start with the first exercise, keep the pace controlled, and use the exercise tutorial button if you need a form check.",
+  ].join("\n");
+};
+
+const buildCurrentMealReply = (context = {}) => {
+  const meals = context.currentMealPlan?.todayMeals;
+  if (!meals) {
+    return "I do not see a saved meal plan in your Strive account yet. A simple balanced plate is protein, vegetables, a carb source, and water.";
+  }
+
+  const details = [
+    meals.breakfast && `Breakfast: ${meals.breakfast}`,
+    meals.lunch && `Lunch: ${meals.lunch}`,
+    meals.snack && `Snack: ${meals.snack}`,
+    meals.dinner && `Dinner: ${meals.dinner}`,
+  ].filter(Boolean);
+
+  return [
+    `For ${meals.day || "today"}, your saved Strive meal plan is:`,
+    ...details,
+    meals.estimatedCalories ? `Estimated calories: ${meals.estimatedCalories}` : "",
+    meals.estimatedProtein ? `Estimated protein: ${meals.estimatedProtein}g` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+};
+
+const buildNextExerciseReply = (context = {}) => {
+  const exercises = context.currentWorkout?.todaySession?.exercises || [];
+  if (exercises.length < 2) {
+    return "Nice work finishing that. I do not see the next saved exercise here, so take 60-90 seconds, breathe, and check your Workouts page for the next move.";
+  }
+
+  const next = exercises[1];
+  return [
+    `Nice work. Your next exercise is ${next.name}.`,
+    `${next.sets || 3} sets${next.reps ? ` of ${next.reps}` : ""}${next.rest ? `, resting ${next.rest}` : ""}.`,
+    next.instruction ? `Form cue: ${next.instruction}` : "Keep the reps controlled and stop if anything feels sharp or painful.",
+  ].join("\n");
+};
+
+const buildRestReply = (text, context = {}) => {
+  const sessionExercise = (context.currentWorkout?.todaySession?.exercises || []).find((exercise) =>
+    text.includes(String(exercise.name || "").toLowerCase())
+  );
+  const rest = sessionExercise?.rest;
+  const namedExercise = sessionExercise?.name || context.currentExercise || (text.match(/squat|lunge|push.?up|plank|press|row|deadlift|curl|bridge/) || [])[0];
+
+  if (rest) {
+    return `For ${sessionExercise.name}, use the rest listed in your Strive plan: ${rest}. If your breathing is still heavy or your form would break, take another 15-30 seconds.`;
+  }
+
+  if (/squat|leg press|lunge|deadlift|hip thrust|lower/.test(text)) {
+    return `For ${namedExercise || "lower-body strength work"}, rest about 60-90 seconds between beginner sets. Use 90-120 seconds if the set feels heavy, and start the next set only when your breathing and form feel steady.`;
+  }
+
+  if (/plank|core|abs/.test(text)) {
+    return "For core work, rest about 30-60 seconds between sets. If your hips start sagging or your lower back takes over, rest longer or shorten the next hold.";
+  }
+
+  return "For most beginner strength exercises, rest 60-90 seconds between sets. For lighter cardio or mobility, rest as needed; for heavier sets, 90-120 seconds is reasonable.";
+};
+
+const buildPushupAlternativeReply = () =>
+  [
+    "Yes. If push-ups are too hard or uncomfortable, use one of these swaps:",
+    "1. Wall push-ups - easiest option",
+    "2. Incline push-ups on a bench or table - still trains chest, shoulders, and triceps",
+    "3. Knee push-ups - good if wrists feel okay",
+    "4. Dumbbell floor press - best if you have dumbbells",
+    "",
+    "Pick the version where you can do 8-12 controlled reps without pain.",
+  ].join("\n");
+
+const buildKneeLungeReply = () =>
+  [
+    "Stop lunges for now if your knee hurts during the movement.",
+    "",
+    "Try this instead today:",
+    "1. Glute bridges - 2-3 sets of 12-15",
+    "2. Box squats to a chair - 2-3 sets of 8-10",
+    "3. Step-ups only if pain-free - low height, slow control",
+    "",
+    "Avoid pushing through sharp pain, swelling, or pain that changes how you walk. If it keeps happening, get checked by a physiotherapist or qualified clinician.",
+  ].join("\n");
+
+const buildEquipmentFollowupReply = (text, context = {}, history = []) => {
+  const previous = recentUserText(history);
+  const contextText = `${previous} ${String(context.currentExercise || "")}`.toLowerCase();
+  const equipment = text.match(/dumbbells?|barbells?|bands?|machines?|cables?|kettlebells?/)?.[0] || "that equipment";
+
+  if (/workout|routine|plan|exercise|alternative|replace|swap|instead/.test(contextText)) {
+    if (/dumbbell/.test(equipment)) {
+      return [
+        "Yes, dumbbells work well. For a beginner-friendly swap, choose:",
+        "1. Goblet squat for legs",
+        "2. Dumbbell floor press for chest",
+        "3. One-arm dumbbell row for back",
+        "4. Dumbbell Romanian deadlift for hamstrings and glutes",
+        "",
+        "Use 2-3 sets of 8-12 reps and choose a weight you can control with clean form.",
+      ].join("\n");
+    }
+    return `Yes, ${equipment} can work. Tell me the exercise you are replacing, and I will match it to the same muscles and difficulty.`;
+  }
+
+  return `Do you mean using ${equipment} for a workout plan, or replacing a specific exercise? Tell me the exercise or goal and I will give you the best option.`;
+};
+
 const explainConcept = (text, context = {}) => {
   if (/\bworkout\b/.test(text)) {
     return [
@@ -294,6 +446,8 @@ const explainConcept = (text, context = {}) => {
 
 const ruleBasedReply = (message, context = {}, history = []) => {
   const text = String(message || "").toLowerCase();
+  const detected = detectAssistantIntent(message, history);
+  const intent = context.intent || detected.intent;
   const previousText = recentUserText(history);
   const conceptText = /(it|that|this|mean|means|explain)/.test(text) && previousText
     ? `${previousText} ${text}`
@@ -302,8 +456,12 @@ const ruleBasedReply = (message, context = {}, history = []) => {
   const experience = String(context.workoutExperience || "").toLowerCase();
 
   // 1. Safety always comes first.
+  if (/(knee|knees).*(pain|hurt|hurts)|(?:pain|hurt|hurts).*(knee|knees)/.test(text) && /lunge|squat|leg|step/.test(text)) {
+    return buildKneeLungeReply();
+  }
+
   if (/(pain|hurts?|injur|sprain|illness|sick|pregnan|dizzy|faint|chest pain|eating disorder|anorexi|bulimi|disease|medical|condition|surgery)/.test(text)) {
-    return "Please stop the activity and consult a qualified healthcare professional before continuing. I can only give general fitness guidance, not medical advice.";
+    return "Stop the activity for now, especially if the pain is sharp, recurring, or changes how you move. I can give general fitness guidance, but a qualified healthcare professional should check pain, injury, dizziness, illness, pregnancy-related concerns, or medical conditions.";
   }
 
   // 1b. Fear / nervousness / low confidence - reassure supportively first.
@@ -319,9 +477,25 @@ const ruleBasedReply = (message, context = {}, history = []) => {
     return greetingReply(context);
   }
 
+  if (intent === "session_progress") {
+    return buildNextExerciseReply(context);
+  }
+
+  if (intent === "rest_period") {
+    return buildRestReply(text, context);
+  }
+
   // 2a. "What is my workout today?" is asking for a plan, not a definition.
   if (/(what('?s| is)?\s*(my)?\s*(workout|exercise|session|plan)\s*(today|now|for today)|today'?s\s*(workout|session|plan)|workout today)/.test(text)) {
-    return `${buildSessionReply(context)}\n\nYou can also open the Workouts page for your saved session and tap any exercise for its video tutorial and alternatives.`;
+    return buildCurrentWorkoutReply(context);
+  }
+
+  if (intent === "current_meal") {
+    return buildCurrentMealReply(context);
+  }
+
+  if (intent === "equipment_followup") {
+    return buildEquipmentFollowupReply(text, context, history);
   }
 
   if (EXPLAIN_INTENT.test(text)) {
@@ -354,11 +528,30 @@ const ruleBasedReply = (message, context = {}, history = []) => {
   // 3. Alternative / "instead of" intent (uses current exercise context too).
   const wantsAlternative = /(instead of|alternative|replace|substitute|swap|at home|home version|no gym|without (a )?(machine|gym|equipment)|don'?t have|can'?t go to the gym|home option)/.test(text);
   if (wantsAlternative || (current && /(this|it|alternative|at home|home)/.test(text))) {
+    if (/push.?ups?/.test(text) || /push.?ups?/.test(current)) {
+      return buildPushupAlternativeReply();
+    }
+
+    const sessionExercises = context.currentWorkout?.todaySession?.exercises || [];
+    const matchedCurrent = sessionExercises.find((exercise) => {
+      const name = String(exercise.name || "").toLowerCase();
+      return name && (text.includes(name) || current.includes(name));
+    });
+    const verifiedAlternatives = matchedCurrent?.alternatives || [];
+    if (verifiedAlternatives.length) {
+      return [
+        `For ${matchedCurrent.name}, the closest Strive alternatives are:`,
+        ...verifiedAlternatives.slice(0, 4).map((alt, index) => `${index + 1}. ${alt.name}${alt.equipment ? ` (${alt.equipment})` : ""}${alt.reason ? ` - ${alt.reason}` : ""}`),
+        "",
+        "Choose the one that matches your equipment and feels pain-free.",
+      ].join("\n");
+    }
+
     const target = findAlternativeTarget(text) || findAlternativeTarget(current);
     if (target) {
       return `For a home alternative to ${target.name}, you can do ${listWords(target.alts)}. These train the same muscles without a machine. Start with 3 sets of 10 to 12 reps and move slowly with control.`;
     }
-    return "For home workouts you can swap machines for bodyweight moves: bodyweight squats, step-ups, or reverse lunges for legs; glute bridges for glutes; wall push-ups or push-ups for chest; and planks or mountain climbers for core. Aim for 3 sets of 10 to 12 reps with slow, controlled form.";
+    return "Tell me the exact exercise you want to replace and what equipment you have. I can match the same muscles and difficulty instead of guessing.";
   }
 
   // 4. Exercise form / how-to.
@@ -448,7 +641,10 @@ const callOpenAI = async ({ message, context, history = [] }) => {
       max_tokens: 400,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: `User context: ${JSON.stringify(context || {})}` },
+        {
+          role: "system",
+          content: `Relevant Strive context for this user only. Use it when helpful and say when data is missing:\n${buildStructuredContext(context || {})}`,
+        },
         ...normalizeHistory(history).slice(-8),
         { role: "user", content: message },
       ],
@@ -482,7 +678,7 @@ const callAnthropic = async ({ message, context, history = [] }) => {
       body: JSON.stringify({
         model: process.env.AI_MODEL || "claude-haiku-4-5-20251001",
         max_tokens: 400,
-        system: `${SYSTEM_PROMPT}${buildContextLine(context)}`,
+        system: `${SYSTEM_PROMPT}${buildContextLine(context)}\n\nRelevant Strive context for this user only:\n${buildStructuredContext(context || {})}`,
         messages: [...turns, { role: "user", content: message }],
       }),
     });

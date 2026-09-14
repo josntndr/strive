@@ -2,7 +2,7 @@
 
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { MessageCircle, Send, X, Loader2, Sparkles } from "lucide-react";
+import { MessageCircle, Send, X, Loader2, Sparkles, RotateCcw } from "lucide-react";
 import { api, getStoredUser, getToken } from "@/lib/api";
 import { getLocalAssistantReply, type LocalAssistantContext } from "@/lib/localAssistantFallback";
 
@@ -40,6 +40,13 @@ const SUGGESTIONS = [
   "How many days should I train as a beginner?",
 ];
 
+const CHAT_HISTORY_LIMIT = 30;
+
+const getChatStorageKey = () => {
+  const user = getStoredUser();
+  return `strive_ai_chat_${user?.id || "current"}`;
+};
+
 export function AIChat({ currentExercise }: AIChatProps) {
   const [mounted, setMounted] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -69,6 +76,32 @@ export function AIChat({ currentExercise }: AIChatProps) {
       window.removeEventListener("open-ai-chat", handleOpen);
     };
   }, []);
+
+  useEffect(() => {
+    if (!mounted || !loggedIn) return;
+    try {
+      const saved = localStorage.getItem(getChatStorageKey());
+      const parsed = saved ? (JSON.parse(saved) as ChatMessage[]) : null;
+      if (Array.isArray(parsed) && parsed.some((msg) => msg?.role === "user")) {
+        setMessages(
+          parsed
+            .filter((msg) => (msg.role === "user" || msg.role === "assistant") && typeof msg.content === "string")
+            .slice(-CHAT_HISTORY_LIMIT)
+        );
+      }
+    } catch {
+      setMessages([WELCOME]);
+    }
+  }, [mounted, loggedIn]);
+
+  useEffect(() => {
+    if (!mounted || !loggedIn) return;
+    try {
+      localStorage.setItem(getChatStorageKey(), JSON.stringify(messages.slice(-CHAT_HISTORY_LIMIT)));
+    } catch {
+      // Chat still works when local storage is unavailable.
+    }
+  }, [messages, mounted, loggedIn]);
 
   // Lazily load profile context the first time the panel opens.
   useEffect(() => {
@@ -133,14 +166,35 @@ export function AIChat({ currentExercise }: AIChatProps) {
         },
         { timeout: 25000 }
       );
-      const reply = res.data?.reply || getLocalAssistantReply(message, requestContext, history);
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      const reply = String(res.data?.reply || getLocalAssistantReply(message, requestContext, history)).trim();
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "assistant" && last.content === reply) return prev;
+        return [...prev, { role: "assistant", content: reply }];
+      });
     } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: getLocalAssistantReply(message, requestContext, history) }]);
+      const reply = getLocalAssistantReply(message, requestContext, history);
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "assistant" && last.content === reply) return prev;
+        return [...prev, { role: "assistant", content: reply }];
+      });
       setError("");
     } finally {
       setLoading(false);
     }
+  };
+
+  const resetChat = () => {
+    setMessages([WELCOME]);
+    setInput("");
+    setError("");
+    try {
+      localStorage.removeItem(getChatStorageKey());
+    } catch {
+      // Ignore storage cleanup errors.
+    }
+    requestAnimationFrame(() => inputRef.current?.focus());
   };
 
   const handleInputKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -182,14 +236,25 @@ export function AIChat({ currentExercise }: AIChatProps) {
                   <p className="text-[11px] text-white/80 mt-0.5">Beginner-friendly fitness help</p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-lg p-1.5 hover:bg-white/15 transition-colors cursor-pointer"
-                aria-label="Close chat"
-              >
-                <X className="h-5 w-5" />
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={resetChat}
+                  className="rounded-lg p-1.5 hover:bg-white/15 transition-colors cursor-pointer"
+                  aria-label="Start new chat"
+                  title="Start new chat"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg p-1.5 hover:bg-white/15 transition-colors cursor-pointer"
+                  aria-label="Close chat"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
             </div>
 
             {/* Messages */}

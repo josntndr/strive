@@ -1,20 +1,20 @@
 const { getAssistantReply, ruleBasedReply, MAX_MESSAGE_LENGTH } = require("../services/aiService");
-const { getProfileByUserId } = require("../services/profileStore");
+const { buildAssistantContext } = require("../services/aiContextService");
 
-const PROFILE_CONTEXT_FIELDS = [
-  "fitnessGoal",
-  "workoutLocation",
-  "workoutExperience",
-  "dietaryPreference",
-  "targetBodyFocus",
-];
+const RATE_WINDOW_MS = 60000;
+const RATE_LIMIT = 30;
+const buckets = new Map();
 
-const compactProfileContext = (profile) => {
-  if (!profile) return {};
-  return PROFILE_CONTEXT_FIELDS.reduce((acc, field) => {
-    if (profile[field]) acc[field] = profile[field];
-    return acc;
-  }, {});
+const checkRateLimit = (key) => {
+  const now = Date.now();
+  const bucket = buckets.get(key) || { count: 0, resetAt: now + RATE_WINDOW_MS };
+  if (now > bucket.resetAt) {
+    bucket.count = 0;
+    bucket.resetAt = now + RATE_WINDOW_MS;
+  }
+  bucket.count += 1;
+  buckets.set(key, bucket);
+  return bucket.count <= RATE_LIMIT;
 };
 
 const chat = async (req, res) => {
@@ -27,22 +27,28 @@ const chat = async (req, res) => {
   const trimmed = message.trim().slice(0, MAX_MESSAGE_LENGTH);
   const safeContext = context && typeof context === "object" ? context : {};
   const safeHistory = Array.isArray(history) ? history : [];
+  const userId = req.user?._id || req.user?.id;
+  const rateKey = String(userId || req.ip || "anonymous");
+
+  if (!checkRateLimit(rateKey)) {
+    return res.status(429).json({
+      reply: "I am getting a lot of messages right now. Please wait a moment, then send that again.",
+      source: "rate-limit",
+    });
+  }
 
   try {
-    let profileContext = {};
-    try {
-      profileContext = compactProfileContext(await getProfileByUserId(req.user?._id || req.user?.id));
-    } catch {
-      profileContext = {};
-    }
+    const assistantContext = await buildAssistantContext({
+      userId,
+      user: req.user || {},
+      clientContext: safeContext,
+      message: trimmed,
+      history: safeHistory,
+    });
 
     const { reply, source } = await getAssistantReply({
       message: trimmed,
-      context: {
-        userName: req.user?.fullName || req.user?.name || safeContext.userName,
-        ...profileContext,
-        ...safeContext,
-      },
+      context: assistantContext,
       history: safeHistory,
     });
     return res.json({ reply, source });

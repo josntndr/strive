@@ -200,8 +200,8 @@ test("assistant fallback still answers today's workout as a session", () => {
     workoutExperience: "Beginner",
   });
 
-  assert.match(reply, /simple home session/);
-  assert.match(reply, /Bodyweight Squats/);
+  assert.match(reply, /do not see a saved workout session/);
+  assert.doesNotMatch(reply, /simple home session/);
 });
 
 test("assistant fallback greets like a personal assistant", () => {
@@ -218,4 +218,88 @@ test("assistant fallback avoids robotic catch-all wording", () => {
 
   assert.match(reply, /I hear you/);
   assert.doesNotMatch(reply, /Direct answer/);
+});
+
+test("assistant fallback answers rest timing instead of form for squat rest questions", () => {
+  const reply = ruleBasedReply("How long should I rest after squats?");
+
+  assert.match(reply, /60-90 seconds/);
+  assert.match(reply, /breathing and form/);
+  assert.doesNotMatch(reply, /Here's how to do/);
+});
+
+test("assistant fallback uses saved workout context for today's workout", () => {
+  const reply = ruleBasedReply("what is my workout today?", {
+    currentWorkout: {
+      todaySession: {
+        day: "Day 2",
+        focus: "Upper Body",
+        exercises: [
+          { name: "Lat Pulldown Machine", sets: 3, reps: "10-12 reps", rest: "75 seconds" },
+          { name: "Chest Press Machine", sets: 3, reps: "10-12 reps", rest: "75 seconds" },
+        ],
+      },
+    },
+  });
+
+  assert.match(reply, /Day 2 - Upper Body/);
+  assert.match(reply, /Lat Pulldown Machine/);
+  assert.match(reply, /Chest Press Machine/);
+  assert.doesNotMatch(reply, /do not see a saved workout/);
+});
+
+test("assistant fallback guides the next saved exercise after progress follow-up", () => {
+  const reply = ruleBasedReply("I finished the first exercise", {
+    currentWorkout: {
+      todaySession: {
+        exercises: [
+          { name: "Bodyweight Squats", sets: 3, reps: "10 reps", rest: "60 seconds" },
+          { name: "Glute Bridges", sets: 3, reps: "12 reps", rest: "60 seconds", instruction: "Squeeze your glutes at the top." },
+        ],
+      },
+    },
+  });
+
+  assert.match(reply, /next exercise is Glute Bridges/);
+  assert.match(reply, /Squeeze your glutes/);
+});
+
+test("assistant fallback handles push-up replacement directly", () => {
+  const reply = ruleBasedReply("Can I replace push-ups?");
+
+  assert.match(reply, /Wall push-ups/);
+  assert.match(reply, /Dumbbell floor press/);
+  assert.doesNotMatch(reply, /Tell me the exact exercise/);
+});
+
+test("assistant fallback handles knee pain during lunges safely and specifically", () => {
+  const reply = ruleBasedReply("My knee hurts during lunges.");
+
+  assert.match(reply, /Stop lunges/);
+  assert.match(reply, /Glute bridges/);
+  assert.match(reply, /physiotherapist|clinician/);
+});
+
+test("assistant fallback treats dumbbells as a contextual follow-up", () => {
+  const reply = ruleBasedReply("How about dumbbells?", {}, [
+    { role: "user", content: "Can I replace leg press with something at home?" },
+    { role: "assistant", content: "Bodyweight squats can work." },
+  ]);
+
+  assert.match(reply, /dumbbells work/);
+  assert.match(reply, /Goblet squat/);
+});
+
+test("assistant fallback asks one clarifier for unclear equipment follow-up", () => {
+  const reply = ruleBasedReply("How about dumbbells?");
+
+  assert.match(reply, /workout plan, or replacing a specific exercise/);
+  assert.doesNotMatch(reply, /here are 5 beginner-friendly/);
+});
+
+test("assistant fallback redirects unrelated requests politely", () => {
+  const reply = ruleBasedReply("Can you write my programming assignment?");
+
+  assert.match(reply, /training, meals, recovery, progress, or using Strive/);
+  assert.doesNotMatch(reply, /workout plan/);
 });

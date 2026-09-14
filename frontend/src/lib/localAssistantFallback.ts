@@ -173,6 +173,18 @@ const explainConcept = (text: string) => {
 };
 
 const alternativeReply = (text: string) => {
+  if (/push.?ups?/.test(text)) {
+    return [
+      "Yes. If push-ups are too hard or uncomfortable, use one of these swaps:",
+      "1. Wall push-ups - easiest option",
+      "2. Incline push-ups on a bench or table - still trains chest, shoulders, and triceps",
+      "3. Knee push-ups - good if wrists feel okay",
+      "4. Dumbbell floor press - best if you have dumbbells",
+      "",
+      "Pick the version where you can do 8-12 controlled reps without pain.",
+    ].join("\n");
+  }
+
   if (text.includes("leg press")) {
     return "For leg press without a machine, use bodyweight squats, step-ups, reverse lunges, or glute bridges. Start with 2 to 3 sets of 10 to 12 reps and keep the movement controlled.";
   }
@@ -184,6 +196,50 @@ const alternativeReply = (text: string) => {
   }
 
   return "Tell me the exercise you want to replace and what equipment you have. I can suggest a home, gym, or no-equipment alternative that trains the same muscles.";
+};
+
+const restReply = (text: string) => {
+  if (/squat|lunge|leg press|deadlift|hip thrust/.test(text)) {
+    return "For lower-body strength moves like squats, rest about 60-90 seconds between beginner sets. If the set feels heavy or your breathing is still high, take 90-120 seconds before the next set.";
+  }
+  if (/plank|core|abs/.test(text)) {
+    return "For core exercises, rest about 30-60 seconds between sets. If your form starts breaking, rest longer or shorten the next hold.";
+  }
+  return "For most beginner strength exercises, rest 60-90 seconds between sets. For heavier sets, 90-120 seconds is okay.";
+};
+
+const kneePainReply = () =>
+  [
+    "Stop lunges for now if your knee hurts during the movement.",
+    "",
+    "Try this instead today:",
+    "1. Glute bridges - 2-3 sets of 12-15",
+    "2. Box squats to a chair - 2-3 sets of 8-10",
+    "3. Step-ups only if pain-free - low height, slow control",
+    "",
+    "Avoid pushing through sharp pain, swelling, or pain that changes how you walk. If it keeps happening, get checked by a physiotherapist or qualified clinician.",
+  ].join("\n");
+
+const equipmentFollowupReply = (text: string, history: LocalAssistantMessage[]) => {
+  const previous = recentUserText(history);
+  const equipment = text.match(/dumbbells?|barbells?|bands?|machines?|cables?|kettlebells?/)?.[0] || "that equipment";
+
+  if (/workout|routine|plan|exercise|alternative|replace|swap|instead/.test(previous)) {
+    if (/dumbbell/.test(equipment)) {
+      return [
+        "Yes, dumbbells work well. For a beginner-friendly option, try:",
+        "1. Goblet squat for legs",
+        "2. Dumbbell floor press for chest",
+        "3. One-arm dumbbell row for back",
+        "4. Dumbbell Romanian deadlift for hamstrings and glutes",
+        "",
+        "Use 2-3 sets of 8-12 reps with a weight you can control.",
+      ].join("\n");
+    }
+    return `Yes, ${equipment} can work. Tell me the exercise you are replacing and I will match the same muscles.`;
+  }
+
+  return `Do you mean using ${equipment} for a workout plan, or replacing a specific exercise? Tell me the exercise or goal and I will give you the best option.`;
 };
 
 export const getLocalAssistantReply = (
@@ -198,7 +254,11 @@ export const getLocalAssistantReply = (
     : text;
   const beginner = !context.workoutExperience || String(context.workoutExperience).toLowerCase().includes("begin");
 
-  if (has(text, /pain|injur|dizzy|faint|chest pain|pregnan|medical|surgery|illness/)) {
+  if (has(text, /(knee|knees).*(pain|hurt|hurts)|(?:pain|hurt|hurts).*(knee|knees)/) && has(text, /lunge|squat|leg|step/)) {
+    return kneePainReply();
+  }
+
+  if (has(text, /pain|hurt|hurts|injur|dizzy|faint|chest pain|pregnan|medical|surgery|illness/)) {
     return "Please stop the activity and check with a qualified healthcare professional before continuing. I can help with general fitness guidance, but not medical diagnosis or treatment.";
   }
 
@@ -206,8 +266,16 @@ export const getLocalAssistantReply = (
     return greetingReply(context);
   }
 
+  if (has(text, /\b(rest|recover|break)\b.*\b(after|between|for|during)\b|\bhow long\b.*\b(rest|break|recover)\b/)) {
+    return restReply(text);
+  }
+
+  if (has(text, /^(how about|what about|can i use|with)\b.*\b(dumbbell|dumbbells|barbell|bands?|machine|cable|kettlebell)\b/)) {
+    return equipmentFollowupReply(text, history);
+  }
+
   if (has(text, /what('?s| is)?\s*(my)?\s*(workout|exercise|session|plan)\s*(today|now|for today)|today'?s\s*(workout|session|plan)|workout today/)) {
-    return noEquipmentWorkout(beginner);
+    return "I cannot see your saved Strive workout from this browser fallback. Open the Workouts page for the exact saved session, or ask me for a quick beginner workout and I will build one here.";
   }
 
   if (has(text, /what('?s| is| are| does)|meaning|means?\b|define|explain|how does|tell me about/)) {
