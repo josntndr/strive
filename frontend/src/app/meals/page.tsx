@@ -29,6 +29,7 @@ import {
   Activity,
   Droplets,
   Loader2,
+  RotateCcw,
 } from "lucide-react";
 import { api, clearAuth, getLocalCache, getToken, isUnauthorizedError, setLocalCache } from "@/lib/api";
 import { toast } from "react-hot-toast";
@@ -85,6 +86,15 @@ function getMealTypeStyles(type: string) {
     return { badgeBg: "bg-purple-50", badgeText: "text-purple-700", badgeBorder: "border-purple-200", iconColor: "text-purple-600" };
   }
   return { badgeBg: "bg-blue-50", badgeText: "text-blue-700", badgeBorder: "border-blue-200", iconColor: "text-blue-600" };
+}
+
+function getMealTiming(type: string) {
+  const t = (type || "").toLowerCase();
+  if (t.includes("break")) return "7:00 – 9:00 AM";
+  if (t.includes("lunch")) return "12:00 – 2:00 PM";
+  if (t.includes("din")) return "6:30 – 8:30 PM";
+  if (t.includes("snack")) return "3:30 – 4:30 PM";
+  return "Flexible Fuel";
 }
 
 export default function MealsPage() {
@@ -226,7 +236,7 @@ export default function MealsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fbf5f0] text-slate-900 flex flex-col selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-[#fbf5f0] text-slate-900 flex flex-col selection:bg-[#ed4f28] selection:text-white">
       <Navbar />
       <AIChat />
 
@@ -249,7 +259,7 @@ export default function MealsPage() {
 
           <div className="relative z-10 p-6 sm:p-10 w-full max-w-3xl space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-emerald-600 text-white text-xs font-black uppercase tracking-wider shadow-md shadow-emerald-500/30">
+              <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-[#ed4f28] text-white text-xs font-black uppercase tracking-wider shadow-md shadow-[#ed4f28]/30">
                 Athlete Nutrition Engine
               </span>
               <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold border border-white/20">
@@ -265,7 +275,7 @@ export default function MealsPage() {
                 Fuel & Macro Blueprint
               </h1>
               <p className="mt-2 text-stone-300 text-sm sm:text-base font-medium max-w-xl leading-relaxed">
-                Chef-crafted, macro-calibrated daily nutrition designed to fuel intense training sessions, boost metabolic rate, and accelerate muscle recovery.
+                Personalized, macro-calibrated daily nutrition designed to fuel your training sessions, hit your protein goals, and accelerate recovery.
               </p>
             </div>
 
@@ -274,7 +284,7 @@ export default function MealsPage() {
                 type="button"
                 onClick={handleGeneratePlan}
                 disabled={isGenerating}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-70 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-500/30 transition-all active:scale-95"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#ed4f28] hover:bg-[#d9421c] disabled:opacity-70 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-[#ed4f28]/30 transition-all active:scale-95 cursor-pointer"
               >
                 {isGenerating ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -457,38 +467,39 @@ export default function MealsPage() {
           <div className="space-y-6">
             {/* Day Selector Tabs */}
             {allDays.length > 1 && (
-              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+              <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none">
                 {allDays.map((day, dIdx) => {
                   const isSelected = dIdx === selectedDayIdx;
-                  const allDone = day.meals.every((m) => m.completed);
+                  const completedCount = day.meals.filter((m) => m.completed).length;
+                  const allDone = day.meals.length > 0 && completedCount === day.meals.length;
                   return (
                     <button
                       key={dIdx}
                       type="button"
                       onClick={() => setSelectedDayIdx(dIdx)}
-                      className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl border text-left whitespace-nowrap transition-all ${
+                      className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl border text-left whitespace-nowrap transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-stone-900 text-white border-stone-900 shadow-md"
-                          : "bg-white border-stone-200/80 text-stone-700 hover:bg-stone-50"
+                          ? "bg-[#ed4f28] text-white border-[#ed4f28] shadow-md shadow-[#ed4f28]/25"
+                          : "bg-white border-slate-200/90 text-slate-700 hover:border-slate-300 hover:bg-slate-50 shadow-2xs"
                       }`}
                     >
                       <div
-                        className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-mono font-black ${
+                        className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-bold shrink-0 ${
                           isSelected
-                            ? "bg-emerald-500 text-white"
+                            ? "bg-white/20 text-white"
                             : allDone
                             ? "bg-emerald-100 text-emerald-700"
-                            : "bg-stone-100 text-stone-700"
+                            : "bg-slate-100 text-slate-600"
                         }`}
                       >
-                        {allDone ? <Check className="w-3.5 h-3.5" strokeWidth={3} /> : `0${dIdx + 1}`}
+                        {allDone ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : `D${dIdx + 1}`}
                       </div>
-                      <div className="text-left">
-                        <p className={`text-xs font-black ${isSelected ? "text-white" : "text-stone-900"}`}>
+                      <div>
+                        <p className={`text-xs font-black ${isSelected ? "text-white" : "text-slate-900"}`}>
                           {day.day}
                         </p>
-                        <p className={`text-[10px] ${isSelected ? "text-stone-300" : "text-stone-400"}`}>
-                          {day.meals.length} Meals
+                        <p className={`text-[10px] font-medium ${isSelected ? "text-orange-100" : "text-slate-400"}`}>
+                          {allDone ? "All Eaten ✓" : `${completedCount}/${day.meals.length} Eaten`}
                         </p>
                       </div>
                     </button>
@@ -498,110 +509,186 @@ export default function MealsPage() {
             )}
 
             {/* Active Day Menu Card */}
-            {currentDay && (
-              <div className="bg-white rounded-3xl border border-stone-200/80 shadow-xs overflow-hidden">
-                {/* Header */}
-                <div className="p-6 sm:p-7 border-b border-stone-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-stone-50/50">
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm shadow-md shadow-emerald-600/20 shrink-0">
-                      Day {selectedDayIdx + 1}
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-black text-stone-900 tracking-tight">
-                        {currentDay.day} Culinary Schedule
-                      </h2>
-                      <p className="text-xs text-stone-500 font-medium">
-                        Daily target: {currentDay.totalCalories ?? currentDay.estimatedCalories ?? targetCalories} kcal &bull; {currentDay.totalProtein ?? currentDay.estimatedProtein ?? targetProtein}g protein
-                      </p>
-                    </div>
-                  </div>
+            {currentDay && (() => {
+              const completedMealsCount = currentDay.meals.filter((m) => m.completed).length;
+              const totalMealsCount = currentDay.meals.length;
+              const allDone = totalMealsCount > 0 && completedMealsCount === totalMealsCount;
+              const progressPercent = totalMealsCount > 0 ? Math.round((completedMealsCount / totalMealsCount) * 100) : 0;
+              const eatenCalories = currentDay.meals.filter((m) => m.completed).reduce((sum, m) => sum + m.calories, 0);
+              const eatenProtein = currentDay.meals.filter((m) => m.completed).reduce((sum, m) => sum + m.protein, 0);
+              const dayTargetCalories = currentDay.totalCalories ?? currentDay.estimatedCalories ?? targetCalories;
+              const dayTargetProtein = currentDay.totalProtein ?? currentDay.estimatedProtein ?? targetProtein;
 
-                  <div className="flex items-center gap-3">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs">
-                      <Flame className="w-3.5 h-3.5 text-orange-500" />
-                      <span>{currentDay.totalCalories ?? currentDay.estimatedCalories ?? targetCalories} kcal</span>
-                    </div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs">
-                      <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>{currentDay.totalProtein ?? currentDay.estimatedProtein ?? targetProtein}g Protein</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Meals Grid */}
-                <div className="p-6 sm:p-7 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {currentDay.meals.map((meal, mIdx) => {
-                      const Icon = getMealTypeIcon(meal.type);
-                      const styles = getMealTypeStyles(meal.type);
-
-                      return (
-                        <div
-                          key={mIdx}
-                          className={`p-5 rounded-3xl border transition-all flex flex-col justify-between gap-4 ${
-                            meal.completed
-                              ? "bg-emerald-50/40 border-emerald-200"
-                              : "bg-white border-stone-200/80 hover:border-stone-300 hover:shadow-sm"
-                          }`}
-                        >
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className={`inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${styles.badgeBg} ${styles.badgeText} ${styles.badgeBorder}`}>
-                                <Icon className={`w-3 h-3 ${styles.iconColor}`} />
-                                {meal.type}
+              return (
+                <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden">
+                  {/* Header */}
+                  <div className="p-6 sm:p-7 border-b border-slate-100 bg-slate-50/60">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-11 h-11 rounded-2xl bg-orange-50 border border-orange-200 text-[#ed4f28] flex items-center justify-center font-black text-sm shadow-2xs shrink-0">
+                          D{selectedDayIdx + 1}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h2 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+                              {currentDay.day} Meal Plan
+                            </h2>
+                            {allDone && (
+                              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                ✓ Complete
                               </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-500 font-medium mt-0.5">
+                            Daily target: {dayTargetCalories} kcal &bull; {dayTargetProtein}g protein
+                          </p>
+                        </div>
+                      </div>
 
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs font-mono font-bold text-stone-500">
-                                  {meal.calories} kcal
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-800 shadow-2xs">
+                          <Flame className="w-3.5 h-3.5 text-[#ed4f28]" />
+                          <span>{eatenCalories} / {dayTargetCalories} kcal</span>
+                        </div>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-800 shadow-2xs">
+                          <Zap className="w-3.5 h-3.5 text-amber-500" />
+                          <span>{eatenProtein} / {dayTargetProtein}g Protein</span>
+                        </div>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 shadow-2xs">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>{completedMealsCount} of {totalMealsCount} Logged</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="mt-4 pt-3 border-t border-slate-100">
+                      <div className="flex items-center justify-between text-xs font-medium text-slate-500 mb-1.5">
+                        <span>Daily Nutrition Progress</span>
+                        <span className="font-bold text-slate-800">{progressPercent}% Logged</span>
+                      </div>
+                      <div className="w-full bg-slate-200/80 h-2 rounded-full overflow-hidden">
+                        <div
+                          className="bg-gradient-to-r from-[#ed4f28] to-emerald-500 h-full rounded-full transition-all duration-500"
+                          style={{ width: `${progressPercent}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Meals Grid */}
+                  <div className="p-6 sm:p-7 space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                      {currentDay.meals.map((meal, mIdx) => {
+                        const Icon = getMealTypeIcon(meal.type);
+                        const styles = getMealTypeStyles(meal.type);
+                        const timing = getMealTiming(meal.type);
+                        const estCarbs = Math.max(12, Math.round(((meal.calories - meal.protein * 4) * 0.65) / 4));
+                        const estFats = Math.max(4, Math.round(((meal.calories - meal.protein * 4) * 0.35) / 9));
+
+                        return (
+                          <div
+                            key={mIdx}
+                            className={`p-5 sm:p-6 rounded-3xl border transition-all flex flex-col justify-between gap-5 group ${
+                              meal.completed
+                                ? "bg-emerald-50/50 border-emerald-200/90 shadow-2xs"
+                                : "bg-white border-slate-200/90 hover:border-orange-300 hover:shadow-md"
+                            }`}
+                          >
+                            <div className="space-y-3">
+                              {/* Top meta row */}
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2">
+                                  <span className={`inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg border ${styles.badgeBg} ${styles.badgeText} ${styles.badgeBorder}`}>
+                                    <Icon className={`w-3 h-3 ${styles.iconColor}`} />
+                                    {meal.type}
+                                  </span>
+                                  <span className="text-[11px] font-medium text-slate-400">
+                                    {timing}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-xs font-mono font-bold text-slate-800 bg-slate-100 px-2.5 py-0.5 rounded-md border border-slate-200/70">
+                                    {meal.calories} kcal
+                                  </span>
+                                  <span className="text-xs font-mono font-bold text-[#ed4f28] bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200/70">
+                                    {meal.protein}g protein
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Meal Name */}
+                              <div>
+                                <h4
+                                  className={`text-base sm:text-lg font-black tracking-tight leading-snug transition-colors ${
+                                    meal.completed ? "line-through text-slate-400" : "text-slate-950 group-hover:text-[#ed4f28]"
+                                  }`}
+                                >
+                                  {meal.name}
+                                </h4>
+                              </div>
+
+                              {/* Macro breakdown tags */}
+                              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-orange-50/80 border border-orange-100 text-[#ed4f28]">
+                                  Protein: {meal.protein}g
                                 </span>
-                                <span className="text-stone-300">&bull;</span>
-                                <span className="text-xs font-mono font-black text-emerald-600">
-                                  {meal.protein}g protein
+                                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-50/80 border border-amber-100 text-amber-700">
+                                  Carbs: ~{estCarbs}g
+                                </span>
+                                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-50/80 border border-emerald-100 text-emerald-700">
+                                  Fats: ~{estFats}g
                                 </span>
                               </div>
                             </div>
 
-                            <h4
-                              className={`text-base font-extrabold leading-snug transition-colors ${
-                                meal.completed ? "line-through text-stone-400" : "text-stone-900"
-                              }`}
-                            >
-                              {meal.name}
-                            </h4>
-                          </div>
+                            {/* Action Row */}
+                            <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3">
+                              <span className="text-xs font-semibold">
+                                {meal.completed ? (
+                                  <span className="text-emerald-700 font-bold inline-flex items-center gap-1.5">
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                    Logged & Eaten
+                                  </span>
+                                ) : (
+                                  <span className="text-slate-400 inline-flex items-center gap-1.5">
+                                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                    Ready to enjoy
+                                  </span>
+                                )}
+                              </span>
 
-                          <div className="pt-3 border-t border-stone-100 flex items-center justify-between">
-                            <span className="text-[11px] font-semibold text-stone-400">
-                              {meal.completed ? "Logged as eaten ✓" : "Ready to prepare"}
-                            </span>
-
-                            <button
-                              type="button"
-                              onClick={() => toggleMeal(selectedDayIdx, mIdx)}
-                              className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-black transition-all active:scale-95 ${
-                                meal.completed
-                                  ? "bg-emerald-500 text-white shadow-xs"
-                                  : "bg-stone-100 hover:bg-stone-200 text-stone-800"
-                              }`}
-                            >
-                              {meal.completed ? (
-                                <>
-                                  <Check className="w-3.5 h-3.5 stroke-[3]" />
-                                  <span>Eaten ✓</span>
-                                </>
-                              ) : (
-                                <span>Mark Eaten</span>
-                              )}
-                            </button>
+                              <button
+                                type="button"
+                                onClick={() => toggleMeal(selectedDayIdx, mIdx)}
+                                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer ${
+                                  meal.completed
+                                    ? "bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-100 shadow-2xs"
+                                    : "bg-[#ed4f28] hover:bg-[#d9421c] text-white shadow-sm shadow-[#ed4f28]/25"
+                                }`}
+                              >
+                                {meal.completed ? (
+                                  <>
+                                    <span>✓ Eaten</span>
+                                    <RotateCcw className="w-3 h-3 text-emerald-600" />
+                                  </>
+                                ) : (
+                                  <>
+                                    <span>Mark as Eaten</span>
+                                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                                  </>
+                                )}
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
         )}
       </main>
