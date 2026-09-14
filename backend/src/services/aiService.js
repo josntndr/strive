@@ -159,6 +159,31 @@ const buildMealReply = (message, context = {}) => {
   return `A good Strive-style meal is simple: ${plate}.${protein}\n${examples}\nKeep water nearby and avoid extreme restrictions - consistency matters more than perfect eating.`;
 };
 
+const buildWeeklyMealPlanReply = (message, context = {}) => {
+  const goal = String(context.fitnessGoal || message || "").toLowerCase();
+  const deficit = /deficit|lose|fat|cut|weight loss/.test(goal);
+  const intro = deficit
+    ? "Absolutely. Here is a simple 1-week calorie-deficit meal plan that still keeps protein high:"
+    : "Absolutely. Here is a simple balanced 1-week meal plan:";
+  const note = deficit
+    ? "Keep portions moderate: use 1 palm of protein, plenty of vegetables, and a smaller serving of rice or carbs at each main meal."
+    : "Adjust portions up or down based on hunger, training days, and your goal.";
+
+  return [
+    intro,
+    "",
+    "Day 1: Eggs with toast | Chicken rice bowl | Greek yogurt with fruit | Fish with vegetables",
+    "Day 2: Oats with milk and banana | Tuna sandwich | Apple with peanut butter | Chicken adobo with vegetables",
+    "Day 3: Yogurt, fruit, and nuts | Tofu rice bowl | Boiled eggs | Grilled fish with rice and greens",
+    "Day 4: Scrambled eggs and fruit | Chicken salad wrap | Cottage cheese or yogurt | Lean beef or tofu with vegetables",
+    "Day 5: Oatmeal with protein | Tuna rice bowl | Banana | Chicken breast with sweet potato and vegetables",
+    "Day 6: Egg sandwich | Fish or tofu bowl | Yogurt | Turkey, chicken, or tofu stir-fry",
+    "Day 7: Omelet with vegetables | Chicken or tuna salad | Fruit | Grilled fish, tofu, or chicken with vegetables",
+    "",
+    note,
+  ].join("\n");
+};
+
 const explainConcept = (text, context = {}) => {
   if (/\bworkout\b/.test(text)) {
     return [
@@ -314,6 +339,9 @@ const ruleBasedReply = (message, context = {}, history = []) => {
 
   // 5. Meals / nutrition.
   if (/(meal|food|eat|diet|nutrition|protein|carb|calorie|snack|breakfast|lunch|dinner|recipe)/.test(text)) {
+    if (/(meal\s*plan|plan).*(week|7 days|seven days)|week.*meal|1 week|one week/.test(text)) {
+      return buildWeeklyMealPlanReply(text, context);
+    }
     if (/protein/.test(text)) {
       return "Protein helps repair and build muscle and keeps you full. Beginner-friendly sources include eggs, chicken, fish, tuna, tofu, beans, yogurt, and milk. Try to include some protein in each meal.";
     }

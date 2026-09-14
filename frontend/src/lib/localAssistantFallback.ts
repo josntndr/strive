@@ -54,6 +54,31 @@ const mealReply = (context: LocalAssistantContext) => {
   return `For a balanced meal, build your plate around protein, carbs, vegetables, and water.\nGood options: ${examples}.\nKeep it realistic and repeatable - that is what makes progress easier.`;
 };
 
+const weeklyMealPlanReply = (message: string, context: LocalAssistantContext) => {
+  const goal = `${context.fitnessGoal || ""} ${message}`.toLowerCase();
+  const deficit = /deficit|lose|fat|cut|weight loss/.test(goal);
+  const intro = deficit
+    ? "Absolutely. Here is a simple 1-week calorie-deficit meal plan that still keeps protein high:"
+    : "Absolutely. Here is a simple balanced 1-week meal plan:";
+  const note = deficit
+    ? "Keep portions moderate: use 1 palm of protein, plenty of vegetables, and a smaller serving of rice or carbs at each main meal."
+    : "Adjust portions up or down based on hunger, training days, and your goal.";
+
+  return [
+    intro,
+    "",
+    "Day 1: Eggs with toast | Chicken rice bowl | Greek yogurt with fruit | Fish with vegetables",
+    "Day 2: Oats with milk and banana | Tuna sandwich | Apple with peanut butter | Chicken adobo with vegetables",
+    "Day 3: Yogurt, fruit, and nuts | Tofu rice bowl | Boiled eggs | Grilled fish with rice and greens",
+    "Day 4: Scrambled eggs and fruit | Chicken salad wrap | Cottage cheese or yogurt | Lean beef or tofu with vegetables",
+    "Day 5: Oatmeal with protein | Tuna rice bowl | Banana | Chicken breast with sweet potato and vegetables",
+    "Day 6: Egg sandwich | Fish or tofu bowl | Yogurt | Turkey, chicken, or tofu stir-fry",
+    "Day 7: Omelet with vegetables | Chicken or tuna salad | Fruit | Grilled fish, tofu, or chicken with vegetables",
+    "",
+    note,
+  ].join("\n");
+};
+
 const explainConcept = (text: string) => {
   if (/\bworkout\b/.test(text)) {
     return [
@@ -168,6 +193,9 @@ export const getLocalAssistantReply = (
   }
 
   if (has(text, /meal|food|eat|protein|breakfast|lunch|dinner|snack|nutrition/)) {
+    if (has(text, /(meal\s*plan|plan).*(week|7 days|seven days)|week.*meal|1 week|one week/)) {
+      return weeklyMealPlanReply(text, context);
+    }
     return mealReply(context);
   }
 

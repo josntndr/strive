@@ -139,6 +139,17 @@ test("assistant fallback gives practical meal guidance", () => {
   assert.match(reply, /consistency/);
 });
 
+test("assistant fallback answers one-week meal plan requests with a full plan", () => {
+  const reply = ruleBasedReply("how about a meal plan good for 1 week", {
+    fitnessGoal: "Lose fat",
+  });
+
+  assert.match(reply, /1-week/);
+  assert.match(reply, /Day 1/);
+  assert.match(reply, /Day 7/);
+  assert.doesNotMatch(reply, /For a balanced meal, build your plate/);
+});
+
 test("assistant fallback explains calorie deficit directly", () => {
   const reply = ruleBasedReply("What is calorie deficit?");
 
