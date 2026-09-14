@@ -38,7 +38,11 @@ const chat = async (req, res) => {
 
     const { reply, source } = await getAssistantReply({
       message: trimmed,
-      context: { ...profileContext, ...safeContext },
+      context: {
+        userName: req.user?.fullName || req.user?.name || safeContext.userName,
+        ...profileContext,
+        ...safeContext,
+      },
       history: safeHistory,
     });
     return res.json({ reply, source });

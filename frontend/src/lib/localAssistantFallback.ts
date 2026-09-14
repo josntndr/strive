@@ -1,4 +1,5 @@
 export type LocalAssistantContext = {
+  userName?: string;
   fitnessGoal?: string;
   workoutLocation?: string;
   workoutExperience?: string;
@@ -9,6 +10,15 @@ export type LocalAssistantContext = {
 };
 
 const has = (text: string, pattern: RegExp) => pattern.test(text);
+
+const firstName = (name?: string) => String(name || "").trim().split(/\s+/)[0] || "";
+
+const greetingReply = (context: LocalAssistantContext) => {
+  const name = firstName(context.userName);
+  const opener = name ? `Hi ${name}, I'm here.` : "Hi, I'm here.";
+
+  return `${opener} You can ask me naturally, like "What should I eat today?", "Can you make this workout easier?", or "What does calorie deficit mean?"`;
+};
 
 const noEquipmentWorkout = (beginner: boolean) => {
   const sets = beginner ? "2 rounds" : "3 rounds";
@@ -116,6 +126,10 @@ export const getLocalAssistantReply = (message: string, context: LocalAssistantC
     return "Please stop the activity and check with a qualified healthcare professional before continuing. I can help with general fitness guidance, but not medical diagnosis or treatment.";
   }
 
+  if (has(text.trim(), /^(hi|hello|hey|yo|sup|good (morning|afternoon|evening))\b/)) {
+    return greetingReply(context);
+  }
+
   if (has(text, /what('?s| is)?\s*(my)?\s*(workout|exercise|session|plan)\s*(today|now|for today)|today'?s\s*(workout|session|plan)|workout today/)) {
     return noEquipmentWorkout(beginner);
   }
@@ -141,5 +155,5 @@ export const getLocalAssistantReply = (message: string, context: LocalAssistantC
     return noEquipmentWorkout(beginner);
   }
 
-  return "Direct answer: I am best at fitness, workouts, meals, and progress questions. For anything in that area, ask naturally and I will answer directly instead of sending you to a menu.";
+  return "I hear you. I can help best when your question is about training, meals, recovery, progress, or using Strive. Ask it naturally and I will give you the most useful next step.";
 };

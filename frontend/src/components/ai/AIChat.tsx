@@ -3,7 +3,7 @@
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, Send, X, Loader2, Sparkles } from "lucide-react";
-import { api, getToken } from "@/lib/api";
+import { api, getStoredUser, getToken } from "@/lib/api";
 import { getLocalAssistantReply, type LocalAssistantContext } from "@/lib/localAssistantFallback";
 
 const PAGE_NAMES: Record<string, string> = {
@@ -115,7 +115,9 @@ export function AIChat({ currentExercise }: AIChatProps) {
     setMessages((prev) => [...prev, { role: "user", content: message }]);
     setLoading(true);
 
+    const storedUser = getStoredUser();
     const requestContext: LocalAssistantContext = {
+      ...(storedUser?.fullName ? { userName: storedUser.fullName } : {}),
       ...(profile || {}),
       ...(currentExercise ? { currentExercise } : {}),
       ...(currentPage ? { currentPage } : {}),

@@ -29,6 +29,7 @@ const REQUEST_TIMEOUT_MS = 25000;
 
 const buildContextLine = (context = {}) => {
   const parts = [];
+  if (context.userName) parts.push(`User name: ${context.userName}`);
   if (context.fitnessGoal) parts.push(`Goal: ${context.fitnessGoal}`);
   if (context.workoutLocation) parts.push(`Workout location: ${context.workoutLocation}`);
   if (context.workoutExperience) parts.push(`Experience: ${context.workoutExperience}`);
@@ -70,6 +71,15 @@ const EXPLAIN_INTENT = /(what('?s| is| are)|meaning|define|explain|how does|tell
 const listWords = (items) => {
   if (items.length === 1) return items[0];
   return `${items.slice(0, -1).join(", ")}, or ${items[items.length - 1]}`;
+};
+
+const firstName = (name) => String(name || "").trim().split(/\s+/)[0] || "";
+
+const greetingReply = (context = {}) => {
+  const name = firstName(context.userName);
+  const opener = name ? `Hi ${name}, I'm here.` : "Hi, I'm here.";
+
+  return `${opener} You can ask me naturally, like "What should I eat today?", "Can you make this workout easier?", or "What does calorie deficit mean?"`;
 };
 
 const getTrainingContext = (context = {}) => {
@@ -241,7 +251,7 @@ const ruleBasedReply = (message, context = {}) => {
 
   // 2. Greeting.
   if (/^(hi|hello|hey|yo|sup|good (morning|afternoon|evening))\b/.test(text.trim())) {
-    return "Hi! I'm Strive Assistant. I can help with workouts, exercise form, home or gym alternatives, meals, progress tracking, and using Strive. What would you like help with?";
+    return greetingReply(context);
   }
 
   // 2a. "What is my workout today?" is asking for a plan, not a definition.
@@ -333,7 +343,7 @@ const ruleBasedReply = (message, context = {}) => {
   }
 
   // 11. Unrelated -> polite redirect.
-  return "I can help with workouts, meal plans, progress tracking, and using Strive. Please ask me something related to your fitness journey.";
+  return "I hear you. I can help best when your question is about training, meals, recovery, progress, or using Strive. Ask it naturally and I will give you the most useful next step.";
 };
 
 // --- Real AI providers (key stays on the backend) -----------------------------

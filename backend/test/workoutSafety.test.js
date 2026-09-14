@@ -164,3 +164,19 @@ test("assistant fallback still answers today's workout as a session", () => {
   assert.match(reply, /simple home session/);
   assert.match(reply, /Bodyweight Squats/);
 });
+
+test("assistant fallback greets like a personal assistant", () => {
+  const reply = ruleBasedReply("hello?", {
+    userName: "Josephine Santander",
+  });
+
+  assert.match(reply, /Hi Josephine, I'm here/);
+  assert.doesNotMatch(reply, /Direct answer/);
+});
+
+test("assistant fallback avoids robotic catch-all wording", () => {
+  const reply = ruleBasedReply("can you help me?");
+
+  assert.match(reply, /I hear you/);
+  assert.doesNotMatch(reply, /Direct answer/);
+});
