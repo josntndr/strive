@@ -147,6 +147,22 @@ test("assistant fallback explains calorie deficit directly", () => {
   assert.doesNotMatch(reply, /Tell me the exercise or muscle group/);
 });
 
+test("assistant fallback explains what-does questions directly", () => {
+  const reply = ruleBasedReply("what does calorie deficit mean?");
+
+  assert.match(reply, /eat fewer calories than your body uses/);
+  assert.doesNotMatch(reply, /I hear you/);
+});
+
+test("assistant fallback uses recent context for short follow-up questions", () => {
+  const reply = ruleBasedReply("what does that mean?", {}, [
+    { role: "user", content: "how about a meal for calorie deficit" },
+    { role: "assistant", content: "A meal can support a calorie deficit." },
+  ]);
+
+  assert.match(reply, /eat fewer calories than your body uses/);
+});
+
 test("assistant fallback defines workout instead of generating one for definition questions", () => {
   const reply = ruleBasedReply("what is workout");
 
@@ -170,7 +186,7 @@ test("assistant fallback greets like a personal assistant", () => {
     userName: "Josephine Santander",
   });
 
-  assert.match(reply, /Hi Josephine, I'm here/);
+  assert.match(reply, /Hey Josephine, I'm here/);
   assert.doesNotMatch(reply, /Direct answer/);
 });
 

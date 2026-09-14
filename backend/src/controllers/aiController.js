@@ -49,7 +49,7 @@ const chat = async (req, res) => {
   } catch (error) {
     // Never crash the chat - return a helpful fallback reply instead.
     console.error("AI chat error:", error.message);
-    return res.json({ reply: ruleBasedReply(trimmed, safeContext), source: "fallback" });
+    return res.json({ reply: ruleBasedReply(trimmed, safeContext, safeHistory), source: "fallback" });
   }
 };
 

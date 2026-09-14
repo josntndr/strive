@@ -133,10 +133,10 @@ export function AIChat({ currentExercise }: AIChatProps) {
         },
         { timeout: 25000 }
       );
-      const reply = res.data?.reply || getLocalAssistantReply(message, requestContext);
+      const reply = res.data?.reply || getLocalAssistantReply(message, requestContext, history);
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: getLocalAssistantReply(message, requestContext) }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: getLocalAssistantReply(message, requestContext, history) }]);
       setError("");
     } finally {
       setLoading(false);

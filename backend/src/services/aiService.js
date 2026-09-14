@@ -65,8 +65,8 @@ const findAlternativeTarget = (text) => {
   return null;
 };
 
-const FITNESS_KEYWORDS = /(workout|exercise|gym|home|muscle|fitness|train|rep|set|warm|stretch|cardio|strength|fat|tone|squat|lunge|plank|push|pull|glute|leg|arm|chest|back|shoulder|core|abs|run|walk|weight|diet|meal|food|protein|nutrition|calorie|progress|motivat|consistent|plan|strive|beginner|rest|recover)/;
-const EXPLAIN_INTENT = /(what('?s| is| are)|meaning|define|explain|how does|tell me about)/;
+const FITNESS_KEYWORDS = /(workout|exercise|gym|home|muscle|fitness|train|rep|set|warm|stretch|cardio|strength|fat|tone|squat|lunge|plank|push|pull|glute|leg|arm|chest|back|shoulder|core|abs|run|walk|weight|diet|meal|food|protein|nutrition|calorie|deficit|progress|motivat|consistent|plan|strive|beginner|rest|recover)/;
+const EXPLAIN_INTENT = /(what('?s| is| are| does)|meaning|means?\b|define|explain|how does|tell me about)/;
 
 const listWords = (items) => {
   if (items.length === 1) return items[0];
@@ -77,10 +77,17 @@ const firstName = (name) => String(name || "").trim().split(/\s+/)[0] || "";
 
 const greetingReply = (context = {}) => {
   const name = firstName(context.userName);
-  const opener = name ? `Hi ${name}, I'm here.` : "Hi, I'm here.";
+  const opener = name ? `Hey ${name}, I'm here.` : "Hey, I'm here.";
 
-  return `${opener} You can ask me naturally, like "What should I eat today?", "Can you make this workout easier?", or "What does calorie deficit mean?"`;
+  return `${opener} What would you like help with today: workouts, meals, form, progress, or recovery?`;
 };
+
+const recentUserText = (history = []) =>
+  (Array.isArray(history) ? history : [])
+    .filter((m) => m?.role === "user" && typeof m.content === "string")
+    .slice(-3)
+    .map((m) => m.content.toLowerCase())
+    .join(" ");
 
 const getTrainingContext = (context = {}) => {
   const location = String(context.workoutLocation || "").toLowerCase().includes("gym") ? "gym" : "home";
@@ -231,8 +238,12 @@ const explainConcept = (text, context = {}) => {
   return null;
 };
 
-const ruleBasedReply = (message, context = {}) => {
+const ruleBasedReply = (message, context = {}, history = []) => {
   const text = String(message || "").toLowerCase();
+  const previousText = recentUserText(history);
+  const conceptText = /(it|that|this|mean|means|explain)/.test(text) && previousText
+    ? `${previousText} ${text}`
+    : text;
   const current = String(context.currentExercise || "").toLowerCase();
   const experience = String(context.workoutExperience || "").toLowerCase();
 
@@ -260,7 +271,7 @@ const ruleBasedReply = (message, context = {}) => {
   }
 
   if (EXPLAIN_INTENT.test(text)) {
-    const explanation = explainConcept(text, context);
+    const explanation = explainConcept(conceptText, context);
     if (explanation) return explanation;
   }
 
@@ -458,7 +469,7 @@ const getAssistantReply = async ({ message, context = {}, history = [] }) => {
     console.warn("AI provider failed, using rule-based fallback:", error.message);
   }
 
-  return { reply: ruleBasedReply(message, context), source: "fallback" };
+  return { reply: ruleBasedReply(message, context, history), source: "fallback" };
 };
 
 module.exports = { getAssistantReply, ruleBasedReply, SYSTEM_PROMPT, MAX_MESSAGE_LENGTH };

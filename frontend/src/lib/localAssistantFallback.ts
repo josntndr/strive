@@ -9,16 +9,28 @@ export type LocalAssistantContext = {
   currentPage?: string;
 };
 
+export type LocalAssistantMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
 const has = (text: string, pattern: RegExp) => pattern.test(text);
 
 const firstName = (name?: string) => String(name || "").trim().split(/\s+/)[0] || "";
 
 const greetingReply = (context: LocalAssistantContext) => {
   const name = firstName(context.userName);
-  const opener = name ? `Hi ${name}, I'm here.` : "Hi, I'm here.";
+  const opener = name ? `Hey ${name}, I'm here.` : "Hey, I'm here.";
 
-  return `${opener} You can ask me naturally, like "What should I eat today?", "Can you make this workout easier?", or "What does calorie deficit mean?"`;
+  return `${opener} What would you like help with today: workouts, meals, form, progress, or recovery?`;
 };
+
+const recentUserText = (history: LocalAssistantMessage[] = []) =>
+  history
+    .filter((m) => m.role === "user" && typeof m.content === "string")
+    .slice(-3)
+    .map((m) => m.content.toLowerCase())
+    .join(" ");
 
 const noEquipmentWorkout = (beginner: boolean) => {
   const sets = beginner ? "2 rounds" : "3 rounds";
@@ -118,8 +130,16 @@ const alternativeReply = (text: string) => {
   return "Tell me the exercise you want to replace and what equipment you have. I can suggest a home, gym, or no-equipment alternative that trains the same muscles.";
 };
 
-export const getLocalAssistantReply = (message: string, context: LocalAssistantContext = {}) => {
+export const getLocalAssistantReply = (
+  message: string,
+  context: LocalAssistantContext = {},
+  history: LocalAssistantMessage[] = []
+) => {
   const text = message.toLowerCase();
+  const previousText = recentUserText(history);
+  const conceptText = /(it|that|this|mean|means|explain)/.test(text) && previousText
+    ? `${previousText} ${text}`
+    : text;
   const beginner = !context.workoutExperience || String(context.workoutExperience).toLowerCase().includes("begin");
 
   if (has(text, /pain|injur|dizzy|faint|chest pain|pregnan|medical|surgery|illness/)) {
@@ -134,8 +154,8 @@ export const getLocalAssistantReply = (message: string, context: LocalAssistantC
     return noEquipmentWorkout(beginner);
   }
 
-  if (has(text, /what('?s| is| are)|meaning|define|explain|how does|tell me about/)) {
-    const explanation = explainConcept(text);
+  if (has(text, /what('?s| is| are| does)|meaning|means?\b|define|explain|how does|tell me about/)) {
+    const explanation = explainConcept(conceptText);
     if (explanation) return explanation;
   }
 
